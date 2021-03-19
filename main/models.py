@@ -7,19 +7,19 @@ class Person(models.Model):
     username = models.TextField(max_length=20)
     password = models.TextField(max_length=20)
     name = models.TextField(max_length=40)
-    phoneNumber = models.IntegerField(max_length=9)
+    phoneNumber = models.IntegerField()
     email = models.TextField(max_length=30)
-    zipCode = models.IntegerField(max_length=5)
+    zipCode = models.IntegerField()
     registerDate = models.DateField()
     isBanned = models.BooleanField()
 
 
-class User(models.Model):
+class CustomUser(models.Model):
     picture = models.ImageField(upload_to='users')
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
 
 
-class Admin(models.Model):
+class CustomAdmin(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
 
 
@@ -33,11 +33,11 @@ class Owner(models.Model):
 # a su negocio, y lo mismo para los productos
 
 class ShopType(models.Model):
-    name = models.CharField()
+    name = models.CharField(max_length=40)
 
 
 class ProductType(models.Model):
-    name = models.CharField()
+    name = models.CharField(max_length=40)
 
 
 class Shop(models.Model):
@@ -48,7 +48,7 @@ class Shop(models.Model):
     picture = models.ImageField(upload_to='shops')
     address = models.CharField(max_length=40)
     owner = models.ForeignKey(Owner, on_delete=models.CASCADE)
-    duration_booking = models.IntegerField()
+    durationBooking = models.IntegerField()
 
 
 class Product(models.Model):
@@ -106,7 +106,7 @@ class Review(models.Model):
     title = models.CharField(max_length=20)
     description = models.TextField(max_length=60)
     date = models.DateField()
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
 
 
@@ -117,7 +117,7 @@ class Review(models.Model):
 
 
 class Chat(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
 
 
@@ -130,11 +130,11 @@ class ChatMessage(models.Model):
 ## MODELOS DE FORO Y MENSAJES ###############################################
 
 class Thread(models.Model):
-    name = models.CharField()
+    name = models.CharField(max_length=40)
 
 
 class ForumMessage(models.Model):
     text = models.TextField(max_length=60)
     date = models.DateField()
     thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
