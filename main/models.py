@@ -15,7 +15,7 @@ class Person(models.Model):
 
 
 class User(models.Model):
-    picture = models.URLField(max_length=100)
+    picture = models.ImageField(upload_to='users')
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
 
 
@@ -45,7 +45,7 @@ class Shop(models.Model):
     shopType = models.ForeignKey(ShopType, on_delete=models.CASCADE)
     schedule = models.TextField(max_length=50)
     description = models.TextField(max_length=60)
-    picture = models.URLField(max_length=100)
+    picture = models.ImageField(upload_to='shops')
     address = models.CharField(max_length=40)
     owner = models.ForeignKey(Owner, on_delete=models.CASCADE)
     duration_booking = models.IntegerField()
@@ -54,7 +54,7 @@ class Shop(models.Model):
 class Product(models.Model):
     name = models.CharField(max_length=20)
     productType = models.CharField(max_length=20)
-    picture = models.URLField(max_length=100)
+    picture = models.ImageField(upload_to='products')
     price = models.FloatField
     description = models.TextField(max_length=60)
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
