@@ -21,4 +21,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('populate/', populate.populate),
     path('login/', views.login),
+    path('promotionproduct/', views.promotion_product),
 ]
