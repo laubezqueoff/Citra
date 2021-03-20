@@ -15,11 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from main import populate,views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('populate/', populate.populate),
-    path('login/', views.login),
-    path('promotionproduct/', views.promotion_product),
 ]
