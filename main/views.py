@@ -20,7 +20,14 @@ def login(request):
 
         except Exception as e:
             print(e)
-    
+        
+        person_id,rol,rol_id,is_active= get_context(request)
+        context = [person_id,rol,rol_id,is_active]
+        
+        # Es importante pasar el context en todas las vistas.
+        # Cambiar index.html por tu vista en tu método
+
+        return render(request, 'promote.html',{"context" : context})
     else: #Si es un GET redirijimos a la vista de login
         return render(request, 'login.html')
 
@@ -117,8 +124,6 @@ def get_context(request):
         In: None \n
         Out: person_id (id de la persona), rol (String, puede ser Owner,Admin o User),rol_id (id de la persona en su rol), is_active (se encuentra usando la web)
     '''
-    print("***************")
-    print(person_id)
     person_id   =   request.session['person_id'] 
     rol         =   request.session['rol']
     rol_id      =   request.session['rol_id']
@@ -128,6 +133,8 @@ def get_context(request):
 
 
 def promotion_product(request):
+    if request.method == 'GET':
+        return render(request, 'promote.html')
     product = Product.objects.get(id=1)
     person_id,rol,rol_id,is_active = get_context(request)
     print(person_id)

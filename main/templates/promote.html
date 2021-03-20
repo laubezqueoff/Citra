@@ -163,14 +163,19 @@ input[type=text]:placeholder {
                 <form method="POST">{% csrf_token %}
                 <title>Inicio de sesión</title>
                 
+                
+                <h1>{{context.0}}<h1>
+                <h1>{{context.1}}<h1>
+                <h1>{{context.2}}<h1>
+                <h1>{{context.3}}<h1>
                 <input type="text" id="login" class="fadeIn second" name="username" placeholder="Usuario">
                 <input type="text" id="password" class="fadeIn third" name="password" placeholder="Contraseña">
-                <input type="hidden" id="context"  name="context" value="{{context}}">
                 <input type="submit" class="fadeIn fourth" value="Log In">
                 </form>
                 <!-- Registro -->
                 <div id="formFooter">
-                <a class="underlineHover" href="#">¿No tienes cuenta? Regístrate</a>
+                <h1></h1>
+                <a class="underlineHover" href="#"> ¿No tienes cuenta? Regístrate</a>
             </div>
         </div>
     </div>
