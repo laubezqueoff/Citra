@@ -29,9 +29,6 @@ class Owner(models.Model):
 
 ## MODELOS DE TIENDA Y PRODUCTOS ############################################
 
-# Yo pondria unos tipos de tienda estandar y que el usuario elija el que mas se adapte
-# a su negocio, y lo mismo para los productos
-
 class ShopType(models.Model):
     name = models.CharField(max_length=40)
 
@@ -53,14 +50,15 @@ class Shop(models.Model):
 
 class Product(models.Model):
     name = models.CharField(max_length=20)
-    productType = models.CharField(max_length=20)
+    productType = models.ForeignKey(ProductType, on_delete=models.CASCADE)
     picture = models.ImageField(upload_to='products')
-    price = models.FloatField
+    price = models.FloatField()
     description = models.TextField(max_length=60)
     shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
 
 
 ## MODELOS DE SUSCRIPCION Y PROMOCIONES #####################################
+
 class SubscriptionType(models.Model):
     name = models.CharField(max_length=20)
 
@@ -79,17 +77,13 @@ class Subscription(models.Model):
 
 
 class Promotion(models.Model):
-    #promotionType = models.CharField(max_length=20)
     promotionType = models.ForeignKey(
         PromotionType, on_delete=models.SET_NULL, null=True)
     startDate = models.DateField()
     endDate = models.DateField()
     owner = models.ForeignKey(Owner, on_delete=models.CASCADE)
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-
-
-# Los tipos de suscripcion y promocion los dejo así de momento para implementarlos
-# mas adelante
 
 
 ## MODELOS DE RESERVAS Y REVIEWS ############################################
@@ -111,10 +105,6 @@ class Review(models.Model):
 
 
 ## MODELOS DE CHAT Y MENSAJES ###############################################
-
-# este modelo es lo que se me ocurre para diferenciar quien envió el mensaje
-# para ponerlos de distinto color/distinto lado de la pantalla
-
 
 class Chat(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
