@@ -22,4 +22,5 @@ urlpatterns = [
     path('populate/', populate.populate),
     path('login/', views.login),
     path('promotionproduct/', views.promotion_product),
+    path('promotionshop/', views.promotion_shop),
 ]

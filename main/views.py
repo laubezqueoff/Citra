@@ -1,6 +1,7 @@
 from main.models import Person, CustomUser, CustomAdmin, Owner, ShopType, ProductType, Shop, Product, SubscriptionType, PromotionType, Subscription, Promotion, Booking, Review, Chat, ChatMessage, Thread, ForumMessage
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 import requests
+from datetime import date
 
 
 def login(request):
@@ -27,7 +28,7 @@ def login(request):
         # Es importante pasar el context en todas las vistas.
         # Cambiar index.html por tu vista en tu método
 
-        return render(request, 'promote.html',{"context" : context})
+        return render(request, 'index.html',{"context" : context})
     else: #Si es un GET redirijimos a la vista de login
         return render(request, 'login.html')
 
@@ -134,12 +135,29 @@ def get_context(request):
 
 def promotion_product(request):
     if request.method == 'GET':
-        return render(request, 'promote.html')
+        return render(request, 'index.html') # redirección del botón
     product = Product.objects.get(id=1)
     person_id,rol,rol_id,is_active = get_context(request)
-    print(person_id)
-    promotion = Promotion.obj
-    person = Person.objects.get(username=username,password=password)        #Buscamos el usuario por su contraseña y nombre
-    rol_and_id = whoIsWho(person)
+    promotionType = PromotionType.objects.get(id=0) # semanal
+    shop = Shop.objects.filter(owner = rol_id)
+    tienda = shop[0]
+    owner = Owner.objects.get(person = person_id)
+    time = date.today()
+
+    promocion = Promotion.objects.create(owner= owner,shop=  None,startDate = time, endDate = time.replace(day=time.day+ 7),promotionType = promotionType, product = product)
+
     
-    update_context(person.id,rol_and_id[0],rol_and_id[1],True)
+def promotion_shop(request):
+    if request.method == 'GET':
+        return render(request, 'index.html') # redirección del botón
+    product = Product.objects.get(id=1)
+    person_id,rol,rol_id,is_active = get_context(request)
+    promotionType = PromotionType.objects.get(id=0) # semanal
+    shop = Shop.objects.filter(owner = rol_id)
+    tienda = shop[0]
+    owner = Owner.objects.get(person = person_id)
+    time = date.today()
+
+    promocion = Promotion.objects.create(owner= owner,shop =  tienda,startDate = time, endDate = time.replace(day=time.day+ 7),promotionType = promotionType, product = None)
+
+    
