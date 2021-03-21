@@ -1,0 +1,20 @@
+<html>
+    <style>
+        h1{text-align: center}
+        form{text-align: center}
+    </style>
+<head>
+<title>Readers</title>
+</head>
+<body>
+<header>
+
+<h1>Escribir reseña</h1>
+<form id='form' method='POST' action=''>
+{{form.as_p}}
+{% csrf_token %}
+<p><input type='submit' value='Confirm'/></p>
+</form>
+
+</body>
+</html>
