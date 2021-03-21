@@ -143,3 +143,23 @@ def promotion_product(request):
     rol_and_id = whoIsWho(person)
     
     update_context(person.id,rol_and_id[0],rol_and_id[1],True)
+
+
+def threads_list(request):
+    rol = get_context(request)[1]
+    if rol == "User":
+        threads = Thread.objects.all
+        return render(request, 'threads.html', {'threads':threads})
+
+def forumMessages_list(request):
+    rol,rol_id = get_context(request)[1:3]
+    if rol == "User":        
+        if request.method == 'POST':
+            text = request.POST['text']
+            threadId = request.POST['threadId']
+
+            ForumMessage.objects.create(text = text, date = date.today(), thread = Thread.objects.get(id=threadId), user = CustomUser.objects.get(id=rol_id))
+            
+        forumMessages = ForumMessage.objects.get(thread=threadId)
+        return render(request, 'thread.html', {'forumMessages':forumMessages})
+
