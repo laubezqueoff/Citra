@@ -22,4 +22,6 @@ urlpatterns = [
     path('populate/', populate.populate),
     path('login/', views.login),
     path('promotionproduct/', views.promotion_product),
+    path('shop/chat/<id_chat>', views.get_chat),
+
 ]
