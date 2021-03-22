@@ -2,6 +2,9 @@ from main.models import Person, CustomUser, CustomAdmin, Owner, ShopType, Produc
 from django.shortcuts import render, redirect, get_object_or_404
 #import requests
 import urllib.request
+from django.shortcuts import render, get_object_or_404, redirect
+import requests
+from main.forms import MessageForm
 
 
 def login(request):
@@ -164,3 +167,95 @@ def list_shop(request):
 def list_shop_details(request, id_shop):
     shop = get_object_or_404(Shop, pk=id_shop)
     return render(request, 'shopDetail.html', {'shop': shop})
+
+def get_chats_list(request):
+    ''' Muestra una lista de todos los chats que el usuario activo, sea user u owner, tenga. \n
+        POST    -> None \n
+        GET     -> Proporciona un listado de los chats del usuario/dueño
+    '''
+    person_id,rol,rol_id,is_active = get_context(request)
+    context = [person_id,rol,rol_id,is_active]
+
+    chats= []
+
+    if context.rol=='user':
+
+        chats= Chat.objects.filter(user=get_object_or_404(CustomUser, pk= context.person_id))
+    
+    elif context.rol=='owner':
+    
+        shops= Shop.objects.filter(owner= get_object_or_404(Owner, pk=context.person_id))
+    
+        for s in shops:
+    
+            chats.append(Chat.objects.filter(shop=s))
+    
+    return render(request, 'chats_list.html', {"context" : context, "chats" : chats})
+
+
+def get_chat(request, id_chat):
+    ''' Muesta los mensajes del chat y prepara el imputo para enviar mensajes.\n
+        POST    -> None \n
+        GET     -> Muestra los mensajes del chat, de las dos partes
+    '''
+    person_id,rol,rol_id,is_active= get_context(request)
+    context = [person_id,rol,rol_id,is_active]
+    chat= get_object_or_404(Chat, pk= id_chat) 
+    if request.method == 'POST':
+        form = MessageForm(data=request.POST)
+        if form.is_valid():
+            text = form.cleaned_data['text']
+            shop= chat.shop
+            isSendByUser= False
+            print(rol)
+            if rol== 'User':
+                isSendByUser=True
+            ChatMessage.objects.create(text=text, chat= chat, isSentByUser=isSendByUser).save()
+            return redirect('/shop/chat/'+str(chat.id))
+    # TODO: if para comprobar que el usuario forma parte de ese chat
+    chat_message = ChatMessage.objects.filter(chat=chat)
+    form = MessageForm()
+    return render(request, 'show_chat.html', {"context" : context, "messages" : chat_message, 'form': form})
+
+
+def get_chat_new(request, id_shop):#URL = '/shop/id_shop/chat'
+    ''' Muesta los mensajes del chat y prepara el imputo para enviar mensajes.\n
+        POST    -> Envia un mensaje al chat de la tienda \n
+        GET     -> Muestra los mensajes del chat, de las dos partes
+    '''
+
+    person_id,rol,rol_id,is_active= get_context(request)
+    context = [person_id,rol,rol_id,is_active]
+    shop=get_object_or_404(Shop, pk= id_shop)
+    chat=Chat.objects.filter(shop = shop)
+    if chat.exists:
+        return redirect('/shop/chat'+chat.id)
+    chat_message=[]
+    form = MessageForm()
+    form.cleaned_data['shop_id'] = id_shop
+    return render(request, 'show_chat.html', {"context" : context, "messages" : chat_message, 'form': form,'shop_id' : id_shop})
+
+
+def send_message(request,id_chat):
+    ''' Envia un mensaje al chat de usuario-tienda.\n
+        POST    -> Envia un mensaje al chat de la tienda \n
+        GET     -> None
+    '''
+    person_id,rol,rol_id,is_active= get_context(request)
+    context = [person_id,rol,rol_id,is_active]
+    
+    if request.method == 'POST':
+        
+        form = MessageForm(data=request.POST)
+        if form.is_valid():
+            chat= Chat.objects.filter(user= CustomUser.objects.filter(person=person_id),shop=shop)
+            if not chat.exists():
+                chat_id= Chat.objects.create(user= CustomUser.objects.filter(person=person_id),shop=shop).save().id
+                chat = get_object_or_404(Chat,pk=chat_id)
+            text = form.cleaned_data['text']
+            shop_id = form.cleaned_data['shop_id']
+            shop= get_object_or_404(Shop,pk=shop_id)
+            ChatMessage.objects.create(text=text, chat= chat, shop=shop).save()
+            return redirect('/shop/chat'+chat.id)
+    return render(request, 'Error.html', {'form': form})
+
