@@ -21,5 +21,6 @@ urlpatterns = [
     #path('admin/', admin.site.urls),
     path("", views.home, name="home"),
     path("", views.login, name="login"),
+    path("chat",views.chat, name="chat"),
     path("threads/", views.threads_list, name="threads")
 ]
