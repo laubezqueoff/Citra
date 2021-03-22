@@ -22,6 +22,7 @@ urlpatterns = [
     path('populate/', populate.populate),
     path('login/', views.login),
     path('promotionproduct/', views.promotion_product),
+    path('promotionshop/', views.promotion_shop),
     path('shops/', views.list_shop),
     path('shops/<id_shop>', views.list_shop_details),
     path('shop/chat/<id_chat>', views.get_chat),
