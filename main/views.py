@@ -8,3 +8,9 @@ def home(request):
 
 def login(request):
     return render(request,'login.html', {})
+
+def chat(request):
+    return render(request,'main/chat.html',{})
+  
+def threads_list(request):
+    return render(request,'main/threads.html', {})
