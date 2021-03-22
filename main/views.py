@@ -1,8 +1,8 @@
 from main.models import Person, CustomUser, CustomAdmin, Owner, ShopType, ProductType, Shop, Product, SubscriptionType, PromotionType, Subscription, Promotion, Booking, Review, Chat, ChatMessage, Thread, ForumMessage
 import requests
 from datetime import date
-from django.shortcuts import render, get_object_or_404, redirect
-import requests
+from django.shortcuts import render, redirect, get_object_or_404
+import urllib.request
 from main.forms import MessageForm
 
 
@@ -47,9 +47,9 @@ def logout(request):
     if request.method == 'GET':  # Si es un GET redirijimos a la vista de index con el context actualizado
         try:
 
-           person_id, rol, rol_id, is_active = get_context()
+            person_id, rol, rol_id, is_active = get_context()
 
-           update_context(person_id, rol, rol_id, False)
+            update_context(person_id, rol, rol_id, False)
 
         except Exception as e:
             print(e)
@@ -172,6 +172,15 @@ def promotion_shop(request):
     promocion = Promotion.objects.create(owner= owner,shop =  tienda,startDate = time, endDate = time.replace(day=time.day+ 7),promotionType = promotionType, product = None)
 
 
+
+def list_shop(request):
+    shops = Shop.objects.all()
+    return render(request, 'shops.html', {'shops': shops})
+
+
+def list_shop_details(request, id_shop):
+    shop = get_object_or_404(Shop, pk=id_shop)
+    return render(request, 'shopDetail.html', {'shop': shop})
 
 def get_chats_list(request):
     ''' Muestra una lista de todos los chats que el usuario activo, sea user u owner, tenga. \n
