@@ -8,3 +8,6 @@ def home(request):
 
 def login(request):
     return render(request,'main/login.html', {})
+
+def chat(request):
+    return render(request,'main/chat.html',{})
