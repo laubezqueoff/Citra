@@ -157,7 +157,25 @@ def promotion_product(request):
 
     promocion = Promotion.objects.create(owner= owner,shop=  None,startDate = time, endDate = time.replace(day=time.day+ 7),promotionType = promotionType, product = product)
 
-    
+
+def threads_list(request):
+    rol = get_context(request)[1]
+    if rol == "User":
+        threads = Thread.objects.all
+        return render(request, 'threads.html', {'threads':threads})
+
+def forumMessages_list(request):
+    rol,rol_id = get_context(request)[1:3]
+    if rol == "User":        
+        if request.method == 'POST':
+            text = request.POST['text']
+            threadId = request.POST['threadId']
+
+            ForumMessage.objects.create(text = text, date = date.today(), thread = Thread.objects.get(id=threadId), user = CustomUser.objects.get(id=rol_id))
+            
+        forumMessages = ForumMessage.objects.get(thread=threadId)
+        return render(request, 'thread.html', {'forumMessages':forumMessages})
+
 def promotion_shop(request):
     if request.method == 'GET':
         return render(request, 'index.html') # redirección del botón
@@ -272,4 +290,5 @@ def send_message(request,id_chat):
             ChatMessage.objects.create(text=text, chat= chat, shop=shop).save()
             return redirect('/shop/chat'+chat.id)
     return render(request, 'Error.html', {'form': form})
+
 
