@@ -15,15 +15,20 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from main import views
+from main import populate,views
 from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('populate/', populate.populate),
     path("", views.home, name="home"),
     path("chat",views.chat, name="chat"),
     path("threads/", views.threads_list, name="threads"),
-    path("login", views.login, name="login")
+    path("login", views.login, name="login"),
+    path('promotionproduct/', views.promotion_product),
+    path('promotionshop/', views.promotion_shop),
+    path('shops/', views.list_shop),
+    path('shops/<id_shop>', views.list_shop_details),
+    path('shop/chat/<id_chat>', views.get_chat),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
