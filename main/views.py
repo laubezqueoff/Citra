@@ -4,10 +4,10 @@ from django.shortcuts import render
 
 
 def home(request):
-    return render(request,'main/home.html', {})
+    return render(request,'home.html', {})
 
 def login(request):
-    return render(request,'main/login.html', {})
+    return render(request,'login.html', {})
 
 def chat(request):
     return render(request,'main/chat.html',{})
