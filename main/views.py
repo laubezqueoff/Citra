@@ -11,3 +11,6 @@ def login(request):
 
 def chat(request):
     return render(request,'main/chat.html',{})
+  
+def threads_list(request):
+    return render(request,'main/threads.html', {})
