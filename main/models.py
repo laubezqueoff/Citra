@@ -82,8 +82,8 @@ class Promotion(models.Model):
     startDate = models.DateField()
     endDate = models.DateField()
     owner = models.ForeignKey(Owner, on_delete=models.CASCADE)
-    shop = models.ForeignKey(Shop, on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    shop = models.ForeignKey(Shop, on_delete=models.CASCADE, null=True)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE, null=True)
 
 
 ## MODELOS DE RESERVAS Y REVIEWS ############################################
