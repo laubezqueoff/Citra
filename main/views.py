@@ -6,6 +6,8 @@ import urllib.request
 from main.forms import MessageForm
 
 
+
+
 def login(request):
     ''' Logea una persona en la aplicación.\n
         POST    -> Lleva la inicio con el contexto actualizado \n
@@ -47,14 +49,16 @@ def logout(request):
     if request.method == 'GET':  # Si es un GET redirijimos a la vista de index con el context actualizado
         try:
 
-            person_id, rol, rol_id, is_active = get_context()
+            person_id, rol, rol_id, is_active = get_context(request)
 
-            update_context(person_id, rol, rol_id, False)
+            update_context(request, person_id, rol, rol_id, False)
+            delete_context(request)
+
 
         except Exception as e:
             print(e)
 
-        return render(request, 'index.html')
+        return render(request, 'home.html')
 
 
 def whoIsWho(person):
@@ -112,7 +116,7 @@ def update_context(request, person_id, rol, rol_id, is_active):
     return res
 
 
-def delete_context():
+def delete_context(request):
     ''' Elimina el context\n
         In: None \n
         Out: Bool. True si todo va bien, False si algo falla
@@ -293,4 +297,9 @@ def send_message(request,id_chat):
 
 
 def home(request):
-    return render(request,'home.html', {})
+    try:
+        person_id, rol, rol_id, is_active = get_context(request)
+        context = [person_id, rol, rol_id, is_active]
+        return render(request, 'home.html',{"context" : context})
+    except:
+        return render(request, 'home.html')

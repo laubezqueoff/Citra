@@ -35,23 +35,23 @@ Login / Citra
         </div>
         <div class="col-lg-5 d-flex flex-column align-items-end">
             <div class="px-lg-5 pt-lg-4 pb-lg-3 p-4 w-100 mb-auto">
-                <img src="{% static 'images/CitraBolsa.png' %}" class="img-fluid image-p">
             </div>
             <div class="px-lg-5 py-lg-4 p-4 w-100 align-self-center">
                 <h1 class="mb-4 fw-bold">Bienvenido a Citra</h1>
-                <form method="post">
+                <form method="POST">{% csrf_token %}
                     <div class="mb-4">
-                        <label for="exampleInputEmail1" class="form-label fw-bold">Email</label>
-                        <input type="text" class="form-control " placeholder="Introduce el Email" id="exampleInputEmail1" aria-describedby="emailHelp">
+                        <label for="exampleInputEmail1" class="form-label fw-bold">Usuario</label>
+                        <input type="text" class="form-control " placeholder="Introduce el Email" id="username" name="username">
                     </div>
                     
                     <div class="mb-4">
                         <label for="exampleInputPassword1" class="form-label fw-bold">Contraseña</label>
-                        <input type="password" class="form-control mb-2" placeholder="Introduce la contraseña" id="exampleInputPassword1">
+                        <input type="password" class="form-control mb-2" placeholder="Introduce la contraseña" id="password" name="password">
                         <a href="#" id="emailHelp" class="form-text text-muted text-decoration-none">¿Has olvidado la contraseña?</a>
                     </div>
 
                     <button type="submit" class="btn btn-dark w-100 fw-bold">Iniciar sesión</button>
+                    
                 </form>
             </div>
             <div class="text-center px-lg-5 pt-lg-4 pb-lg-1 p-4 w-100 mt-auto">
