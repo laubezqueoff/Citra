@@ -8,3 +8,6 @@ def home(request):
 
 def login(request):
     return render(request,'main/login.html', {})
+
+def threads_list(request):
+    return render(request,'main/threads.html', {})

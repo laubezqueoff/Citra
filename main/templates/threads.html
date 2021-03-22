@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Foro / Citra
+{% endblock %}
+
+
+{% block contenido %}
+<h1 style="margin:0 auto;">Lista de hilos:</h1>
+<ul class="navbar-nav me-auto mb-2 mb-lg-0" style="margin-left: 50px; ">
+    {% for row in threads %}
+            <li style="margin-top:30px; border:bottom; font-size:20px;">
+                <a style="text-decoration: none; font-color:#0000!important;" href="{{row.id}}/">{{row.name}}</a>
+            </li>	    
+	{% endfor %}
+</ul>
+{% endblock %}
