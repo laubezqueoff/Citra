@@ -250,7 +250,7 @@ def get_chat(request, id_chat):
     return render(request, 'show_chat.html', {"context" : context, "messages" : chat_message, 'form': form})
 
 
-def get_chat_new(request, id_shop):#URL = '/shop/id_shop/chat'
+def get_chat_new(request, id_shop):
     ''' Muesta los mensajes del chat y prepara el imputo para enviar mensajes.\n
         POST    -> Envia un mensaje al chat de la tienda \n
         GET     -> Muestra los mensajes del chat, de las dos partes
