@@ -1,7 +1,9 @@
 from main.models import Person, CustomUser, CustomAdmin, Owner, ShopType, ProductType, Shop, Product, SubscriptionType, PromotionType, Subscription, Promotion, Booking, Review, Chat, ChatMessage, Thread, ForumMessage
-from django.shortcuts import render, redirect
 import requests
 from datetime import date
+from django.shortcuts import render, get_object_or_404, redirect
+import requests
+from main.forms import MessageForm
 
 
 def login(request):
@@ -9,22 +11,26 @@ def login(request):
         POST    -> Lleva la inicio con el contexto actualizado \n
         GET     -> Lleva al formulario de login
     '''
-    if request.method == 'POST': #Si es un POST redirijimos a la vista de index con el context actualizado
+    if request.method == 'POST':  # Si es un POST redirijimos a la vista de index con el context actualizado
         try:
-            username = request.POST['username']             #Sacamos el valor de la propiedad 'name' del formulario
-            password = request.POST['password']         #Sacamos el valor de la propiedad 'password' del formulario
+            # Sacamos el valor de la propiedad 'name' del formulario
+            username = request.POST['username']
+            # Sacamos el valor de la propiedad 'password' del formulario
+            password = request.POST['password']
 
-            person = Person.objects.get(username=username,password=password)        #Buscamos el usuario por su contraseña y nombre
+            # Buscamos el usuario por su contraseña y nombre
+            person = Person.objects.get(username=username, password=password)
             rol_and_id = whoIsWho(person)
-            
-            update_context(request,person.id,rol_and_id[0],rol_and_id[1],True)
+
+            update_context(request, person.id,
+                           rol_and_id[0], rol_and_id[1], True)
 
         except Exception as e:
             print(e)
-        
-        person_id,rol,rol_id,is_active= get_context(request)
-        context = [person_id,rol,rol_id,is_active]
-        
+
+        person_id, rol, rol_id, is_active = get_context(request)
+        context = [person_id, rol, rol_id, is_active]
+
         # Es importante pasar el context en todas las vistas.
         # Cambiar index.html por tu vista en tu método
 
@@ -32,23 +38,25 @@ def login(request):
     else: #Si es un GET redirijimos a la vista de login
         return render(request, 'login.html')
 
+
 def logout(request):
     ''' Deslogea una persona en la aplicación.\n
         POST    -> None \n
         GET     -> Lleva al formulario de login
     '''
-    if request.method == 'GET': #Si es un GET redirijimos a la vista de index con el context actualizado
+    if request.method == 'GET':  # Si es un GET redirijimos a la vista de index con el context actualizado
         try:
-            
-           person_id,rol,rol_id,is_active = get_context()
 
-           update_context(person_id,rol,rol_id,False)
+           person_id, rol, rol_id, is_active = get_context()
+
+           update_context(person_id, rol, rol_id, False)
 
         except Exception as e:
             print(e)
-        
+
         return render(request, 'index.html')
-        
+
+
 def whoIsWho(person):
     ''' Identifica el rol e id de una persona\n
         In: Person\n
@@ -58,7 +66,7 @@ def whoIsWho(person):
     try:
         cu = CustomUser.objects.get(person=person).id
         continue_searching = False
-        res=["User",cu]
+        res = ["User", cu]
     except:
         continue_searching = True
     print("==========================================================")
@@ -66,20 +74,21 @@ def whoIsWho(person):
     if continue_searching:
         try:
             ca = CustomAdmin.objects.get(person=person).id
-            res=["Admin",ca]
+            res = ["Admin", ca]
         except:
             continue_searching = True
-    
+
     if continue_searching:
         try:
             o = Owner.objects.get(person=person).id
-            res=["Owner",o]
+            res = ["Owner", o]
         except:
             continue_searching = True
-    
+
     return res
 
-def update_context(request,person_id,rol,rol_id,is_active):
+
+def update_context(request, person_id, rol, rol_id, is_active):
     ''' Actualiza el context en función de los parámetros de entrada\n
         In: person_id (id de la persona), rol (String, puede ser Owner,Admin o User),rol_id (id de la persona en su rol), is_active (se encuentra usando la web)\n
         Out: Bool. True si todo va bien, False si algo falla
@@ -89,7 +98,7 @@ def update_context(request,person_id,rol,rol_id,is_active):
     print(rol)
     print(rol_id)
     print(is_active)
-    
+
     try:
         request.session['person_id'] = str(person_id)
         request.session['rol'] = str(rol)
@@ -97,10 +106,11 @@ def update_context(request,person_id,rol,rol_id,is_active):
         request.session['is_active'] = str(is_active)
     except:
         res = False
-    
+
     print(res)
 
     return res
+
 
 def delete_context():
     ''' Elimina el context\n
@@ -120,17 +130,18 @@ def delete_context():
 
     return res
 
+
 def get_context(request):
     ''' Actualiza el context en función de los parámetros de entrada\n
         In: None \n
         Out: person_id (id de la persona), rol (String, puede ser Owner,Admin o User),rol_id (id de la persona en su rol), is_active (se encuentra usando la web)
     '''
-    person_id   =   request.session['person_id'] 
-    rol         =   request.session['rol']
-    rol_id      =   request.session['rol_id']
-    is_active   =   request.session['is_active']
+    person_id = request.session['person_id']
+    rol = request.session['rol']
+    rol_id = request.session['rol_id']
+    is_active = request.session['is_active']
 
-    return person_id,rol,rol_id,is_active
+    return person_id, rol, rol_id, is_active
 
 
 def promotion_product(request):
@@ -160,4 +171,96 @@ def promotion_shop(request):
 
     promocion = Promotion.objects.create(owner= owner,shop =  tienda,startDate = time, endDate = time.replace(day=time.day+ 7),promotionType = promotionType, product = None)
 
+
+
+def get_chats_list(request):
+    ''' Muestra una lista de todos los chats que el usuario activo, sea user u owner, tenga. \n
+        POST    -> None \n
+        GET     -> Proporciona un listado de los chats del usuario/dueño
+    '''
+    person_id,rol,rol_id,is_active = get_context(request)
+    context = [person_id,rol,rol_id,is_active]
+
+    chats= []
+
+    if context.rol=='user':
+
+        chats= Chat.objects.filter(user=get_object_or_404(CustomUser, pk= context.person_id))
     
+    elif context.rol=='owner':
+    
+        shops= Shop.objects.filter(owner= get_object_or_404(Owner, pk=context.person_id))
+    
+        for s in shops:
+    
+            chats.append(Chat.objects.filter(shop=s))
+    
+    return render(request, 'chats_list.html', {"context" : context, "chats" : chats})
+
+
+def get_chat(request, id_chat):
+    ''' Muesta los mensajes del chat y prepara el imputo para enviar mensajes.\n
+        POST    -> None \n
+        GET     -> Muestra los mensajes del chat, de las dos partes
+    '''
+    person_id,rol,rol_id,is_active= get_context(request)
+    context = [person_id,rol,rol_id,is_active]
+    chat= get_object_or_404(Chat, pk= id_chat) 
+    if request.method == 'POST':
+        form = MessageForm(data=request.POST)
+        if form.is_valid():
+            text = form.cleaned_data['text']
+            shop= chat.shop
+            isSendByUser= False
+            print(rol)
+            if rol== 'User':
+                isSendByUser=True
+            ChatMessage.objects.create(text=text, chat= chat, isSentByUser=isSendByUser).save()
+            return redirect('/shop/chat/'+str(chat.id))
+    # TODO: if para comprobar que el usuario forma parte de ese chat
+    chat_message = ChatMessage.objects.filter(chat=chat)
+    form = MessageForm()
+    return render(request, 'show_chat.html', {"context" : context, "messages" : chat_message, 'form': form})
+
+
+def get_chat_new(request, id_shop):#URL = '/shop/id_shop/chat'
+    ''' Muesta los mensajes del chat y prepara el imputo para enviar mensajes.\n
+        POST    -> Envia un mensaje al chat de la tienda \n
+        GET     -> Muestra los mensajes del chat, de las dos partes
+    '''
+
+    person_id,rol,rol_id,is_active= get_context(request)
+    context = [person_id,rol,rol_id,is_active]
+    shop=get_object_or_404(Shop, pk= id_shop)
+    chat=Chat.objects.filter(shop = shop)
+    if chat.exists:
+        return redirect('/shop/chat'+chat.id)
+    chat_message=[]
+    form = MessageForm()
+    form.cleaned_data['shop_id'] = id_shop
+    return render(request, 'show_chat.html', {"context" : context, "messages" : chat_message, 'form': form,'shop_id' : id_shop})
+
+
+def send_message(request,id_chat):
+    ''' Envia un mensaje al chat de usuario-tienda.\n
+        POST    -> Envia un mensaje al chat de la tienda \n
+        GET     -> None
+    '''
+    person_id,rol,rol_id,is_active= get_context(request)
+    context = [person_id,rol,rol_id,is_active]
+    
+    if request.method == 'POST':
+        
+        form = MessageForm(data=request.POST)
+        if form.is_valid():
+            chat= Chat.objects.filter(user= CustomUser.objects.filter(person=person_id),shop=shop)
+            if not chat.exists():
+                chat_id= Chat.objects.create(user= CustomUser.objects.filter(person=person_id),shop=shop).save().id
+                chat = get_object_or_404(Chat,pk=chat_id)
+            text = form.cleaned_data['text']
+            shop_id = form.cleaned_data['shop_id']
+            shop= get_object_or_404(Shop,pk=shop_id)
+            ChatMessage.objects.create(text=text, chat= chat, shop=shop).save()
+            return redirect('/shop/chat'+chat.id)
+    return render(request, 'Error.html', {'form': form})
+
