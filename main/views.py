@@ -10,7 +10,7 @@ def login(request):
     return render(request,'login.html', {})
 
 def chat(request):
-    return render(request,'main/chat.html',{})
+    return render(request,'chat.html',{})
   
 def threads_list(request):
-    return render(request,'main/threads.html', {})
+    return render(request,'threads.html', {})
