@@ -1,42 +1,51 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
 Chat / Citra
 {% endblock %}
+
 {% block contenido %}
-    <h2>Pregunta a la tienda!</h2>
-    <div id="chat_section">
+    <div class="container">
+        <h2>Pregunta a la tienda!</h2>
+		
 
-    <!--{% if user.is_authenticated %}-->
-    <form method="POST">
-        <div class="form-group">
-        <input  type="submit" value='Enviar'>Haz un comentario</input>
+    {% for m in messages %}
+
+        {% if m.isSentByUser %}
+                <div class="container user">
+                    <img src="/static/images/user.png"  class="right" style="float:left"> 
+                    <p>{{m.text}}</p>
+                    <span class="time-right">8:55 AM, Today</span>                 
+                                       
+                </div>        
+        {% else %}
+                <div class="container shop">                    
+                    <img src="/static/images/shop.png" alt="Avatar" style="float:right">                                           
+                    <p style="float:right">{{m.text}}</p>
+                    <span class="time-left" style="float:down">8:40 AM, Today</span>                  
+                </div>
+        {% endif %}
+    {% empty %}
+        <h2>Pregunta a la tienda!</h2>
+        <h3>No hay mensajes</h3>
+    {% endfor %}
+            <div class="card-footer">
+                <div class="input-group">
+                <!--<form method="POST" id="form" action="">-->
+                {% csrf_token %}
+
+                    <input type="text" class="form-control form-control-lg"  placeholder="Escribe..." />
+                    <!--{{form.as_p}} -->
+                        
+                    <input type='submit' class="btn btn-outline-dark" value='Enviar' style="float:left">
+                        
+                        
+                <!--</form>-->        
+                </div>
+            </div>
         </div>
-    </form>
-    <!--{% else %}-->
-    <a class="btn btn-outline-info" href="{% url 'login' %}?next={{request.path}}">Inicia sesión para hacer un comentario!</a><br>
-    <!--{% endif %}-->
-
-    <!--{% if ChatMessages %}-->
-    <ul>
-        <!--{% for text in ChatMessages %}-->
-        <li>           
-        <div>
-            <span>
-            <strong class="text-info">{{ message.user }} </strong>
-            </span>
-            <p>
-            </p>
-        </div>
-        </li>
-        <!--{% endfor %}-->
-    </ul>
-    <!--{% else %}-->
-        <strong class="text-secondary">Manda un mensaje</strong>
-    <!--{% endif %}-->
-
     </div>
 
-
-
+ 
 {% endblock %}

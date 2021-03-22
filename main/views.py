@@ -251,7 +251,7 @@ def get_chat(request, id_chat):
     # TODO: if para comprobar que el usuario forma parte de ese chat
     chat_message = ChatMessage.objects.filter(chat=chat)
     form = MessageForm()
-    return render(request, 'show_chat.html', {"context" : context, "messages" : chat_message, 'form': form})
+    return render(request, 'chat.html', {"context" : context, "messages" : chat_message, 'form': form})
 
 
 def get_chat_new(request, id_shop):
