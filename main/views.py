@@ -34,7 +34,7 @@ def login(request):
         # Es importante pasar el context en todas las vistas.
         # Cambiar index.html por tu vista en tu método
 
-        return render(request, 'index.html',{"context" : context})
+        return render(request, 'home.html',{"context" : context})
     else: #Si es un GET redirijimos a la vista de login
         return render(request, 'login.html')
 
@@ -292,17 +292,5 @@ def send_message(request,id_chat):
     return render(request, 'Error.html', {'form': form})
 
 
-# Create your views here.
-
-
 def home(request):
     return render(request,'home.html', {})
-
-def login(request):
-    return render(request,'login.html', {})
-
-def chat(request):
-    return render(request,'chat.html',{})
-
-def threads_list(request):
-    return render(request,'threads.html', {})
