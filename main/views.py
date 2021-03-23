@@ -13,30 +13,34 @@ def login(request):
         POST    -> Lleva la inicio con el contexto actualizado \n
         GET     -> Lleva al formulario de login
     '''
-    if request.method == 'POST':  # Si es un POST redirijimos a la vista de index con el context actualizado
+    #msg_success = "Bienvenido a la aplicación"
+    msg_error  = "El nombre y la contraseña no coinciden"
+
+
+    if request.method == 'POST': #Si es un POST redirijimos a la vista de index con el context actualizado
         try:
-            # Sacamos el valor de la propiedad 'name' del formulario
-            username = request.POST['username']
-            # Sacamos el valor de la propiedad 'password' del formulario
-            password = request.POST['password']
+            username = request.POST['username']             #Sacamos el valor de la propiedad 'name' del formulario
+            password = request.POST['password']             #Sacamos el valor de la propiedad 'password' del formulario
 
-            # Buscamos el usuario por su contraseña y nombre
-            person = Person.objects.get(username=username, password=password)
+            person = Person.objects.get(username=username,password=password)        #Buscamos el usuario por su contraseña y nombre
             rol_and_id = whoIsWho(person)
+            
+            update_context(request,person.id,rol_and_id[0],rol_and_id[1],True)
+            #msg = msg_success
 
-            update_context(request, person.id,
-                           rol_and_id[0], rol_and_id[1], True)
+            person_id,rol,rol_id,is_active = get_context(request)
+            context = [person_id,rol,rol_id,is_active]
 
-        except Exception as e:
-            print(e)
+            return render(request, 'home.html',{"context" : context})
 
-        person_id, rol, rol_id, is_active = get_context(request)
-        context = [person_id, rol, rol_id, is_active]
+        except:
+            # Es importante pasar el context en todas las vistas.
+            # Cambiar index.html por tu vista en tu método
+            msg = msg_error
+            return render(request, 'login.html',{"msg":msg})
+         
 
-        # Es importante pasar el context en todas las vistas.
-        # Cambiar index.html por tu vista en tu método
 
-        return render(request, 'home.html',{"context" : context})
     else: #Si es un GET redirijimos a la vista de login
         return render(request, 'login.html')
 
