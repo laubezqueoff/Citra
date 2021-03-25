@@ -1,1 +1,1 @@
-web: python 
+web: sh -c 'cd doc && cd decide && gunicorn citra.wsgi --log-file -'

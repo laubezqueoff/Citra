@@ -7,3 +7,4 @@ requests
 django-filter
 django-nose
 django_heroku
+gunicorn
