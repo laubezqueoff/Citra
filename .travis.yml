@@ -6,3 +6,10 @@ install:
 - pip install codacy-coverage
 script:
 - python -m unittest
+deploy:
+  provider: heroku
+  app: citra-ispp
+  strategy: git
+  api_key: $HEROKU_AUTH_TOKEN
+  on:
+    all_branches: true
