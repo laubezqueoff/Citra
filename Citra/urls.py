@@ -31,4 +31,6 @@ urlpatterns = [
     path('shops/', views.list_shop),
     path('shops/<id_shop>', views.list_shop_details),
     path('shop/chat/<id_chat>', views.get_chat),
+    path('error/', views.error),
+    path('forbidden/', views.forbidden),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
