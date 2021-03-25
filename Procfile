@@ -1,1 +1,1 @@
-web: sh -c 'cd doc && cd decide && gunicorn citra.wsgi --log-file -'
+web: sh -c 'cd doc && cd Citra && gunicorn citra.wsgi --log-file -'
