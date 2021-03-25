@@ -4,6 +4,7 @@ from datetime import date
 from django.shortcuts import render, redirect, get_object_or_404
 import urllib.request
 from main.forms import MessageForm
+from datetime import timedelta
 
 
 
@@ -180,19 +181,21 @@ def forumMessages_list(request):
         forumMessages = ForumMessage.objects.get(thread=threadId)
         return render(request, 'thread.html', {'forumMessages':forumMessages})
 
-def promotion_shop(request):
-    if request.method == 'GET':
-        return render(request, 'index.html') # redirección del botón
-    product = Product.objects.get(id=1)
+def promotion_shop(request, id_shop):
+
+    
+    shop = get_object_or_404(Shop, pk=id_shop) 
+
     person_id,rol,rol_id,is_active = get_context(request)
-    promotionType = PromotionType.objects.get(id=0) # semanal
-    shop = Shop.objects.filter(owner = rol_id)
-    tienda = shop[0]
+    promotionType = PromotionType.objects.get(id=0) # semanal HABRIA QUE MODIFICAR ESTO PARA QUE SE SELECCIONE EL TIPO DE LA PRMOCION
     owner = Owner.objects.get(person = person_id)
     time = date.today()
 
-    promocion = Promotion.objects.create(owner= owner,shop =  tienda,startDate = time, endDate = time.replace(day=time.day+ 7),promotionType = promotionType, product = None)
+    endtime = (time + timedelta(days=7))
+    
 
+    promocion = Promotion.objects.create(owner= owner,shop =  shop,startDate = time, endDate = endtime,promotionType = promotionType, product = None)
+    return render(request, 'promotionshop.html', {'promocion':promocion})
 
 
 def list_shop(request):
