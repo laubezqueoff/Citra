@@ -26,7 +26,7 @@ urlpatterns = [
     path("threads/", views.threads_list, name="threads"),
     path("login/", views.login, name="login"),
     path("logout/", views.logout, name="logout"),
-    path('product/promotionproduct/', views.promotion_product),
+    path('product/<id_product>/promotionproduct', views.promotion_product, name="promotion_product"),
     path('shops/<id_shop>/promotionshop', views.promotion_shop, name="promotion_shop"),
     path('shops/', views.list_shop),
     path('shops/<id_shop>', views.list_shop_details),
