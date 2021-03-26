@@ -29,7 +29,7 @@ APIS = {
 
 
 
-django_heroku.settings(locals())
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -45,6 +45,7 @@ SECRET_KEY = '=%5ay3n(@vm@7r2ir(mi%z_*12yhax016lw%cgl$b2(i*cm^-u'
 DEBUG = True
 
 ALLOWED_HOSTS = []
+
 
 
 # Application definition
@@ -145,10 +146,12 @@ MEDIA_ROOT = os.path.join(BASE_DIR,'media')
 
 STATIC_ROOT = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'static-only')
 
-STATICFILES_DIRS = (
-    os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'static'),
-)
+#STATICFILES_DIRS = (
+#    os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'static'),
+#)
 
-TEMPLATE_DIRS = (
-    os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'templates'),
-)
+# TEMPLATE_DIRS = (
+#     os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static', 'templates'),
+# )
+
+django_heroku.settings(locals())
