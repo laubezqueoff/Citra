@@ -8,6 +8,7 @@ script:
 - cd Citra
 - cp travis_local_settings.py local_settings.py
 deploy:
+  buildpack: python
   provider: heroku
   app: citra-ispp
   strategy: git
