@@ -8,3 +8,4 @@ django-filter
 django-nose
 django_heroku
 gunicorn
+python-3.7.2
