@@ -5,11 +5,10 @@ install:
 - pip install -r requirements.txt
 - pip install codacy-coverage
 script:
-- python -m unittest
+- cd Citra
+- cp travis_local_settings.py local_settings.py
 deploy:
   provider: heroku
   app: citra-ispp
   strategy: git
   api_key: $HEROKU_AUTH_TOKEN
-  on:
-    all_branches: true
