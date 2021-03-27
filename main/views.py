@@ -308,5 +308,8 @@ def home(request):
 def error(request):
     return render(request, 'error.html')
 
+def chat_list(request):
+    return render(request, 'chatList.html')    
+
 def forbidden(request):
     return render(request, 'prohibido.html')
