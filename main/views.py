@@ -200,9 +200,9 @@ def list_shop(request):
     return render(request, 'shops.html', {'shops': shops})
 
 
-def list_shop_details(request, id_shop):
+def shop_details(request, id_shop):
     shop = get_object_or_404(Shop, pk=id_shop)
-    return render(request, 'shopDetail.html', {'shop': shop})
+    return render(request, 'shop_detail.html', {'shop': shop})
 
 def get_chats_list(request):
     ''' Muestra una lista de todos los chats que el usuario activo, sea user u owner, tenga. \n
