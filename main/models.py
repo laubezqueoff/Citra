@@ -115,6 +115,7 @@ class ChatMessage(models.Model):
     text = models.TextField(max_length=60)
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
     isSentByUser = models.BooleanField()
+    date = models.DateField(null=True)
 
 
 ## MODELOS DE FORO Y MENSAJES ###############################################
