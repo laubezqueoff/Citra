@@ -4,7 +4,8 @@ from datetime import date
 from django.shortcuts import render, redirect, get_object_or_404
 import urllib.request
 from main.forms import MessageForm
-
+import json
+from django.http import JsonResponse
 
 
 
@@ -202,7 +203,16 @@ def list_shop(request):
 
 def list_shop_details(request, id_shop):
     shop = get_object_or_404(Shop, pk=id_shop)
-    return render(request, 'shopDetail.html', {'shop': shop})
+    products = Product.objects.filter(shop=shop)
+    try:
+        person_id, rol, rol_id, is_active = get_context(request)
+        context = [person_id, rol, rol_id, is_active]
+    except:
+        person_id = 0
+        rol = 'User no registrado'
+        context = [person_id, rol]
+
+    return render(request, 'shopDetail.html', {'shop': shop, 'products': products, 'context': context})
 
 def get_chats_list(request):
     ''' Muestra una lista de todos los chats que el usuario activo, sea user u owner, tenga. \n
@@ -304,6 +314,59 @@ def home(request):
     except:
         return render(request, 'home.html')
 
+def booking(request):
+    try:
+        person_id, rol, rol_id, is_active = get_context(request)
+        context = [person_id, rol, rol_id, is_active]
+        user = CustomUser.objects.get(id=person_id)
+        for reserva in json.loads(request.POST.get('key_1_string')):
+            product = Product.objects.get(id=reserva['id'])
+            Booking.objects.create(startDate=date.today(),endDate=date.today(), product=product,title='Prueba',quantity=reserva['cantidad'], isAccepted=False, user=user)
+
+        data = {
+            'url': "/bookingsuser/"
+        }
+        return JsonResponse(data)
+    except:
+        data = {
+            'url': "/prohibido/"
+        }
+        return JsonResponse(data)
+
+        
+
+def list_booking_user(request):
+    try:
+        person_id, rol, rol_id, is_active = get_context(request)
+        context = [person_id, rol, rol_id, is_active]
+        user = CustomUser.objects.get(id=person_id)
+        bookings = Booking.objects.filter(user=user).filter(isAccepted=False)
+        return render(request, 'bookingsuser.html', {'bookings': bookings})
+    except:
+        return render(request, 'prohibido.html')
+
+def list_booking_owner(request):
+    try:
+        person_id, rol, rol_id, is_active = get_context(request)
+        context = [person_id, rol, rol_id, is_active]
+        owner = Owner.objects.get(id=person_id)
+        bookings = Booking.objects.filter(isAccepted=False)
+        reservas = []
+        for book in bookings:
+            kk = book.product.shop.owner.id
+            kk2 = owner.id
+            if book.product.shop.owner.id == owner.id:
+                reservas.append(book)
+        return render(request, 'bookingsowner.html', {'bookings': reservas})
+    except:
+        return render(request, 'prohibido.html')
+
+def accept_booking(request):
+    booking = Booking.objects.filter(id=request.POST.get('id')).update(isAccepted=True)
+    data = {
+            'url': "/bookingsowner/"
+        }
+    return JsonResponse(data)
 
 def error(request):
     return render(request, 'error.html')

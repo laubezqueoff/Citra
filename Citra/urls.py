@@ -29,8 +29,12 @@ urlpatterns = [
     path('promotionproduct/', views.promotion_product),
     path('promotionshop/', views.promotion_shop),
     path('shops/', views.list_shop),
+    path('bookingsuser/', views.list_booking_user),
+    path('bookingsowner/', views.list_booking_owner),
+    path('bookingsowner/acceptbookings/', views.accept_booking),
     path('shops/<id_shop>', views.list_shop_details),
     path('shop/chat/<id_chat>', views.get_chat),
+    path('shops/booking/', views.booking),
     path('error/', views.error),
     path('forbidden/', views.forbidden),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

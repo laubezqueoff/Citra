@@ -91,8 +91,11 @@ class Promotion(models.Model):
 class Booking(models.Model):
     startDate = models.DateField()
     endDate = models.DateField()
-    description = models.CharField(max_length=20)
     title = models.CharField(max_length=20)
+    quantity = models.IntegerField()
+    isAccepted = models.BooleanField()
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 
 class Review(models.Model):
