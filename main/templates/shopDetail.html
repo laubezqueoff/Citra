@@ -8,8 +8,13 @@
     <b>{{shop.address}}</b>
     </br>
     <b>{{shop.id}}</b>
-    <button onclick="location.href='{% url 'promotion_shop' shop.id %}'">
+    </br>
+    <button onclick="location.href='{% url 'promotion_week_shop' shop.id %}'">
     Promociona tu tienda (semanal)
+    </button>
+    </br>
+    <button onclick="location.href='{% url 'promotion_month_shop' shop.id %}'">
+    Promociona tu tienda (mensual)
     </button>
 
 </body>
