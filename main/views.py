@@ -199,7 +199,10 @@ def list_shop(request):
     shops = Shop.objects.all()
     return render(request, 'shops.html', {'shops': shops})
 
-
+def list_bookings(request):
+    bookings = Booking.objects.all()
+    return render(request, 'booking_list.html', {'bookings': bookings})
+    
 def list_shop_details(request, id_shop):
     shop = get_object_or_404(Shop, pk=id_shop)
     return render(request, 'shopDetail.html', {'shop': shop})
