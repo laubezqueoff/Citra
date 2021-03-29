@@ -130,7 +130,7 @@ def populate_chat_message(range_value = 3):
             isSentByUser=True
         else: 
             isSentByUser=False
-        ChatMessage.objects.create(id= i,text = '¿Vendeis naranjas?', chat=get_object_or_404(Chat, pk = i),isSentByUser=isSentByUser)
+        ChatMessage.objects.create(id= i,text = '¿Vendeis naranjas?', chat=get_object_or_404(Chat, pk = i), date = date.today(),isSentByUser=isSentByUser)
 
 
 def populate_threads(number_of_threads = 4):
