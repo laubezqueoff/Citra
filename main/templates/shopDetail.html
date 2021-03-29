@@ -3,13 +3,14 @@
 <title>Tienda {{shop.name}}</title>
 </head>
 <body>
-    <ul>
-        <b>{{shop.description}}</b>
-        <br>
-        <b>{{shop.address}}</b>
+    <b>{{shop.description}}</b>
+    <br>
+    <b>{{shop.address}}</b>
+    </br>
+    <b>{{shop.id}}</b>
+    <button onclick="location.href='{% url 'promotion_shop' shop.id %}'">
+    Promociona tu tienda (semanal)
+    </button>
 
-           
-       
-    </ul>
 </body>
 </html>
