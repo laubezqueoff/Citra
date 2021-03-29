@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block cabecera %}
+  <title> Citra / Lista de chats </title>
+{% endblock %}
+
+{% block contenido %}
+
+
+<table class="table table-striped ">
+  <thead>
+    <tr>
+      <th scope="col">Chats</th>
+    </tr>
+  </thead>
+  <tbody>
+
+  {% if context.3 %}
+
+    {% for row in chats %}
+        <li style="margin-top:30px; border:bottom; font-size:20px;">
+          <a style="text-decoration: none; font-color:#0000!important;" href="{{row.id}}/">{{row.name}}</a>
+        </li>	    
+    {% endfor %}
+
+  {% else %}
+
+
+  {% endif %}
+
+    <tr>
+      <th scope="row">1</th>
+      <td>Mark</td>
+      <td>Otto</td>
+      <td>@mdo</td>
+    </tr>
+
+  </tbody>
+</table>
+
+{% endblock %}

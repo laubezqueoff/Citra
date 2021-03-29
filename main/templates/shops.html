@@ -1,16 +1,45 @@
-<html>
-<head>
-<title>Tiendas</title>
-</head>
-<body>
-    <ul>
-        {% for shop in shops %}
-   <li>
-        <a href="{{shop.id}}"><b>{{shop.name}}</b></a>
-            
-            {% endfor %}
-        </li>
-    </ul>
+{% extends 'base.html'%}
+{% load static %}
 
+
+ {% block cabecera %}
+    <link rel="stylesheet" href="{% static 'css/style_shop_promotion.css' %}"/>
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'> 
+    <title> Citra / Lista de tiendas </title>
+{% endblock %}
+{% block contenido %}
+<body>
+    <main class="l-main">
+    
+    <div class="container">
+        <div class="row">
+            <h4 class="section-title">Tiendas promocionadas</h4>
+        </div>
+        <div class="row">                            
+            <div class="product__container bd-grid">
+                {% for shop in shops %}
+                    <article class="product">
+                        <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
+                        <span class="product__name"> {{shop.name}} </span>
+                        <span class="product__price"> 3€/kg </span>
+                        <a href="" class="button-light"> Añadir </a>
+                    </article>
+                {% empty %}
+                    <article class="product">
+                        <img src="{% static 'images/shop.png' %}" alt ="" class="product__img">
+                        <span class="product__name"> {{shop.name}} </span>
+                        <a href="" class="button-light"> Mercería Paquita </a>
+                    </article>
+                    <article class="product">
+                        <img src="{% static 'images/shop.png' %}" alt ="" class="product__img">
+                        <span class="product__name"> {{shop.name}} </span>
+                        <a href="" class="button-light"> Mercería Paquita </a>
+                    </article>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</main>
 </body>
 </html>
+{% endblock %}

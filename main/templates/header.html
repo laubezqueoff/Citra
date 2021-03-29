@@ -45,8 +45,21 @@
             </ul>
             <ul class="navbar-nav">
                 {% if context.3 %}
-                    <li class="nav-item" style="border: 2px solid rgba(0,0,0,.55); border-radius: 8px; margin-right: 30px;font-size:20px;">
-                        <a class="nav-link" href="/logout" >Cerrar sesión</a>
+
+                <div class="dropdown">
+                    <a class="btn btn-outline-dark dropdown-toggle me-3" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                        Perfil
+                    </a>
+
+                    <ul class="dropdown-menu dropdown-menu-left" style="right: 0; left: auto;" aria-labelledby="dropdownMenuLink">
+                        <li><a class="dropdown-item" href="">Perfil</a></li>  
+                        <li><a class="dropdown-item d-inline-block" href="#">Reservas</a></li>
+                        <li><a class="dropdown-item" href="#">Chats</a></li>
+                        <li><hr class="dropdown-divider"></li>
+
+                        <li><a class="dropdown-item" href="/logout">Cerrar sesión</a></li>
+                    </ul>
+                </div>
                 {% else %}
                     <li class="nav-item" style="border: 2px solid rgba(0,0,0,.55); border-radius: 8px; margin-right: 30px;font-size:20px;">
                         <a class="nav-link" href="/login" >Iniciar sesión</a>  
