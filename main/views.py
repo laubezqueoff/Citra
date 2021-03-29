@@ -168,17 +168,19 @@ def threads_list(request):
         threads = Thread.objects.all
         return render(request, 'threads.html', {'threads':threads})
 
-def forumMessages_list(request):
+def forumMessages_list(request,id_thread):
     rol,rol_id = get_context(request)[1:3]
+    thread= get_object_or_404(Thread, pk= id_thread)
     if rol == "User":
         if request.method == 'POST':
             text = request.POST['text']
-            threadId = request.POST['threadId']
-
-            ForumMessage.objects.create(text = text, date = date.today(), thread = Thread.objects.get(id=threadId), user = CustomUser.objects.get(id=rol_id))
-
-        forumMessages = ForumMessage.objects.get(thread=threadId)
-        return render(request, 'thread.html', {'forumMessages':forumMessages})
+            ForumMessage.objects.create(text = text, date = date.today(), thread = thread, user = CustomUser.objects.get(id=rol_id))
+        
+        threadName = thread.name
+        forumMessages = []
+        for m in thread.forummessage_set.all():
+            forumMessages.append(m)
+        return render(request, 'thread.html', {'forumMessages':forumMessages,'threadName':threadName})
 
 def promotion_shop(request):
     if request.method == 'GET':

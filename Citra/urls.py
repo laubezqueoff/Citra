@@ -24,6 +24,7 @@ urlpatterns = [
     path('populate/', populate.populate),
     path("", views.home, name="home"),
     path("threads/", views.threads_list, name="threads"),
+    path('threads/<id_thread>', views.forumMessages_list),
     path("login/", views.login, name="login"),
     path("logout/", views.logout, name="logout"),
     path('promotionproduct/', views.promotion_product),
