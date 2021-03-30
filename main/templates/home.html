@@ -1,11 +1,126 @@
 {% extends 'base.html' %}
+{% load static %}
 
-{% block title %}
-Home / Citra
+
+ {% block cabecera %}
+    <link rel="stylesheet" href="{% static 'css/style_shop_promotion.css' %}"/>
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'> 
+    <title> Citra / Inicio </title>
 {% endblock %}
 
 
 {% block contenido %}
-<h1>{{context.1}}</h1>
+    <main class="l-main">
+    
+    <div class="container">
+        <div class="row">
+            <h4 class="section-title mt-lg-2 ">Tiendas en promoción</h4>
+        </div>
+        <div class="row ms-3">                            
+            <div class="product__container bd-grid">
+                <div class="row">        
+                {% for shop in shops %}
+                    <article class="product">
+                        <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
+                        <span class="product__name"> {{shop.name}} </span>
+                        <span class="product__price"> 3€/kg </span>
+                        <a href="" class="button-light"> Añadir </a>
+                    </article>
+                {% empty %}                    
+                    <div class="col-sm">
+                        <article class="product">
+                            <img src="{% static 'images/shop.png' %}" alt ="" class="product__img">
+                            <span class="product__name"> {{shop.name}} </span>
+                            <a href="" class="button-light"> Mercería Paquita </a>
+                        </article>
+                    </div>
+                    <div class="col-sm">
+                        <article class="product">
+                            <img src="{% static 'images/shop.png' %}" alt ="" class="product__img">
+                            <span class="product__name"> {{shop.name}} </span>
+                            <a href="" class="button-light"> Mercería Paquita </a>
+                        </article>
+                    </div>
+                    <div class="col-sm">
+                        <article class="product">
+                            <img src="{% static 'images/shop.png' %}" alt ="" class="product__img">
+                            <span class="product__name"> {{shop.name}} </span>
+                            <a href="" class="button-light"> Mercería Paquita </a>
+                        </article>
+                    </div>
+                    <div class="col-sm">
+                        <article class="product">
+                            <img src="{% static 'images/shop.png' %}" alt ="" class="product__img">
+                            <span class="product__name"> {{shop.name}} </span>
+                            <a href="" class="button-light"> Mercería Paquita </a>
+                        </article>
+                    </div>
+                    <div class="col-sm">
+                        <article class="product">
+                            <img src="{% static 'images/shop.png' %}" alt ="" class="product__img">
+                            <span class="product__name"> {{shop.name}} </span>
+                            <a href="" class="button-light"> Mercería Paquita </a>
+                        </article>
+                    </div>
 
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <h4 class="section-title mt-lg-4">Productos en promoción</h4>
+        </div>
+        <div class="row ms-3">                            
+            <div class="product__container bd-grid">
+                <div class="row">        
+                {% for shop in shops %}
+                    <article class="product">
+                        <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
+                        <span class="product__name"> {{shop.name}} </span>
+                        <span class="product__price"> 3€/kg </span>
+                        <a href="" class="button-light"> Añadir </a>
+                    </article>
+                {% empty %}                    
+                    <div class="col-sm">
+                        <article class="product">
+                            <img src="{% static 'images/shop.png' %}" alt ="" class="product__img">
+                            <span class="product__name"> {{shop.name}} </span>
+                            <a href="" class="button-light"> Mercería Paquita </a>
+                        </article>
+                    </div>
+                    <div class="col-sm">
+                        <article class="product">
+                            <img src="{% static 'images/shop.png' %}" alt ="" class="product__img">
+                            <span class="product__name"> {{shop.name}} </span>
+                            <a href="" class="button-light"> Mercería Paquita </a>
+                        </article>
+                    </div>
+                    <div class="col-sm">
+                        <article class="product">
+                            <img src="{% static 'images/shop.png' %}" alt ="" class="product__img">
+                            <span class="product__name"> {{shop.name}} </span>
+                            <a href="" class="button-light"> Mercería Paquita </a>
+                        </article>
+                    </div>
+                    <div class="col-sm">
+                        <article class="product">
+                            <img src="{% static 'images/shop.png' %}" alt ="" class="product__img">
+                            <span class="product__name"> {{shop.name}} </span>
+                            <a href="" class="button-light"> Mercería Paquita </a>
+                        </article>
+                    </div>
+                    <div class="col-sm">
+                        <article class="product">
+                            <img src="{% static 'images/shop.png' %}" alt ="" class="product__img">
+                            <span class="product__name"> {{shop.name}} </span>
+                            <a href="" class="button-light"> Mercería Paquita </a>
+                        </article>
+                    </div>
+
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
 {% endblock %}

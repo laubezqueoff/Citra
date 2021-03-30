@@ -24,6 +24,7 @@ urlpatterns = [
     path('populate/', populate.populate),
     path("", views.home, name="home"),
     path("threads/", views.threads_list, name="threads"),
+    path('threads/<id_thread>', views.forumMessages_list),
     path("login/", views.login, name="login"),
     path("logout/", views.logout, name="logout"),
     path('promotionproduct/', views.promotion_product),
@@ -31,4 +32,9 @@ urlpatterns = [
     path('shops/', views.list_shop),
     path('shops/<id_shop>', views.shop_details),
     path('shop/chat/<id_chat>', views.get_chat),
+    path('chatList/', views.chat_list),
+    path('error/', views.error),
+    path('forbidden/', views.forbidden),
+    path('shop/bookings/',views.list_booking_owner),
+    path('user/bookings/',views.list_booking_user),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

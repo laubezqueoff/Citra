@@ -137,11 +137,11 @@ def populate_threads(number_of_threads = 4):
 
     name = "Thread"
     
-    for i in range(number_of_threads):
+    for i in range(3):
 
-        name = name+str(i)
+        name = name
         
-        Thread.objects.create(id = i, name=name)
+        Thread.objects.create(id = i, name=name+str(i))
 
 def populate_forumMessage(number_of_threads = 4):
 

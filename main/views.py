@@ -4,6 +4,8 @@ from datetime import date
 from django.shortcuts import render, redirect, get_object_or_404
 import urllib.request
 from main.forms import MessageForm
+from django.http import JsonResponse
+import json
 
 
 
@@ -168,17 +170,19 @@ def threads_list(request):
         threads = Thread.objects.all
         return render(request, 'threads.html', {'threads':threads})
 
-def forumMessages_list(request):
+def forumMessages_list(request,id_thread):
     rol,rol_id = get_context(request)[1:3]
+    thread= get_object_or_404(Thread, pk= id_thread)
     if rol == "User":
         if request.method == 'POST':
             text = request.POST['text']
-            threadId = request.POST['threadId']
-
-            ForumMessage.objects.create(text = text, date = date.today(), thread = Thread.objects.get(id=threadId), user = CustomUser.objects.get(id=rol_id))
-
-        forumMessages = ForumMessage.objects.get(thread=threadId)
-        return render(request, 'thread.html', {'forumMessages':forumMessages})
+            ForumMessage.objects.create(text = text, date = date.today(), thread = thread, user = CustomUser.objects.get(id=rol_id))
+        
+        threadName = thread.name
+        forumMessages = []
+        for m in thread.forummessage_set.all():
+            forumMessages.append(m)
+        return render(request, 'thread.html', {'forumMessages':forumMessages,'threadName':threadName})
 
 def promotion_shop(request):
     if request.method == 'GET':
@@ -201,6 +205,7 @@ def list_shop(request):
 
 
 def shop_details(request, id_shop):
+
     shop = get_object_or_404(Shop, pk=id_shop)
     return render(request, 'shop_detail.html', {'shop': shop})
 
@@ -303,3 +308,67 @@ def home(request):
         return render(request, 'home.html',{"context" : context})
     except:
         return render(request, 'home.html')
+
+
+def error(request):
+    return render(request, 'error.html')
+
+def chat_list(request):
+    return render(request, 'chatList.html')    
+
+def forbidden(request):
+    return render(request, 'prohibido.html')
+
+def booking(request):
+    try:
+        person_id, rol, rol_id, is_active = get_context(request)
+        context = [person_id, rol, rol_id, is_active]
+        user = CustomUser.objects.get(id=person_id)
+        for reserva in json.loads(request.POST.get('key_1_string')):
+            product = Product.objects.get(id=reserva['id'])
+            Booking.objects.create(startDate=date.today(),endDate=date.today(), product=product,title='Prueba',quantity=reserva['cantidad'], isAccepted=False, user=user)
+
+        data = {
+            'url': "/user/bookings/"
+        }
+        return JsonResponse(data)
+    except:
+        data = {
+            'url': "/prohibido/"
+        }
+        return JsonResponse(data)
+
+        
+
+def list_booking_user(request):
+    try:
+        person_id, rol, rol_id, is_active = get_context(request)
+        context = [person_id, rol, rol_id, is_active]
+        user = CustomUser.objects.get(id=person_id)
+        bookings = Booking.objects.filter(user=user).filter(isAccepted=False)
+        return render(request, 'bookings_user.html', {'bookings': bookings})
+    except:
+        return render(request, 'prohibido.html')
+
+def list_booking_owner(request):
+    try:
+        person_id, rol, rol_id, is_active = get_context(request)
+        context = [person_id, rol, rol_id, is_active]
+        owner = Owner.objects.get(id=person_id)
+        bookings = Booking.objects.filter(isAccepted=False)
+        reservas = []
+        for book in bookings:
+            kk = book.product.shop.owner.id
+            kk2 = owner.id
+            if book.product.shop.owner.id == owner.id:
+                reservas.append(book)
+        return render(request, 'bookings_owner.html', {'bookings': bookings})
+    except:
+       return render(request, 'prohibido.html') 
+
+def accept_booking(request):
+    booking = Booking.objects.filter(id=request.POST.get('id')).update(isAccepted=True)
+    data = {
+            'url': "/shop/bookings/accepted"
+        }
+    return JsonResponse(data)
