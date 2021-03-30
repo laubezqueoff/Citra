@@ -223,15 +223,19 @@ def get_chats_list(request):
     elif rol=='Owner':
 
         shops= Shop.objects.filter(owner= get_object_or_404(Owner, pk=person_id))
-
+        i = 0
         for s in shops:
-
-            chats.append(Chat.objects.filter(shop=s))
+            if i == 0:
+                chats= Chat.objects.filter(shop=s)
+            else:
+                chats = chats | Chat.objects.filter(shop=s)
+                
+            i+= 1
     else: 
         return render(request,'error.html', {"context" : context}, status=403)
 
     print(chats)
-    return render(request, 'chats_list.html', {"context" : context, "chats" : chats},status=200)
+    return render(request, "chatList.html", {"context" : context, "chats" : chats}, status=200)
 
 
 def get_chat(request, id_chat):
