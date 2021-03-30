@@ -35,4 +35,6 @@ urlpatterns = [
     path('chatList/', views.chat_list),
     path('error/', views.error),
     path('forbidden/', views.forbidden),
+    path('shop/bookings/',views.list_booking_owner),
+    path('user/bookings/',views.list_booking_user),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
