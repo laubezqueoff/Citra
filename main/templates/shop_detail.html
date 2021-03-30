@@ -1,0 +1,95 @@
+{% extends 'base.html'%}
+{% load static %}
+
+
+ {% block cabecera %}
+<link rel="stylesheet" href="{% static 'css/style_shop.css' %}"/>
+<link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'> 
+{% endblock %}
+{% block contenido %}
+  <!--<header class="l-header" id="header">
+    <nav class="nav bd-grid">
+      <div class="nav__toggle" id="nav-toggle">
+        <i class='bx bxs-grid'></i>
+      </div>
+      <a href="#" class="nav__logo">Roby</a>
+
+      <div class="nav__menu" id="nav-menu">
+        <ul class="nav__list">
+          <li class="nav__item"><a href="#" class="nav__link"></a></li>
+          <li class="nav__item"><a href="#" class="nav__link"></a></li>
+          <li class="nav__item"><a href="#" class="nav__link"></a></li>
+          <li class="nav__item"><a href="#" class="nav__link"></a></li>
+          <li class="nav__item"><a href="#" class="nav__link"></a></li>
+        </ul>
+      </div>
+
+      <div class="nav__shop">
+        <i class='bx bxs-shopping-bag' ></i>
+      </div>
+    </nav>
+  </header>-->
+<main class="l-main">
+  
+  <div class="container">
+      <div class="row">
+        <img src="{% static 'images/tienda_tienda.jpg' %}">
+      </div>
+      <div class="row">
+        <div class="col">
+        <h4 class="section-title">Categorías</h4>
+          <nav class="nav flex-column">
+            <a class="nav-link active" aria-current="page" href="#">Alimentación</a>
+            <a class="nav-link" href="#">Higiene</a>
+            <a class="nav-link" href="#">Moda</a>
+          </nav>
+        </div>
+    
+        <div class="col-6">          
+          <h4 class="section-title"> Productos </h4>          
+            <div class="product__container bd-grid">
+              <div class="column">
+                <article class="product">
+                  <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
+                  <span class="product__name"> Manzana </span>
+                  <span class="product__price"> 3€/kg </span>
+                  <a href="" class="button-light"> Añadir </a>
+                </article>
+                <article class="product">
+                  <img src="{% static 'images/naranja.jpg' %}" alt ="" class="product__img">
+                  <span class="product__name"> Naranja </span>
+                  <span class="product__price"> 2€/kg </span>
+                  <a href="" class="button-light"> Añadir </a>
+                </article>
+              </div>
+              <div class="column">
+                <article class="product">
+                  <img src="{% static 'images/kiwi.jpg' %}" alt ="" class="product__img">
+                  <span class="product__name"> Kiwi </span>
+                  <span class="product__price"> 5€/kg </span>
+                  <a href="" class="button-light"> Añadir </a>
+                </article>
+              </div>
+            </div>
+        </div>
+
+        <div class="col">
+          
+            <h4 class="section-title">Info</h4>
+            <p>Horario: L-S 9:30-20:30</p>
+            <p>Dirección: Calle General Ollero nº 3, Sevilla</p>
+         
+            <h4 class="section-title">Cesta</h4>
+            <p>Manzanas</p>
+            <p>Peras</p>
+        
+
+        </div>
+      </div>
+  </div>
+</main>
+
+
+<script src="{% static 'js/main.js' %}"
+{% endblock %}
+
