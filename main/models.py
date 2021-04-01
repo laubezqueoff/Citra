@@ -95,7 +95,7 @@ class Booking(models.Model):
     quantity = models.IntegerField()
     isAccepted = models.BooleanField()
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE) 
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 class Review(models.Model):
     rating = models.IntegerField(range(1, 5))
