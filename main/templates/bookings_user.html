@@ -15,9 +15,8 @@
                 <div class="col">
                     <article class="product">
                         <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
-                        <span class="product__name"> {{shop.name}} </span>
-                        <span class="product__price"> 3€/kg </span>
-                        <a href="" class="button-light"> Cancelar </a>
+                        <span class="product__name"> {{book.product.shop.name}} </span>
+                        <span class="product__price"> {{book.product.price}} </span>
                     </article>
                 </div>
                 {% empty %}
