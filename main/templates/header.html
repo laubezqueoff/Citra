@@ -34,11 +34,14 @@
                 <a class="nav-link" href="./search.html">Buscar</a>
                 </li>
                 <li class="nav-item nav-link" style="margin-left: 25px; font-size:20px; font-weight: bold; text-align:center;">|</li>
-
+                
+                {% if context.1 == 'User' %}
                 <li class="nav-item" style="margin-left: 25px; font-size:20px;" name="threads">
                     <a class="nav-link" href="/threads" name="threads">Foro</a>
                 </li>
                 <li class="nav-item nav-link" style="margin-left: 25px; font-size:20px; font-weight: bold; text-align:center;">|</li>
+
+                {% endif %}
                 <li class="nav-item" style="margin-left: 25px; font-size:20px;">
                 <a class="nav-link" href="./about.html" >Sobre nosotros</a>
                 </li>
@@ -52,8 +55,13 @@
                     </a>
 
                     <ul class="dropdown-menu dropdown-menu-left" style="right: 0; left: auto;" aria-labelledby="dropdownMenuLink">
-                        <li><a class="dropdown-item" href="">Perfil</a></li>  
-                        <li><a class="dropdown-item d-inline-block" href="#">Reservas</a></li>
+                        <li><a class="dropdown-item" href="">Perfil</a></li>
+                        {% if context.1 == 'User' %}  
+                            <li><a class="dropdown-item d-inline-block" onclick="location.href='{% url 'list_booking_user'%}'">Reservas</a></li>
+                        {% elif context.1 == 'Owner' %}
+                            <li><a class="dropdown-item d-inline-block" onclick="location.href='{% url 'list_booking_owner'%}'">Reservas</a></li>
+                        {% endif %}
+
                         <li><a class="dropdown-item" href="#">Chats</a></li>
                         <li><hr class="dropdown-divider"></li>
 

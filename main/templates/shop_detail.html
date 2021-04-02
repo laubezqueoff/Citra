@@ -44,9 +44,6 @@
             <a class="nav-link" href="#">Moda</a>
           </nav>
         </div>
-        {% if context.1 == 'Owner' %}
-          <h1>Efectivamente, soy un owner</h1>
-        {endif}
         <div class="col-6">          
           <h4 class="section-title"> Productos </h4>          
             <div class="product__container bd-grid">
@@ -104,7 +101,16 @@
             <button id="boton2" onclick="vaciarCarrito()">Vaciar Carrito</button>
             {% csrf_token %}
             <input id="submit" type="button" value="Reservar" onclick="reserva()"/>
-        
+          {% if context.1 == 'Owner'%}
+            <button onclick="location.href='{% url 'promotion_week_shop' shop.id %}'">
+              Promociona tu tienda (semanal)
+            </button>
+              </br>
+            <button onclick="location.href='{% url 'promotion_month_shop' shop.id %}'">
+              Promociona tu tienda (mensual)
+            </button>
+          {% endif %}
+
 
         </div>
       </div>

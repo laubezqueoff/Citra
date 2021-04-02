@@ -146,18 +146,20 @@ def promotion_week_product(request, id_product):
 
     product = get_object_or_404(Product, pk=id_product) 
     person_id,rol,rol_id,is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
     promotionType = PromotionType.objects.get(id=0) # semanal
     owner = Owner.objects.get(person = person_id)
     time = date.today()
     endtime = (time + timedelta(days=7))
     print(promotionType)
     promocion = Promotion.objects.create(owner= owner,shop=  None,startDate = time, endDate = endtime,promotionType = promotionType, product = product)
-    return render(request, 'promotionproduct.html', {'promocion':promocion})
+    return render(request, 'promotionproduct.html', {'promocion':promocion, 'context':context})
 
 def promotion_month_product(request, id_product):
 
     product = get_object_or_404(Product, pk=id_product) 
     person_id,rol,rol_id,is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
     promotionType = PromotionType.objects.get(id=1) # mensual
     owner = Owner.objects.get(person = person_id)
     time = date.today()
@@ -166,17 +168,19 @@ def promotion_month_product(request, id_product):
     print(promotionType)
 
     promocion = Promotion.objects.create(owner= owner,shop=  None,startDate = time, endDate = endtime,promotionType = promotionType, product = product)
-    return render(request, 'promotionproduct.html', {'promocion':promocion})
+    return render(request, 'promotionproduct.html', {'promocion':promocion,'context':context})
 
 
 def threads_list(request):
-    rol = get_context(request)[1]
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
     if rol == "User":
         threads = Thread.objects.all
-        return render(request, 'threads.html', {'threads':threads})
+        return render(request, 'threads.html', {'threads':threads, 'context':context})
 
 def forumMessages_list(request,id_thread):
-    rol,rol_id = get_context(request)[1:3]
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
     thread= get_object_or_404(Thread, pk= id_thread)
     if rol == "User":
         if request.method == 'POST':
@@ -187,41 +191,44 @@ def forumMessages_list(request,id_thread):
         forumMessages = []
         for m in thread.forummessage_set.all():
             forumMessages.append(m)
-        return render(request, 'thread.html', {'forumMessages':forumMessages,'threadName':threadName})
+        return render(request, 'thread.html', {'forumMessages':forumMessages,'threadName':threadName, 'context':context})
 
 def promotion_week_shop(request, id_shop):
 
     shop = get_object_or_404(Shop, pk=id_shop) 
-    person_id,rol,rol_id,is_active = get_context(request)
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
     promotionType = PromotionType.objects.get(id=0) # semanal HABRIA QUE MODIFICAR ESTO PARA QUE SE SELECCIONE EL TIPO DE LA PRMOCION
     owner = Owner.objects.get(person = person_id)
     time = date.today()
     endtime = (time + timedelta(days=7))
     print(promotionType)
     promocion = Promotion.objects.create(owner= owner,shop =  shop,startDate = time, endDate = endtime,promotionType = promotionType, product = None)
-    return render(request, 'promotionshop.html', {'promocion':promocion})
+    return render(request, 'promotionshop.html', {'promocion':promocion, 'context':context})
 
 
 def promotion_month_shop(request, id_shop):
 
     shop = get_object_or_404(Shop, pk=id_shop) 
-    person_id,rol,rol_id,is_active = get_context(request)
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
     promotionType = PromotionType.objects.get(id=1)
     owner = Owner.objects.get(person = person_id)
     time = date.today()
     endtime = (time + timedelta(days=30))
     print(promotionType)
     promocion = Promotion.objects.create(owner= owner,shop =  shop,startDate = time, endDate = endtime,promotionType = promotionType, product = None)
-    return render(request, 'promotionshop.html', {'promocion':promocion})
+    return render(request, 'promotionshop.html', {'promocion':promocion,'context':context})
 
 
 def list_shop(request):
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
     shops = Shop.objects.all()
-    return render(request, 'shops.html', {'shops': shops})
+    return render(request, 'shops.html', {'shops': shops,'context':context})
 
 
 def shop_details(request, id_shop):
-
     shop = get_object_or_404(Shop, pk=id_shop)
     products = Product.objects.filter(shop=shop)
     try:
@@ -322,7 +329,7 @@ def send_message(request,id_chat):
             shop= get_object_or_404(Shop,pk=shop_id)
             ChatMessage.objects.create(text=text, chat= chat, shop=shop).save()
             return redirect('/shop/chat'+chat.id)
-    return render(request, 'Error.html', {'form': form})
+    return render(request, 'Error.html', {'form': form,"context" : context})
 
 
 def home(request):

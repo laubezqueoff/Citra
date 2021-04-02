@@ -43,6 +43,6 @@ urlpatterns = [
     path('error/', views.error),
     path('forbidden/', views.forbidden),
     path('booking/',views.booking),
-    path('shop/bookings/',views.list_booking_owner),
-    path('user/bookings/',views.list_booking_user),
+    path('shop/bookings/',views.list_booking_owner,name="list_booking_owner"),
+    path('user/bookings/',views.list_booking_user,name="list_booking_user"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
