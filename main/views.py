@@ -415,10 +415,11 @@ def review_form(request, id_shop):
     shop = get_object_or_404(Shop, pk= id_shop)
     if rol == "User":
         if request.method == 'GET':
-            return render(request, 'review.html') #al formulario vacio
-        if request.method == 'POST':
+            form = ReviewForm()
+            return render(request, 'review.html', {'form':form}) #al formulario vacio
+        if request.method == 'POST':  
+            form = ReviewForm(data=request.POST)         
             if form.is_valid():
-                form = ReviewForm(data=request.POST)
                 rating = form.cleaned_data['rating']
                 title = form.cleaned_data['title']
                 description = form.cleaned_data['description']
