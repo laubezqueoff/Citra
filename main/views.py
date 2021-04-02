@@ -406,7 +406,7 @@ def review_list(request, id_shop):
         for m in shop.review_set.all():
             reviews.append(m)
 
-        return render(request, '', {'reviews':reviews}) #a la vista de todas las reviews
+        return render(request, 'reviews.html', {'reviews':reviews}) #a la vista de todas las reviews
     else:
         return render(request, 'prohibido.html')
 
@@ -415,7 +415,7 @@ def review_form(request, id_shop):
     shop = get_object_or_404(Shop, pk= id_shop)
     if rol == "User":
         if request.method == 'GET':
-            return render(request, '') #al formulario vacio
+            return render(request, 'review.html') #al formulario vacio
         if request.method == 'POST':
             if form.is_valid():
                 form = ReviewForm(data=request.POST)
@@ -426,9 +426,9 @@ def review_form(request, id_shop):
                 reviews = []
                 for m in shop.review_set.all():
                     reviews.append(m)
-                return render(request, '', {'reviews':reviews}) #a la vista las reviews de la tienda
+                return render(request, 'reviews.html', {'reviews':reviews}) #a la vista las reviews de la tienda
             else:
-                return render(request, '', {'form':form}) #de vuelta al formulario a rellenarlo correctamente
+                return render(request, 'review.html', {'form':form}) #de vuelta al formulario a rellenarlo correctamente
     else:
         return render(request, 'prohibido.html')
         
