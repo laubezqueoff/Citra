@@ -397,10 +397,15 @@ def booking(request):
         return JsonResponse(data)
 
 
-def review_list(request):
+def review_list(request, id_shop):
     rol = get_context(request)[1]
+    shop = get_object_or_404(Shop, pk= id_shop)
     if rol == "User":
-        reviews = Review.objects.all
+
+        reviews = []
+        for m in shop.review_set.all():
+            reviews.append(m)
+
         return render(request, '', {'reviews':reviews}) #a la vista de todas las reviews
     else:
         return render(request, 'prohibido.html')
@@ -418,8 +423,10 @@ def review_form(request, id_shop):
                 title = form.cleaned_data['title']
                 description = form.cleaned_data['description']
                 Review.objects.create(rating = rating, title = title, description = description, date = date.today(), user = CustomUser.objects.get(id=rol_id), shop = shop)
-                reviews = Review.objects.all
-                return render(request, '', {'reviews':reviews}) #a la vista de todas las reviews
+                reviews = []
+                for m in shop.review_set.all():
+                    reviews.append(m)
+                return render(request, '', {'reviews':reviews}) #a la vista las reviews de la tienda
             else:
                 return render(request, '', {'form':form}) #de vuelta al formulario a rellenarlo correctamente
     else:
