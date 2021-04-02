@@ -1,0 +1,36 @@
+<html>
+<head>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<title>Reservas</title>
+</head>
+<body>
+    <ul>
+        {% for booking in bookings %}
+        <li>
+            <a href="{{booking.id}}"><b>{{booking.title}} - {{booking.product.name}}</b></a>
+
+            <button onclick="aceptar({{booking.id}})">Aceptar</button>
+            
+            {% endfor %}
+        </li>
+    </ul>
+
+</body>
+
+<script>
+    function aceptar(id) {
+        data = {
+            id: id,
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+        }
+        $.ajax({
+            url: 'acceptbookings/',
+            data: data,
+            type: 'POST',
+            success: function (data) {
+                window.location.replace(window.location.origin+ data.url);
+            }
+        });
+    }
+</script>
+</html>

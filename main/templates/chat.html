@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
 
+
+
+{% block cabecera %}
+  <link rel="stylesheet" href="{% static 'css/style_chat.css'%}"/>  
+{% endblock %}
+
 {% block title %}
 Chat / Citra
 {% endblock %}
@@ -32,16 +38,11 @@ Chat / Citra
     {% endfor %}
             <div class="card-footer">
                 <div class="input-group">
-                <!--<form method="POST" id="form" action="">-->
-                {% csrf_token %}
-
-                    <input type="text" class="form-control form-control-lg"  placeholder="Escribe..." />
-                    <!--{{form.as_p}} -->
-                        
-                    <input type='submit' class="btn btn-outline-dark" value='Enviar' style="float:left">
-                        
-                        
-                <!--</form>-->        
+                <form method='POST' class="input-group">{% csrf_token %}
+                    <input type="text" class="form-control form-control-lg"  placeholder="Escribe..." name="text" id="text" />
+                    <input type='submit' class="btn btn-outline-dark" style="float:left;background-color: #ffd3b6;">
+                </form>
+       
                 </div>
             </div>
         </div>
@@ -49,3 +50,4 @@ Chat / Citra
 
  
 {% endblock %}
+</html>
