@@ -37,7 +37,10 @@ def login(request):
         # Es importante pasar el context en todas las vistas.
         # Cambiar index.html por tu vista en tu método
 
-        return render(request, 'home.html',{"context" : context})
+        promotions_shops = Promotion.objects.filter(product=None)
+        promotions_products = Promotion.objects.filter(shop=None)
+
+        return render(request, 'home.html', {"context" : context, 'promotions_shops': promotions_shops, 'promotions_products': promotions_products})
     else: #Si es un GET redirijimos a la vista de login
         return render(request, 'login.html')
 
@@ -59,7 +62,10 @@ def logout(request):
         except Exception as e:
             print(e)
 
-        return render(request, 'home.html')
+        promotions_shops = Promotion.objects.filter(product=None)
+        promotions_products = Promotion.objects.filter(shop=None)
+
+        return render(request, 'home.html', {'promotions_shops': promotions_shops, 'promotions_products': promotions_products})
 
 
 def whoIsWho(person):
@@ -198,13 +204,17 @@ def promotion_week_shop(request, id_shop):
     shop = get_object_or_404(Shop, pk=id_shop) 
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
-    promotionType = PromotionType.objects.get(id=0) # semanal HABRIA QUE MODIFICAR ESTO PARA QUE SE SELECCIONE EL TIPO DE LA PRMOCION
+    promotionType = PromotionType.objects.get(id=0)
     owner = Owner.objects.get(person = person_id)
     time = date.today()
     endtime = (time + timedelta(days=7))
     print(promotionType)
     promocion = Promotion.objects.create(owner= owner,shop =  shop,startDate = time, endDate = endtime,promotionType = promotionType, product = None)
-    return render(request, 'promotionshop.html', {'promocion':promocion, 'context':context})
+    #return render(request, 'promotionshop.html', {'promocion':promocion, 'context':context})
+    data = {
+            'url': ""
+        }
+    return JsonResponse(data)
 
 
 def promotion_month_shop(request, id_shop):
@@ -218,7 +228,10 @@ def promotion_month_shop(request, id_shop):
     endtime = (time + timedelta(days=30))
     print(promotionType)
     promocion = Promotion.objects.create(owner= owner,shop =  shop,startDate = time, endDate = endtime,promotionType = promotionType, product = None)
-    return render(request, 'promotionshop.html', {'promocion':promocion,'context':context})
+    data = {
+            'url': ""
+        }
+    return JsonResponse(data)
 
 
 def list_shop(request):
@@ -231,6 +244,7 @@ def list_shop(request):
 def shop_details(request, id_shop):
     shop = get_object_or_404(Shop, pk=id_shop)
     products = Product.objects.filter(shop=shop)
+    promotion = Promotion.objects.filter(shop=shop).exists()
     try:
         person_id, rol, rol_id, is_active = get_context(request)
         context = [person_id, rol, rol_id, is_active]
@@ -239,7 +253,7 @@ def shop_details(request, id_shop):
         rol = 'User no registrado'
         context = [person_id, rol]
 
-    return render(request, 'shop_detail.html', {'shop': shop, 'products': products, 'context': context})
+    return render(request, 'shop_detail.html', {'shop': shop, 'products': products, 'context': context, 'promotion': not(promotion)})
 
 def get_chats_list(request):
     ''' Muestra una lista de todos los chats que el usuario activo, sea user u owner, tenga. \n
@@ -333,21 +347,20 @@ def send_message(request,id_chat):
 
 
 def home(request):
+    promotions_shops = Promotion.objects.filter(product=None)
+    promotions_products = Promotion.objects.filter(shop=None)
     try:
         person_id, rol, rol_id, is_active = get_context(request)
         context = [person_id, rol, rol_id, is_active]
-        promotions_shops = Promotion.objects.filter(product=None)
-        promotions_products = Promotion.objects.filter(shop=None)
-        return render(request, 'home.html', {"context": context, 'promotions_shop': promotions_shops, 'promotions_product': promotions_products})
+        return render(request, 'home.html', {"context": context, 'promotions_shops': promotions_shops, 'promotions_products': promotions_products})
     except:
-        return render(request, 'home.html')
+        return render(request, 'home.html', {'promotions_shops': promotions_shops, 'promotions_products': promotions_products})
 
 def booking(request):
     try:
         person_id, rol, rol_id, is_active = get_context(request)
         context = [person_id, rol, rol_id, is_active]
         user = CustomUser.objects.get(id=person_id)
-        print(json.loads(request.POST.get('key_1_string')))
         for reserva in json.loads(request.POST.get('key_1_string')):
             product = Product.objects.get(id=reserva['id'])
             Booking.objects.create(startDate=date.today(),endDate=date.today(), product=product,title='Prueba',quantity=reserva['cantidad'], isAccepted=False, user=user)
@@ -423,38 +436,3 @@ def booking(request):
             'url': "/prohibido/"
         }
         return JsonResponse(data)
-
-        
-
-# def list_booking_user(request):
-#     try:
-#         person_id, rol, rol_id, is_active = get_context(request)
-#         context = [person_id, rol, rol_id, is_active]
-#         user = CustomUser.objects.get(id=person_id)
-#         bookings = Booking.objects.filter(user=user).filter(isAccepted=False)
-#         return render(request, 'bookings_user.html', {'bookings': bookings})
-#     except:
-#         return render(request, 'prohibido.html')
-
-# def list_booking_owner(request):
-#     try:
-#         person_id, rol, rol_id, is_active = get_context(request)
-#         context = [person_id, rol, rol_id, is_active]
-#         owner = Owner.objects.get(id=person_id)
-#         bookings = Booking.objects.filter(isAccepted=False)
-#         reservas = []
-#         for book in bookings:
-#             kk = book.product.shop.owner.id
-#             kk2 = owner.id
-#             if book.product.shop.owner.id == owner.id:
-#                 reservas.append(book)
-#         return render(request, 'bookings_owner.html', {'bookings': bookings})
-#     except:
-#        return render(request, 'prohibido.html') 
-
-# def accept_booking(request):
-#     booking = Booking.objects.filter(id=request.POST.get('id')).update(isAccepted=True)
-#     data = {
-#             'url': "/shop/bookings/accepted"
-#         }
-#     return JsonResponse(data)

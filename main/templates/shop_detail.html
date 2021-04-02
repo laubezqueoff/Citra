@@ -7,28 +7,6 @@
 <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'> 
 {% endblock %}
 {% block contenido %}
-  <!--<header class="l-header" id="header">
-    <nav class="nav bd-grid">
-      <div class="nav__toggle" id="nav-toggle">
-        <i class='bx bxs-grid'></i>
-      </div>
-      <a href="#" class="nav__logo">Roby</a>
-
-      <div class="nav__menu" id="nav-menu">
-        <ul class="nav__list">
-          <li class="nav__item"><a href="#" class="nav__link"></a></li>
-          <li class="nav__item"><a href="#" class="nav__link"></a></li>
-          <li class="nav__item"><a href="#" class="nav__link"></a></li>
-          <li class="nav__item"><a href="#" class="nav__link"></a></li>
-          <li class="nav__item"><a href="#" class="nav__link"></a></li>
-        </ul>
-      </div>
-
-      <div class="nav__shop">
-        <i class='bx bxs-shopping-bag' ></i>
-      </div>
-    </nav>
-  </header>-->
 <main class="l-main">
   
   <div class="container">
@@ -101,12 +79,15 @@
             <button id="boton2" onclick="vaciarCarrito()">Vaciar Carrito</button>
             {% csrf_token %}
             <input id="submit" type="button" value="Reservar" onclick="reserva()"/>
-          {% if context.1 == 'Owner'%}
-            <button onclick="location.href='{% url 'promotion_week_shop' shop.id %}'">
+          {% if context.1 == 'Owner' and promotion and shop.owner.person.id|stringformat:"i" == context.0 %}
+            {% comment %} <button onclick="location.href='{% url 'promotion_week_shop' shop.id %}'">
+              Promociona tu tienda (semanal)
+            </button> {% endcomment %}
+            <button onclick="promocionarSemanal({{shop.id}})">
               Promociona tu tienda (semanal)
             </button>
-              </br>
-            <button onclick="location.href='{% url 'promotion_month_shop' shop.id %}'">
+              <br>
+            <button onclick="promocionarMensual({{shop.id}})">
               Promociona tu tienda (mensual)
             </button>
           {% endif %}
@@ -118,6 +99,42 @@
 </main>
 
 <script>
+  function promocionarSemanal (id_shop) {
+    data = {
+        id_shop: id_shop,
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+    }
+    url = window.location.origin + '/shops/' + id_shop + '/promotionweekshop'
+    console.log(url)
+    $.ajax({
+        url: url,
+        data: data,
+        type: 'POST',
+        success: function (data) {
+            confirm("Promocion realizada")
+            window.location.replace(window.location.origin + data.url);
+        }
+    });
+  }
+
+  function promocionarMensual (id_shop) {
+    data = {
+        id_shop: id_shop,
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+    }
+    url = window.location.origin + '/shops/' + id_shop + '/promotionmonthshop'
+    console.log(url)
+    $.ajax({
+        url: url,
+        data: data,
+        type: 'POST',
+        success: function (data) {
+            confirm("Promocion realizada")
+            window.location.replace(window.location.origin + data.url);
+        }
+    });
+  }
+
   function añadir (id) {
     var nombre = document.getElementById('nombre'+id).innerHTML
     var precio = document.getElementById('precio'+id).innerHTML
@@ -151,7 +168,7 @@
 }
 
 function vaciarCarrito() {
-    if (confirm("多Quieres vaciar el carrito?")) {
+    if (confirm("¿Quieres vaciar el carrito?")) {
         document.getElementById('tbody').remove();
         var table = document.getElementById('table');
         var tbody = document.createElement('tbody');
@@ -181,7 +198,7 @@ function reserva() {
         type: 'POST',
         success: function (data) {
             confirm("Reserva realizada")
-            window.location.replace(window.location.origin+ data.url);
+            window.location.replace(window.location.origin + data.url);
         }
     });
 };
