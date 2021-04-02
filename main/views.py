@@ -3,7 +3,7 @@ import requests
 from datetime import date
 from django.shortcuts import render, redirect, get_object_or_404
 import urllib.request
-from main.forms import MessageForm
+from main.forms import MessageForm, ReviewForm
 import json
 from django.http import JsonResponse
 from datetime import timedelta
@@ -396,6 +396,34 @@ def booking(request):
         }
         return JsonResponse(data)
 
+
+def review_list(request):
+    rol = get_context(request)[1]
+    if rol == "User":
+        reviews = Review.objects.all
+        return render(request, '', {'reviews':reviews}) #a la vista de todas las reviews
+    else:
+        return render(request, 'prohibido.html')
+
+def review_form(request, id_shop):
+    rol,rol_id = get_context(request)[1:3]
+    shop = get_object_or_404(Shop, pk= id_shop)
+    if rol == "User":
+        if request.method == 'GET':
+            return render(request, '') #al formulario vacio
+        if request.method == 'POST':
+            if form.is_valid():
+                form = ReviewForm(data=request.POST)
+                rating = form.cleaned_data['rating']
+                title = form.cleaned_data['title']
+                description = form.cleaned_data['description']
+                Review.objects.create(rating = rating, title = title, description = description, date = date.today(), user = CustomUser.objects.get(id=rol_id), shop = shop)
+                reviews = Review.objects.all
+                return render(request, '', {'reviews':reviews}) #a la vista de todas las reviews
+            else:
+                return render(request, '', {'form':form}) #de vuelta al formulario a rellenarlo correctamente
+    else:
+        return render(request, 'prohibido.html')
         
 
 # def list_booking_user(request):
