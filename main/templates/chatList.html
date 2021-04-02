@@ -16,26 +16,26 @@
   </thead>
   <tbody>
 
-  {% if context.3 %}
 
-    {% for row in chats %}
-        <li style="margin-top:30px; border:bottom; font-size:20px;">
-          <a style="text-decoration: none; font-color:#0000!important;" href="{{row.id}}/">{{row.name}}</a>
-        </li>	    
-    {% endfor %}
-
-  {% else %}
-
-
-  {% endif %}
-
+  {% for row in chats %}
+    {% if context.1 == 'User' %}
     <tr>
-      <th scope="row">1</th>
-      <td>Mark</td>
-      <td>Otto</td>
-      <td>@mdo</td>
+      <th scope="row"></th>
+      <td><img src="{{row.shop.picture}}" alt="Avatar" style="float:left">  </td>
+      <td>{{row.shop.name}}</td>
+      <td>{{row.shop.shopType}}</td>
+      <td><a href= "{% url 'chat' row.id %}">Accede al chat</a></td>
+    </tr> 
+    {% else %} 
+    <tr>
+      <th scope="row"></th>
+      <td>{{row.shop.name}}</td>
+      <td>{{row.user.username}}</td>
+      <td><a href= "{% url 'chat' row.id %}">Accede al chat</a></td>
     </tr>
+    {% endif %}
 
+  {% endfor %}
   </tbody>
 </table>
 

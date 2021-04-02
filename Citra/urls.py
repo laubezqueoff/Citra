@@ -35,6 +35,8 @@ urlpatterns = [
     path('bookingsowner/', views.list_booking_owner),
     path('bookingsowner/acceptbookings/', views.accept_booking),
     path('shops/<id_shop>', views.list_shop_details),
+    path('shop/chat_new/<id_shop>', views.get_chat_new, name='newChat'),
+    path('chats/', views.get_chats_list, name='chats'),
     path('shop/chat/<id_chat>', views.get_chat),
     path('shops/booking/', views.booking),
     path('error/', views.error),
