@@ -26,13 +26,19 @@
           <h4 class="section-title"> Productos </h4>          
             <div class="product__container bd-grid">
               <div class="row">
-                {% for prod in products %}
+                {% for prod, promotionProduct in productsPromotion.items %}
                   <div class="col">
                     <article class="product">
                       <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
                       <p id = "nombre{{prod.id}}">{{prod.name}}</p>
                       <p id = "precio{{prod.id}}">{{prod.price}}</p>
-                      <button id="boton" onclick="añadir({{prod.id}})">añadir</button>
+                      {% if context.1 == 'User' %}
+                        <button id="boton" onclick="añadir({{prod.id}})">Añadir</button>
+                      {% elif context.1 == 'Owner' and promotionProduct and prod.shop.owner.person.id|stringformat:"i" == context.0 %}
+                        <button id="boton" onclick="promocionarProductoSemanal({{prod.id}})">Promocionar Semanal</button>
+                        <button id="boton" onclick="promocionarProductoMensual({{prod.id}})">Promocionar Mensual</button>
+                      {% else %}
+                      {% endif %}
                     </article>
                   </div>
                 {% empty %}
@@ -66,7 +72,7 @@
             <h4 class="section-title">Info</h4>
             <p>Horario: L-S 9:30-20:30</p>
             <p>Dirección: {{shop.address}}</p>
-         
+         {% if context.1 == 'User' %}
             <h4 class="section-title">Cesta</h4>
             <table id = "table">
               <tr>
@@ -79,15 +85,16 @@
             <button id="boton2" onclick="vaciarCarrito()">Vaciar Carrito</button>
             {% csrf_token %}
             <input id="submit" type="button" value="Reservar" onclick="reserva()"/>
-          {% if context.1 == 'Owner' and promotion and shop.owner.person.id|stringformat:"i" == context.0 %}
+            {% endif %}
+          {% if context.1 == 'Owner' and promotionShop and shop.owner.person.id|stringformat:"i" == context.0 %}
             {% comment %} <button onclick="location.href='{% url 'promotion_week_shop' shop.id %}'">
               Promociona tu tienda (semanal)
             </button> {% endcomment %}
-            <button onclick="promocionarSemanal({{shop.id}})">
+            <button onclick="promocionarTiendaSemanal({{shop.id}})">
               Promociona tu tienda (semanal)
             </button>
               <br>
-            <button onclick="promocionarMensual({{shop.id}})">
+            <button onclick="promocionarTiendaMensual({{shop.id}})">
               Promociona tu tienda (mensual)
             </button>
           {% endif %}
@@ -99,7 +106,40 @@
 </main>
 
 <script>
-  function promocionarSemanal (id_shop) {
+  function promocionarProductoSemanal (id_product) {
+    data = {
+        id_product: id_product,
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+    }
+    url = window.location.origin + '/product/' + id_product + '/promotionweekproduct'
+    $.ajax({
+        url: url,
+        data: data,
+        type: 'POST',
+        success: function (data) {
+            confirm("Promocion realizada")
+            window.location.replace(window.location.origin + data.url);
+        }
+    });
+  }
+
+  function promocionarProductoMensual (id_product) {
+    data = {
+        id_product: id_product,
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+    }
+    url = window.location.origin + '/product/' + id_product + '/promotionmonthproduct'
+    $.ajax({
+        url: url,
+        data: data,
+        type: 'POST',
+        success: function (data) {
+            confirm("Promocion realizada")
+            window.location.replace(window.location.origin + data.url);
+        }
+    });
+  }
+  function promocionarTiendaSemanal (id_shop) {
     data = {
         id_shop: id_shop,
         csrfmiddlewaretoken: '{{ csrf_token }}',
@@ -117,7 +157,7 @@
     });
   }
 
-  function promocionarMensual (id_shop) {
+  function promocionarTiendaMensual (id_shop) {
     data = {
         id_shop: id_shop,
         csrfmiddlewaretoken: '{{ csrf_token }}',

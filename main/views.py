@@ -149,33 +149,48 @@ def get_context(request):
 
 
 def promotion_week_product(request, id_product):
-
-    product = get_object_or_404(Product, pk=id_product) 
-    person_id,rol,rol_id,is_active = get_context(request)
-    context = [person_id, rol, rol_id, is_active]
-    promotionType = PromotionType.objects.get(id=0) # semanal
-    owner = Owner.objects.get(person = person_id)
-    time = date.today()
-    endtime = (time + timedelta(days=7))
-    print(promotionType)
-    promocion = Promotion.objects.create(owner= owner,shop=  None,startDate = time, endDate = endtime,promotionType = promotionType, product = product)
-    return render(request, 'promotionproduct.html', {'promocion':promocion, 'context':context})
+    try:
+        product = get_object_or_404(Product, pk=id_product) 
+        person_id,rol,rol_id,is_active = get_context(request)
+        context = [person_id, rol, rol_id, is_active]
+        promotion = Promotion.objects.filter(product=product).exists()
+        if (not(promotion) and str(product.shop.owner.person.id) == person_id):
+            promotionType = PromotionType.objects.get(id=0) # semanal
+            owner = Owner.objects.get(person = person_id)
+            time = date.today()
+            endtime = (time + timedelta(days=7))
+            promocion = Promotion.objects.create(owner= owner,shop=  None,startDate = time, endDate = endtime,promotionType = promotionType, product = product)
+            # return render(request, 'promotionproduct.html', {'promocion':promocion, 'context':context})
+            data = {
+                    'url': ""
+                }
+            return JsonResponse(data)
+        else:
+            return render(request, 'prohibido.html', {'context':context})
+    except:
+        return render(request, 'prohibido.html')
 
 def promotion_month_product(request, id_product):
+    try:
+        product = get_object_or_404(Product, pk=id_product) 
+        person_id,rol,rol_id,is_active = get_context(request)
+        context = [person_id, rol, rol_id, is_active]
+        promotion = Promotion.objects.filter(product=product).exists()
+        if (not(promotion) and str(product.shop.owner.person.id) == person_id):
+            promotionType = PromotionType.objects.get(id=1) # mensual
+            owner = Owner.objects.get(person = person_id)
+            time = date.today()
+            endtime = (time + timedelta(days=30))
 
-    product = get_object_or_404(Product, pk=id_product) 
-    person_id,rol,rol_id,is_active = get_context(request)
-    context = [person_id, rol, rol_id, is_active]
-    promotionType = PromotionType.objects.get(id=1) # mensual
-    owner = Owner.objects.get(person = person_id)
-    time = date.today()
-    endtime = (time + timedelta(days=30))
-
-    print(promotionType)
-
-    promocion = Promotion.objects.create(owner= owner,shop=  None,startDate = time, endDate = endtime,promotionType = promotionType, product = product)
-    return render(request, 'promotionproduct.html', {'promocion':promocion,'context':context})
-
+            promocion = Promotion.objects.create(owner= owner,shop=  None,startDate = time, endDate = endtime,promotionType = promotionType, product = product)
+            data = {
+                    'url': ""
+                }
+            return JsonResponse(data)
+        else:
+                return render(request, 'prohibido.html', {'context':context})
+    except:
+        return render(request, 'prohibido.html')
 
 def threads_list(request):
     person_id, rol, rol_id, is_active = get_context(request)
@@ -200,39 +215,56 @@ def forumMessages_list(request,id_thread):
         return render(request, 'thread.html', {'forumMessages':forumMessages,'threadName':threadName, 'context':context})
 
 def promotion_week_shop(request, id_shop):
-
-    shop = get_object_or_404(Shop, pk=id_shop) 
-    person_id, rol, rol_id, is_active = get_context(request)
-    context = [person_id, rol, rol_id, is_active]
-    promotionType = PromotionType.objects.get(id=0)
-    owner = Owner.objects.get(person = person_id)
-    time = date.today()
-    endtime = (time + timedelta(days=7))
-    print(promotionType)
-    promocion = Promotion.objects.create(owner= owner,shop =  shop,startDate = time, endDate = endtime,promotionType = promotionType, product = None)
-    #return render(request, 'promotionshop.html', {'promocion':promocion, 'context':context})
-    data = {
-            'url': ""
-        }
-    return JsonResponse(data)
+    try:
+        shop = get_object_or_404(Shop, pk=id_shop)
+        promotion = Promotion.objects.filter(shop=shop).exists()
+        person_id, rol, rol_id, is_active = get_context(request)
+        context = [person_id, rol, rol_id, is_active]
+        if (not(promotion) and str(shop.owner.person.id) == person_id):
+            # person_id, rol, rol_id, is_active = get_context(request)
+            # context = [person_id, rol, rol_id, is_active]
+            promotionType = PromotionType.objects.get(id=0)
+            owner = Owner.objects.get(person = person_id)
+            time = date.today()
+            endtime = (time + timedelta(days=7))
+            print(promotionType)
+            promocion = Promotion.objects.create(owner= owner,shop =  shop,startDate = time, endDate = endtime,promotionType = promotionType, product = None)
+            #return render(request, 'promotionshop.html', {'promocion':promocion, 'context':context})
+            data = {
+                    'url': ""
+                }
+            return JsonResponse(data)
+        else:
+            return render(request, 'prohibido.html', {'context':context})
+    except:
+        return render(request, 'prohibido.html')
 
 
 def promotion_month_shop(request, id_shop):
 
-    shop = get_object_or_404(Shop, pk=id_shop) 
-    person_id, rol, rol_id, is_active = get_context(request)
-    context = [person_id, rol, rol_id, is_active]
-    promotionType = PromotionType.objects.get(id=1)
-    owner = Owner.objects.get(person = person_id)
-    time = date.today()
-    endtime = (time + timedelta(days=30))
-    print(promotionType)
-    promocion = Promotion.objects.create(owner= owner,shop =  shop,startDate = time, endDate = endtime,promotionType = promotionType, product = None)
-    data = {
-            'url': ""
-        }
-    return JsonResponse(data)
-
+    try:
+        shop = get_object_or_404(Shop, pk=id_shop)
+        promotion = Promotion.objects.filter(shop=shop).exists()
+        person_id, rol, rol_id, is_active = get_context(request)
+        context = [person_id, rol, rol_id, is_active]
+        if (not(promotion) and str(shop.owner.person.id) == person_id):
+        # shop = get_object_or_404(Shop, pk=id_shop) 
+        # person_id, rol, rol_id, is_active = get_context(request)
+        # context = [person_id, rol, rol_id, is_active]
+            promotionType = PromotionType.objects.get(id=1)
+            owner = Owner.objects.get(person = person_id)
+            time = date.today()
+            endtime = (time + timedelta(days=30))
+            print(promotionType)
+            promocion = Promotion.objects.create(owner= owner,shop =  shop,startDate = time, endDate = endtime,promotionType = promotionType, product = None)
+            data = {
+                    'url': ""
+                }
+            return JsonResponse(data)
+        else:
+            return render(request, 'prohibido.html', {'context':context})
+    except:
+        return render(request, 'prohibido.html')
 
 def list_shop(request):
     person_id, rol, rol_id, is_active = get_context(request)
@@ -244,7 +276,10 @@ def list_shop(request):
 def shop_details(request, id_shop):
     shop = get_object_or_404(Shop, pk=id_shop)
     products = Product.objects.filter(shop=shop)
-    promotion = Promotion.objects.filter(shop=shop).exists()
+    promotionShop = Promotion.objects.filter(shop=shop).exists()
+    productsPromotion = {}
+    for prod in products:
+        productsPromotion[prod] = not(Promotion.objects.filter(product=prod).exists())
     try:
         person_id, rol, rol_id, is_active = get_context(request)
         context = [person_id, rol, rol_id, is_active]
@@ -253,7 +288,9 @@ def shop_details(request, id_shop):
         rol = 'User no registrado'
         context = [person_id, rol]
 
-    return render(request, 'shop_detail.html', {'shop': shop, 'products': products, 'context': context, 'promotion': not(promotion)})
+    print(productsPromotion)
+
+    return render(request, 'shop_detail.html', {'shop': shop, 'products': products, 'context': context, 'promotionShop': not(promotionShop), 'productsPromotion': productsPromotion})
 
 def get_chats_list(request):
     ''' Muestra una lista de todos los chats que el usuario activo, sea user u owner, tenga. \n
@@ -402,7 +439,6 @@ def list_booking_owner(request):
         return render(request, 'prohibido.html')
 
 def accept_booking(request):
-    print(request.POST.get('id'))
     booking = Booking.objects.filter(id=request.POST.get('id')).update(isAccepted=True)
     data = {
             'url': "/shop/bookings/"
