@@ -46,7 +46,7 @@
         </div>
         {% if context.1 == 'Owner' %}
           <h1>Efectivamente, soy un owner</h1>
-        {endif}
+        {% endif %}
         <div class="col-6">          
           <h4 class="section-title"> Productos </h4>          
             <div class="product__container bd-grid">
@@ -104,8 +104,7 @@
             <button id="boton2" onclick="vaciarCarrito()">Vaciar Carrito</button>
             {% csrf_token %}
             <input id="submit" type="button" value="Reservar" onclick="reserva()"/>
-        
-
+            <button class="button-light"><a style="text-decoration: none;" class="button-light" href="{{shop.id}}/reviews"> Valoraciones </a></button>
         </div>
       </div>
   </div>
