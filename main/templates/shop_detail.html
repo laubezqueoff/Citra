@@ -1,0 +1,250 @@
+{% extends 'base.html'%}
+{% load static %}
+
+
+ {% block cabecera %}
+<link rel="stylesheet" href="{% static 'css/style_shop.css' %}"/>
+<link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'> 
+{% endblock %}
+{% block contenido %}
+<main class="l-main">
+  
+  <div class="container">
+      <div class="row">
+        <img src="{% static 'images/tienda_tienda.jpg' %}">
+      </div>
+      <div class="row">
+        <div class="col">
+        <h4 class="section-title">Categorías</h4>
+          <nav class="nav flex-column">
+            <a class="nav-link active" aria-current="page" href="#">Alimentación</a>
+            <a class="nav-link" href="#">Higiene</a>
+            <a class="nav-link" href="#">Moda</a>
+          </nav>
+        </div>
+        <div class="col-6">          
+          <h4 class="section-title"> Productos </h4>          
+            <div class="product__container bd-grid">
+              <div class="row">
+                {% for prod, promotionProduct in productsPromotion.items %}
+                  <div class="col">
+                    <article class="product">
+                      <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
+                      <p id = "nombre{{prod.id}}">{{prod.name}}</p>
+                      <p id = "precio{{prod.id}}">{{prod.price}}</p>
+                      {% if context.1 == 'User' %}
+                        <button id="boton" onclick="añadir({{prod.id}})">Añadir</button>
+                      {% elif context.1 == 'Owner' and promotionProduct and prod.shop.owner.person.id|stringformat:"i" == context.0 %}
+                        <button id="boton" onclick="promocionarProductoSemanal({{prod.id}})">Promocionar Semanal</button>
+                        <button id="boton" onclick="promocionarProductoMensual({{prod.id}})">Promocionar Mensual</button>
+                      {% else %}
+                      {% endif %}
+                    </article>
+                  </div>
+                {% empty %}
+                <article class="product">
+                  <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
+                  <span class="product__name"> Manzana </span>
+                  <span class="product__price"> 3€/kg </span>
+                  <a href="" class="button-light"> Añadir </a>
+                </article>
+                <article class="product">
+                  <img src="{% static 'images/naranja.jpg' %}" alt ="" class="product__img">
+                  <span class="product__name"> Naranja </span>
+                  <span class="product__price"> 2€/kg </span>
+                  <a href="" class="button-light"> Añadir </a>
+                </article>
+              </div>
+              <div class="column">
+                <article class="product">
+                  <img src="{% static 'images/kiwi.jpg' %}" alt ="" class="product__img">
+                  <span class="product__name"> Kiwi </span>
+                  <span class="product__price"> 5€/kg </span>
+                  <a href="" class="button-light"> Añadir </a>
+                </article>
+                {% endfor %}
+              </div>
+            </div>
+        </div>
+
+        <div class="col">
+          
+            <h4 class="section-title">Info</h4>
+            <p>Horario: L-S 9:30-20:30</p>
+            <p>Dirección: {{shop.address}}</p>
+         {% if context.1 == 'User' %}
+            <h4 class="section-title">Cesta</h4>
+            <table id = "table">
+              <tr>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Cantidad</th>
+              </tr>
+              <tbody id='tbody'></tbody>
+            </table>
+            <button id="boton2" onclick="vaciarCarrito()">Vaciar Carrito</button>
+            {% csrf_token %}
+            <input id="submit" type="button" value="Reservar" onclick="reserva()"/>
+            <button class="button-light"><a style="text-decoration: none;" class="button-light" href="{{shop.id}}/reviews"> Valoraciones </a></button>
+            <button class="button-light"><a style="text-decoration: none;" class="button-light" href="{% url 'newChat' shop.pk %}"> Iniciar Chat </a></button>
+
+            {% endif %}
+          {% if context.1 == 'Owner' and promotionShop and shop.owner.person.id|stringformat:"i" == context.0 %}
+            {% comment %} <button onclick="location.href='{% url 'promotion_week_shop' shop.id %}'">
+              Promociona tu tienda (semanal)
+            </button> {% endcomment %}
+            <button onclick="promocionarTiendaSemanal({{shop.id}})">
+              Promociona tu tienda (semanal)
+            </button>
+              <br>
+            <button onclick="promocionarTiendaMensual({{shop.id}})">
+              Promociona tu tienda (mensual)
+            </button>
+          {% endif %}
+        </div>
+      </div>
+  </div>
+</main>
+
+<script>
+  function promocionarProductoSemanal (id_product) {
+    data = {
+        id_product: id_product,
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+    }
+    url = window.location.origin + '/product/' + id_product + '/promotionweekproduct'
+    $.ajax({
+        url: url,
+        data: data,
+        type: 'POST',
+        success: function (data) {
+            confirm("Promocion realizada")
+            window.location.replace(window.location.origin + data.url);
+        }
+    });
+  }
+
+  function promocionarProductoMensual (id_product) {
+    data = {
+        id_product: id_product,
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+    }
+    url = window.location.origin + '/product/' + id_product + '/promotionmonthproduct'
+    $.ajax({
+        url: url,
+        data: data,
+        type: 'POST',
+        success: function (data) {
+            confirm("Promocion realizada")
+            window.location.replace(window.location.origin + data.url);
+        }
+    });
+  }
+  function promocionarTiendaSemanal (id_shop) {
+    data = {
+        id_shop: id_shop,
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+    }
+    url = window.location.origin + '/shops/' + id_shop + '/promotionweekshop'
+    console.log(url)
+    $.ajax({
+        url: url,
+        data: data,
+        type: 'POST',
+        success: function (data) {
+            confirm("Promocion realizada")
+            window.location.replace(window.location.origin + data.url);
+        }
+    });
+  }
+
+  function promocionarTiendaMensual (id_shop) {
+    data = {
+        id_shop: id_shop,
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+    }
+    url = window.location.origin + '/shops/' + id_shop + '/promotionmonthshop'
+    console.log(url)
+    $.ajax({
+        url: url,
+        data: data,
+        type: 'POST',
+        success: function (data) {
+            confirm("Promocion realizada")
+            window.location.replace(window.location.origin + data.url);
+        }
+    });
+  }
+
+  function añadir (id) {
+    var nombre = document.getElementById('nombre'+id).innerHTML
+    var precio = document.getElementById('precio'+id).innerHTML
+    var table = document.getElementById('tbody');
+    var nombres = []
+    for (let i = 0; i < document.getElementsByClassName('nombreProducto').length; i++) {
+            nombres.push(document.getElementsByClassName('nombreProducto')[i].innerText)
+        }
+    if(!nombres.includes(nombre)) {
+        var row = table.insertRow(-1);
+        var cell1 = row.insertCell(-1);
+        var cell2 = row.insertCell(1);
+        var cell3 = row.insertCell(2);
+        var cell4 = row.insertCell(3);
+        cell1.innerHTML = nombre;
+        cell1.classList.add('nombreProducto');
+        cell1.classList.add('tablacss');
+        cell2.innerHTML = precio;
+        cell2.setAttribute('id','precioProducto' + id);
+        cell3.innerHTML = 1;
+        cell3.setAttribute('id','cantidadProducto' + id);
+        cell3.classList.add('cantidadProducto');
+        cell4.innerHTML = id;
+        cell4.setAttribute('id','idProducto' + id);
+        cell4.classList.add('idProducto');
+        document.getElementById("idProducto" + id).style.display = "none";
+    } else {
+        document.getElementById('cantidadProducto' + id).innerText = parseInt(document.getElementById('cantidadProducto' + id).innerText) + 1
+        document.getElementById('precioProducto' + id).innerText = Number(precio) * Number(document.getElementById('cantidadProducto' + id).innerText)
+    }
+}
+
+function vaciarCarrito() {
+    if (confirm("¿Quieres vaciar el carrito?")) {
+        document.getElementById('tbody').remove();
+        var table = document.getElementById('table');
+        var tbody = document.createElement('tbody');
+        tbody.setAttribute('id','tbody')
+        table.appendChild(tbody)
+    }
+}
+
+function reserva() {
+    var array = []
+    var objeto = {}
+    console.log(document.getElementsByClassName('idProducto'))
+    console.log(document.getElementsByClassName('cantidadProducto'))
+    for (let i = 0; i < document.getElementsByClassName('idProducto').length; i++) {
+        objeto.id = parseInt(document.getElementsByClassName('idProducto')[i].innerText)
+        objeto.cantidad = parseInt(document.getElementsByClassName('cantidadProducto')[i].innerText)
+        array.push(objeto)
+        objeto = {}
+    }
+    data = {
+        key_1_string: JSON.stringify(array),
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+    }
+    $.ajax({
+        url: 'booking/',
+        data: data,
+        type: 'POST',
+        success: function (data) {
+            confirm("Reserva realizada")
+            window.location.replace(window.location.origin + data.url);
+        }
+    });
+};
+</script>
+
+<script src="{% static 'js/main.js' %}"
+{% endblock %}
+

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block cabecera %}
+  <link rel="stylesheet" href="{% static 'css/style_forbidden.css' %}"/>
+  <title>Prohibido / Citra</title>
+{% endblock %}
+
+{% block contenido %}
+<div class="error-page">
+  <div>
+    <h1 style="margin-top:-300px!important;" data-h1="403">403</h1>
+    <h2>No tiene acceso a la página</h2>
+    <button class="more-link" type='submit' onclick="history.back()" class="btn"> Volver </button>  
+  </div>
+</div>
+{% endblock %}
+</html>

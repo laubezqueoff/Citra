@@ -1,6 +1,12 @@
 {% extends 'base.html' %}
 {% load static %}
 
+
+
+{% block cabecera %}
+  <link rel="stylesheet" href="{% static 'css/style_chat.css'%}"/>  
+{% endblock %}
+
 {% block title %}
 Chat / Citra
 {% endblock %}
@@ -16,32 +22,26 @@ Chat / Citra
                 <div class="container user">
                     <img src="/static/images/user.png"  class="right" style="float:left"> 
                     <p>{{m.text}}</p>
-                    <span class="time-right">8:55 AM, Today</span>                 
+                    <span class="time-right">{{m.date}}</span>                 
                                        
                 </div>        
         {% else %}
                 <div class="container shop">                    
                     <img src="/static/images/shop.png" alt="Avatar" style="float:right">                                           
                     <p style="float:right">{{m.text}}</p>
-                    <span class="time-left" style="float:down">8:40 AM, Today</span>                  
+                    <span class="time-left" style="float:down">{{m.date}}</span>                
                 </div>
         {% endif %}
     {% empty %}
-        <h2>Pregunta a la tienda!</h2>
         <h3>No hay mensajes</h3>
     {% endfor %}
             <div class="card-footer">
                 <div class="input-group">
-                <!--<form method="POST" id="form" action="">-->
-                {% csrf_token %}
-
-                    <input type="text" class="form-control form-control-lg"  placeholder="Escribe..." />
-                    <!--{{form.as_p}} -->
-                        
-                    <input type='submit' class="btn btn-outline-dark" value='Enviar' style="float:left">
-                        
-                        
-                <!--</form>-->        
+                <form method='POST' class="input-group">{% csrf_token %}
+                    <input type="text" class="form-control form-control-lg"  placeholder="Escribe..." name="text" id="text" />
+                    <input type='submit' class="btn btn-outline-dark" style="float:left;background-color: #ffd3b6;">
+                </form>
+       
                 </div>
             </div>
         </div>
@@ -49,3 +49,4 @@ Chat / Citra
 
  
 {% endblock %}
+</html>

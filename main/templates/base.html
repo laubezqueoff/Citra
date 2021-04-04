@@ -3,100 +3,13 @@
 <!DOCTYPE html>
 
 <html>
-<head>
+<head>{% block cabecera %} {% endblock %}</head>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
 
-<title>{% block title %} Citra {% endblock %}</title>
-
-
-
-<link rel="shortcut icon" href="{% static 'images/CitraBolsa.png' %}" />
-<link rel="stylesheet" href="{% static 'css/style_login.css' %}"/>
-<link rel="stylesheet" href="{% static 'css/style_chat.css'%}"/>
-<link rel="preconnect" href="https://fonts.gstatic.com">
-<link href="https://fonts.googleapis.com/css2?family=Spartan:wght@300;600&display=swap" rel="stylesheet">
-
-
- <!-- Required meta tags -->
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
-</head>
-<style>
-</style>
-<header>
-    <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #ffd3b6;" >
-        <div class="container-fluid" style="">
-            <a class="navbar-brand" href="#"> 
-                <img src="{% static 'images/Citra.png' %}" style = "width: 95px; height = 95px; background-color: #ffd3b6; margin-left: 30px;">
-
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent" style="align:center; position:static;">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="margin:0 auto;">
-                <li class="nav-item" style="margin: auto; font-size:20px;">
-                    <a class="nav-link active" aria-current="page" href="/">Inicio</a>
-                    <input type="hidden" id="context"  name="context" value="{{context}}">
-
-                </li>
-                <li class="nav-item nav-link" style="margin-left: 25px; font-size:20px; font-weight: bold; text-align:center;">|</li>
-                <li class="nav-item" style="margin-left: 25px; font-size:20px;">
-                <a class="nav-link" href="./search.html">Buscar</a>
-                </li>
-                <li class="nav-item nav-link" style="margin-left: 25px; font-size:20px; font-weight: bold; text-align:center;">|</li>
-
-                <li class="nav-item" style="margin-left: 25px; font-size:20px;" name="threads">
-                    <a class="nav-link" href="/threads" name="threads">Foro</a>
-                </li>
-                <li class="nav-item nav-link" style="margin-left: 25px; font-size:20px; font-weight: bold; text-align:center;">|</li>
-                <li class="nav-item" style="margin-left: 25px; font-size:20px;">
-                <a class="nav-link" href="./about.html" >Sobre nosotros</a>
-                </li>
-            </ul>
-            <ul class="navbar-nav">
-                {% if context.3 %}
-                    <li class="nav-item" style="border: 2px solid rgba(0,0,0,.55); border-radius: 8px; margin-right: 30px;font-size:20px;">
-                        <a class="nav-link" href="/logout" >Cerrar sesión</a>
-                {% else %}
-                    <li class="nav-item" style="border: 2px solid rgba(0,0,0,.55); border-radius: 8px; margin-right: 30px;font-size:20px;">
-                        <a class="nav-link" href="/login" >Iniciar sesión</a>  
-                {% endif %}
-
-                </li>
-            </ul>
-            </div>
-        </div>
-    </nav>
-</header>
+{% include "header.html" %}
 <body class="bg-color">
-
-
-
-
 {% block contenido %}  {% endblock %}
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
-
-
 </body>
-<footer style="background-color: #ffd3b6; position: absolute; bottom: 0; width: 100%; height: 30px; color: #000; text-align:center; align:center;">
-  <ul style="position:relative">
-    <il style="margin-left: 0px;">Copyright 2021 por Citra</il>
-    <il style="margin-left: 15px;">||</il>
-    <il style="margin-left: 15px;">
-        <a href="#" style="color: #000">Políticas de Privacidad</a>
-        ·
-        <a href="#" style="color: #000">Cookies</a>
-        ·
-        <a href="#" style="color: #000">Términos y Condiciones</a>
-    </il>
-    <il style="margin-left: 15px;">||</il>
-    <il style="margin-left: 15px;">Encuéntranos:</il>
-    <il style="margin-left: 15px;"><a href="https://twitter.com/CitraISPP"><img src="{% static 'images/twitter.png' %}"  style = "width: 20px; height = 20px;"></a></il>
-    <il style="margin-left: 5px;"><a href="https://www.instagram.com/citraispp/"><img src="{% static 'images/insta.png' %}"  style = "width: 25px; height = 25px;"></a></il>
-
-  </ul>
-</footer>
+{% include "footer.html" %}
 </html>

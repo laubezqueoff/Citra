@@ -91,9 +91,11 @@ class Promotion(models.Model):
 class Booking(models.Model):
     startDate = models.DateField()
     endDate = models.DateField()
-    description = models.CharField(max_length=20)
     title = models.CharField(max_length=20)
-
+    quantity = models.IntegerField()
+    isAccepted = models.BooleanField()
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
 class Review(models.Model):
     rating = models.IntegerField(range(1, 5))
@@ -115,6 +117,7 @@ class ChatMessage(models.Model):
     text = models.TextField(max_length=60)
     chat = models.ForeignKey(Chat, on_delete=models.CASCADE)
     isSentByUser = models.BooleanField()
+    date = models.DateField(null=True)
 
 
 ## MODELOS DE FORO Y MENSAJES ###############################################
