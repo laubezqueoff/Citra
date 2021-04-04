@@ -149,6 +149,9 @@ STATIC_ROOT = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static',
 STATICFILES_DIRS = (
     os.path.join(os.path.dirname(os.path.dirname(__file__)), 'static'),
 )
+
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+
 django_heroku.settings(locals())
 
 LOGGING = {
