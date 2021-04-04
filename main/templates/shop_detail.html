@@ -3,8 +3,8 @@
 
 
  {% block cabecera %}
-<link rel="stylesheet" href="{% static 'css/style_shop.css' %}"/>
-<link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'> 
+  <link rel="stylesheet" href="{% static 'css/style_shop.css' %}"/>
+  <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'> 
 {% endblock %}
 {% block contenido %}
 <main class="l-main">
@@ -42,26 +42,6 @@
                     </article>
                   </div>
                 {% empty %}
-                <article class="product">
-                  <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
-                  <span class="product__name"> Manzana </span>
-                  <span class="product__price"> 3€/kg </span>
-                  <a href="" class="button-light"> Añadir </a>
-                </article>
-                <article class="product">
-                  <img src="{% static 'images/naranja.jpg' %}" alt ="" class="product__img">
-                  <span class="product__name"> Naranja </span>
-                  <span class="product__price"> 2€/kg </span>
-                  <a href="" class="button-light"> Añadir </a>
-                </article>
-              </div>
-              <div class="column">
-                <article class="product">
-                  <img src="{% static 'images/kiwi.jpg' %}" alt ="" class="product__img">
-                  <span class="product__name"> Kiwi </span>
-                  <span class="product__price"> 5€/kg </span>
-                  <a href="" class="button-light"> Añadir </a>
-                </article>
                 {% endfor %}
               </div>
             </div>
@@ -245,6 +225,5 @@ function reserva() {
 };
 </script>
 
-<script src="{% static 'js/main.js' %}"
 {% endblock %}
 

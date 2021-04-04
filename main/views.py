@@ -373,7 +373,7 @@ def get_chat_new(request, id_shop):
         GET     -> Muestra los mensajes del chat, de las dos partes
     '''
 
-    person_id,rol,rol_id,is_active= get_context(request)
+    person_id,rol,rol_id,is_active = get_context(request)
     context = [person_id,rol,rol_id,is_active]
     print(rol)
     if rol =='Admin' or rol=='Owner':
@@ -440,7 +440,10 @@ def list_booking_user(request):
     if (is_active):
         user = CustomUser.objects.get(id=person_id)
         bookings = Booking.objects.filter(user=user).filter(isAccepted=False)
-        return render(request, 'bookings_user.html', {'bookings': bookings, 'context': context})
+        bookingsQuantity = {}
+        for book in bookings:
+            bookingsQuantity[book] = book.product.price * book.quantity
+        return render(request, 'bookings_user.html', {'bookingsQuantity': bookingsQuantity, 'context': context})
     else:
         return render(request, 'prohibido.html')
 
@@ -531,4 +534,14 @@ def review_form(request, id_shop):
                 return render(request, 'review.html', {'form':form, 'context':context}) #de vuelta al formulario a rellenarlo correctamente
     else:
         return render(request, 'prohibido.html', {'context':context})
+
+def about(request):
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    return render(request, 'about.html', {"context": context})
+
+def error_404(request, exception):
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    return render(request,'error.html', {'context': context})
         
