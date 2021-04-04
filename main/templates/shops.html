@@ -13,28 +13,17 @@
     
     <div class="container">
         <div class="row">
-            <h4 class="section-title">Tiendas promocionadas</h4>
+            <h4 class="section-title">Tiendas</h4>
         </div>
         <div class="row">                            
             <div class="product__container bd-grid">
                 {% for shop in shops %}
                     <article class="product">
                         <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
-                        <span class="product__name"> {{shop.name}} </span>
-                        <span class="product__price"> 3€/kg </span>
-                        <a href="" class="button-light"> Añadir </a>
+                        <a class="product__name" href="{% url 'shop' shop.pk %}"> {{shop.name}} </a>
+                        <p class="product__name"> {{shop.description}} </p>
                     </article>
                 {% empty %}
-                    <article class="product">
-                        <img src="{% static 'images/shop.png' %}" alt ="" class="product__img">
-                        <span class="product__name"> {{shop.name}} </span>
-                        <a href="" class="button-light"> Mercería Paquita </a>
-                    </article>
-                    <article class="product">
-                        <img src="{% static 'images/shop.png' %}" alt ="" class="product__img">
-                        <span class="product__name"> {{shop.name}} </span>
-                        <a href="" class="button-light"> Mercería Paquita </a>
-                    </article>
                 {% endfor %}
             </div>
         </div>

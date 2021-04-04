@@ -127,7 +127,7 @@ img{
     margin-bottom: var(--mb-4);
     text-align: center;
     letter-spacing: .1rem;
-    margin-top: 3rem;
+    margin-top: 2rem;
 }
 
 .section-title::after{
@@ -175,9 +175,7 @@ img{
     background-color: var(--dark-color-lighten);
     border-radius: .5rem;
     transition: .3s;
-    height: 300px;
-    width: 500px;
-    margin-top: 2rem;
+    float: left;
 
 }
 

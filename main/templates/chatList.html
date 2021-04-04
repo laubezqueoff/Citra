@@ -21,7 +21,7 @@
     {% if context.1 == 'User' %}
     <tr>
       <th scope="row"></th>
-      <td><img src="{{row.shop.picture}}" alt="Avatar" style="float:left">  </td>
+      {% comment %} <td><img src="{% static 'images/manzana.jpg' %}" alt="Avatar" style="float:left">  </td> {% endcomment %}
       <td>{{row.shop.name}}</td>
       <td>{{row.shop.shopType.name}}</td>
       <td><a href= "{% url 'chat' row.id %}">Accede al chat</a></td>
@@ -30,7 +30,7 @@
     <tr>
       <th scope="row"></th>
       <td>{{row.shop.name}}</td>
-      <td>{{row.user.username}}</td>
+      <td>{{row.user.person.username}}</td>
       <td><a href= "{% url 'chat' row.id %}">Accede al chat</a></td>
     </tr>
     {% endif %}

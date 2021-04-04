@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+ {% block cabecera %}
+<link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'> 
+{% endblock %}
+{% block contenido %}
+<figure class="text-center">
+<h3>Nuestra idea responde a la necesidad de acercar el comercio tradicional al público de
+internet. Actualmente las formas que tienen las pequeñas empresas de llegar al gran
+público de internet se resume a la creación de páginas web, a menudo tediosas de
+desarrollar o demasiado caras.
+En este momento de incertidumbre debido al covid es
+fundamental ofrecer alternativas a este tipo de empresas, que se encuentran indefensas
+ante la pandemia.</h3>
+<h3>Nosotros proponemos un servicio, donde el propietario de un pequeño negocio pueda crear
+un escaparate virtual de forma simple y en pocos pasos. Gracias a esto las personas
+interesadas en los productos de una tienda podrán reservarlos en pocos clicks.
+Nuestra aplicación atraerá a clientes(empresa) de toda españa debido a la sencillez y
+rapidez con la que se pueden registrar. También disfrutarán de nuevos usuarios que puedan
+reservar productos y de las valoraciones de estos, que luego podrán contar sus experiencia
+de compra en redes sociales en pocos clicks</h3>
+
+<h3>Nuestras redes sociales: 
+<a href="https://twitter.com/CitraISPP"><img src="{% static 'images/twitter.png' %}"  style = "width: 20px; height = 20px;"></a>
+<a href="https://www.instagram.com/citraispp/"><img src="{% static 'images/insta.png' %}"  style = "width: 25px; height = 25px;"></a>
+</h3>
+</figure>
+{% endblock %}
