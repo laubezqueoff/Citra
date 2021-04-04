@@ -34,7 +34,13 @@
             <div class="px-lg-5 pt-lg-4 pb-lg-3 p-4 w-100 mb-auto">
             </div>
             <div class="px-lg-5 py-lg-4 p-4 w-100 align-self-center">
-                <h1 class="mb-4 fw-bold">Bienvenido a Citra</h1>
+                  <h1 class="mb-4 fw-bold">Bienvenido a Citra</h1>
+
+                {% if msg %}
+                <div class="pb-4 w-100 fw-bold align-self-center ">
+                    {{msg}}
+                </div>
+                {% endif%}
                 <form method="POST">{% csrf_token %}
                     <div class="mb-4">
                         <label for="exampleInputEmail1" class="form-label fw-bold">Usuario</label>
