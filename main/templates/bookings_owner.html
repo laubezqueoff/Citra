@@ -15,12 +15,11 @@
                 <div class="col">
                     <article class="product">
                         <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
-                        <span class="product__name"> {{book.title}} </span>
-                        <span class="product__price"> {{book.product}} </span>
+                        <span class="product__price"> {{book.product.name}} </span>
                         <span class="product__price"> {{book.product.price}} </span>
-                        <span class="product__price"> {{book.user.name}} </span>
+                        <span class="product__price"> {{book.user.person.name}} </span>
+                        <button onclick="aceptar({{book.id}})">Aceptar</button>
                         <a href="" class="button-light"> Cancelar </a>
-                        <a href="" class="button-light"> Aceptar </a>
                     </article>
                 </div>
                 {% empty %}
@@ -45,6 +44,23 @@
     </div>
 </main>
 
-
+<script>
+    function aceptar(id) {
+        data = {
+            id: id,
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+        }
+        $.ajax({
+            url: 'acceptbookings/',
+            data: data,
+            type: 'POST',
+            success: function (data) {
+                console.log(window.location.origin)
+                console.log(window.location.origin + data.url)
+                window.location.replace(window.location.origin + data.url);
+            }
+        });
+    }
+</script>
 
 {% endblock %}

@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block cabecera %}<link rel="stylesheet" href="{% static 'css/style_reviews.css' %}"/>
+<title>Valoraciones / Citra</title>
+{% endblock %}
+{% block contenido %}
+<div class="" style="margin-left: 45%!important; margin-top: 20px!important"><button class="justify-content-center button-light"><a style="text-decoration: none;" class="button-light" href="new"> Añade un comentario </a></button></div>
+    {% for row in reviews %}
+<div class="container mt-5" style="margin-top:2px!important;">
+    <div class="d-flex justify-content-center row">
+        <div class="col-md-6">
+            <div class="bg-white comment-section">
+                <div class="d-flex flex-row user p-2"><img class="rounded-circle" src="{% static 'images/CitraBolsa.png' %}" width="50">
+                    <div class="d-flex flex-column ml-2"><span class="name font-weight-bold" style="margin-left:5px!important;">{{row.user.person.name}}</span>
+                    <span>{{row.date}}</span>
+                    </div>
+                </div>
+                <div class="mt-2 p-2">
+                    <span>{{row.title}}</span>
+                    <p class="comment-content">{{row.description}}</p>
+                    <span style="position:relative;">Puntuación: {{row.rating}} estrellas</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+    {% endfor %}
+
+{% endblock %}

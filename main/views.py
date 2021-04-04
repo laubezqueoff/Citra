@@ -3,11 +3,11 @@ import requests
 from datetime import date
 from django.shortcuts import render, redirect, get_object_or_404
 import urllib.request
+from main.forms import MessageForm, ReviewForm
 from django.http import Http404
-from main.forms import MessageForm
 import json
 from django.http import JsonResponse
-
+from datetime import timedelta
 
 
 def login(request):
@@ -150,18 +150,17 @@ def get_context(request):
     return person_id, rol, rol_id, is_active
 
 
-def promotion_product(request):
-    if request.method == 'GET':
-        return render(request, 'index.html') # redirección del botón
-    product = Product.objects.get(id=1)
+def promotion_product(request, id_product):
+
+    product = get_object_or_404(Product, pk=id_product) 
     person_id,rol,rol_id,is_active = get_context(request)
     promotionType = PromotionType.objects.get(id=0) # semanal
-    shop = Shop.objects.filter(owner = rol_id)
-    tienda = shop[0]
     owner = Owner.objects.get(person = person_id)
     time = date.today()
+    endtime = (time + timedelta(days=7))
 
-    promocion = Promotion.objects.create(owner= owner,shop=  None,startDate = time, endDate = time.replace(day=time.day+ 7),promotionType = promotionType, product = product)
+    promocion = Promotion.objects.create(owner= owner,shop=  None,startDate = time, endDate = endtime,promotionType = promotionType, product = product)
+    return render(request, 'promotionproduct.html', {'promocion':promocion})
 
 
 def threads_list(request):
@@ -184,19 +183,17 @@ def forumMessages_list(request,id_thread):
             forumMessages.append(m)
         return render(request, 'thread.html', {'forumMessages':forumMessages,'threadName':threadName})
 
-def promotion_shop(request):
-    if request.method == 'GET':
-        return render(request, 'index.html') # redirección del botón
-    product = Product.objects.get(id=1)
+def promotion_shop(request, id_shop):
+
+    shop = get_object_or_404(Shop, pk=id_shop) 
     person_id,rol,rol_id,is_active = get_context(request)
-    promotionType = PromotionType.objects.get(id=0) # semanal
-    shop = Shop.objects.filter(owner = rol_id)
-    tienda = shop[0]
+    promotionType = PromotionType.objects.get(id=0) # semanal HABRIA QUE MODIFICAR ESTO PARA QUE SE SELECCIONE EL TIPO DE LA PRMOCION
     owner = Owner.objects.get(person = person_id)
     time = date.today()
-
-    promocion = Promotion.objects.create(owner= owner,shop =  tienda,startDate = time, endDate = time.replace(day=time.day+ 7),promotionType = promotionType, product = None)
-
+    endtime = (time + timedelta(days=7))
+    
+    promocion = Promotion.objects.create(owner= owner,shop =  shop,startDate = time, endDate = endtime,promotionType = promotionType, product = None)
+    return render(request, 'promotionshop.html', {'promocion':promocion})
 
 def list_shop(request):
     shops = Shop.objects.all()
@@ -215,7 +212,7 @@ def shop_details(request, id_shop):
         rol = 'User no registrado'
         context = [person_id, rol]
 
-    return render(request, 'shopDetail.html', {'shop': shop, 'products': products, 'context': context})
+    return render(request, 'shop_detail.html', {'shop': shop, 'products': products, 'context': context})
 
 def get_chats_list(request):
     ''' Muestra una lista de todos los chats que el usuario activo, sea user u owner, tenga. \n
@@ -370,12 +367,13 @@ def booking(request):
         person_id, rol, rol_id, is_active = get_context(request)
         context = [person_id, rol, rol_id, is_active]
         user = CustomUser.objects.get(id=person_id)
+        print(json.loads(request.POST.get('key_1_string')))
         for reserva in json.loads(request.POST.get('key_1_string')):
             product = Product.objects.get(id=reserva['id'])
             Booking.objects.create(startDate=date.today(),endDate=date.today(), product=product,title='Prueba',quantity=reserva['cantidad'], isAccepted=False, user=user)
 
         data = {
-            'url': "/bookingsuser/"
+            'url': "user/bookings/"
         }
         return JsonResponse(data)
     except:
@@ -392,7 +390,7 @@ def list_booking_user(request):
         context = [person_id, rol, rol_id, is_active]
         user = CustomUser.objects.get(id=person_id)
         bookings = Booking.objects.filter(user=user).filter(isAccepted=False)
-        return render(request, 'bookingsuser.html', {'bookings': bookings})
+        return render(request, 'bookings_user.html', {'bookings': bookings, 'context': context})
     except:
         return render(request, 'prohibido.html')
 
@@ -404,18 +402,17 @@ def list_booking_owner(request):
         bookings = Booking.objects.filter(isAccepted=False)
         reservas = []
         for book in bookings:
-            kk = book.product.shop.owner.id
-            kk2 = owner.id
             if book.product.shop.owner.id == owner.id:
                 reservas.append(book)
-        return render(request, 'bookingsowner.html', {'bookings': reservas})
+        return render(request, 'bookings_owner.html', {'bookings': reservas, 'context': context})
     except:
         return render(request, 'prohibido.html')
 
 def accept_booking(request):
+    print(request.POST.get('id'))
     booking = Booking.objects.filter(id=request.POST.get('id')).update(isAccepted=True)
     data = {
-            'url': "/bookingsowner/"
+            'url': "/shop/bookings/"
         }
     return JsonResponse(data)
 
@@ -447,37 +444,73 @@ def booking(request):
         }
         return JsonResponse(data)
 
-        
 
-def list_booking_user(request):
-    try:
-        person_id, rol, rol_id, is_active = get_context(request)
-        context = [person_id, rol, rol_id, is_active]
-        user = CustomUser.objects.get(id=person_id)
-        bookings = Booking.objects.filter(user=user).filter(isAccepted=False)
-        return render(request, 'bookings_user.html', {'bookings': bookings})
-    except:
+def review_list(request, id_shop):
+    rol = get_context(request)[1]
+    shop = get_object_or_404(Shop, pk= id_shop)
+    if rol == "User":
+
+        reviews = []
+        for m in shop.review_set.all():
+            reviews.append(m)
+
+        return render(request, 'reviews.html', {'reviews':reviews}) #a la vista de todas las reviews
+    else:
         return render(request, 'prohibido.html')
 
-def list_booking_owner(request):
-    try:
-        person_id, rol, rol_id, is_active = get_context(request)
-        context = [person_id, rol, rol_id, is_active]
-        owner = Owner.objects.get(id=person_id)
-        bookings = Booking.objects.filter(isAccepted=False)
-        reservas = []
-        for book in bookings:
-            kk = book.product.shop.owner.id
-            kk2 = owner.id
-            if book.product.shop.owner.id == owner.id:
-                reservas.append(book)
-        return render(request, 'bookings_owner.html', {'bookings': bookings})
-    except:
-       return render(request, 'prohibido.html') 
+def review_form(request, id_shop):
+    rol,rol_id = get_context(request)[1:3]
+    shop = get_object_or_404(Shop, pk= id_shop)
+    if rol == "User":
+        if request.method == 'GET':
+            form = ReviewForm()
+            return render(request, 'review.html', {'form':form}) #al formulario vacio
+        if request.method == 'POST':  
+            form = ReviewForm(data=request.POST)         
+            if form.is_valid():
+                rating = form.cleaned_data['rating']
+                title = form.cleaned_data['title']
+                description = form.cleaned_data['description']
+                Review.objects.create(rating = rating, title = title, description = description, date = date.today(), user = CustomUser.objects.get(id=rol_id), shop = shop)
+                reviews = []
+                for m in shop.review_set.all():
+                    reviews.append(m)
+                return render(request, 'reviews.html', {'reviews':reviews}) #a la vista las reviews de la tienda
+            else:
+                return render(request, 'review.html', {'form':form}) #de vuelta al formulario a rellenarlo correctamente
+    else:
+        return render(request, 'prohibido.html')
+        
 
-def accept_booking(request):
-    booking = Booking.objects.filter(id=request.POST.get('id')).update(isAccepted=True)
-    data = {
-            'url': "/shop/bookings/accepted"
-        }
-    return JsonResponse(data)
+# def list_booking_user(request):
+#     try:
+#         person_id, rol, rol_id, is_active = get_context(request)
+#         context = [person_id, rol, rol_id, is_active]
+#         user = CustomUser.objects.get(id=person_id)
+#         bookings = Booking.objects.filter(user=user).filter(isAccepted=False)
+#         return render(request, 'bookings_user.html', {'bookings': bookings})
+#     except:
+#         return render(request, 'prohibido.html')
+
+# def list_booking_owner(request):
+#     try:
+#         person_id, rol, rol_id, is_active = get_context(request)
+#         context = [person_id, rol, rol_id, is_active]
+#         owner = Owner.objects.get(id=person_id)
+#         bookings = Booking.objects.filter(isAccepted=False)
+#         reservas = []
+#         for book in bookings:
+#             kk = book.product.shop.owner.id
+#             kk2 = owner.id
+#             if book.product.shop.owner.id == owner.id:
+#                 reservas.append(book)
+#         return render(request, 'bookings_owner.html', {'bookings': bookings})
+#     except:
+#        return render(request, 'prohibido.html') 
+
+# def accept_booking(request):
+#     booking = Booking.objects.filter(id=request.POST.get('id')).update(isAccepted=True)
+#     data = {
+#             'url': "/shop/bookings/accepted"
+#         }
+#     return JsonResponse(data)

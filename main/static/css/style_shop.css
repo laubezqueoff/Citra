@@ -165,6 +165,9 @@ img{
 
 }
 
+.tablacss{
+    color: red;
+}
 
 .product{
     position: relative;
@@ -177,6 +180,7 @@ img{
     transition: .3s;
     height: 300px;
     width: 200px;
+    float: left;
 
 }
 

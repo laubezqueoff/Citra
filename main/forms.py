@@ -4,3 +4,8 @@ from django.contrib.auth.forms import UserCreationForm
 
 class MessageForm(forms.Form):
     text = forms.CharField(label='Mensaje')
+
+class ReviewForm(forms.Form):
+    rating = forms.IntegerField(label='Puntuación')
+    title = forms.CharField(label='Título')
+    description = forms.CharField()
