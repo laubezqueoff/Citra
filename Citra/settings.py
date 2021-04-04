@@ -44,7 +44,7 @@ SECRET_KEY = '=%5ay3n(@vm@7r2ir(mi%z_*12yhax016lw%cgl$b2(i*cm^-u'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['127.0.0.1', 'https://citra-ispp.herokuapp.com/']
+ALLOWED_HOSTS = ['*']
 
 
 
