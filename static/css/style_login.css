@@ -33,7 +33,7 @@ body {
 }
 
 .img-1{
-    background-image: url('images/fruta.jpg');
+    background-image: url('../images/fruta.jpg');
     background-size: cover;
     background-position: center;
 }
