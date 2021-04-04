@@ -9,3 +9,4 @@ django-nose
 django_heroku
 gunicorn
 Pillow
+whitenoise
