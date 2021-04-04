@@ -19,19 +19,21 @@
         <div class="row ms-3">                            
             <div class="product__container bd-grid">
                 <div class="row">        
-                {% for shop in shops %}
-                    <article class="product">
-                        <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
-                        <span class="product__name"> {{shop.name}} </span>
-                        <span class="product__price"> 3€/kg </span>
-                        <a href="" class="button-light"> Añadir </a>
-                    </article>
+                {% for promotion in promotions_shops %}
+                    <div class="col-sm">
+                        <article class="product">
+                            <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
+                            <a class="product__name" href="{% url 'shop' promotion.shop.pk %}"> {{promotion.shop.name}} </a>
+                            <p class="product__name"> {{promotion.shop.description}} </p>
+                        </article>
+                    </div>
                 {% empty %}                    
                     <div class="col-sm">
                         <article class="product">
                             <img src="{% static 'images/shop.png' %}" alt ="" class="product__img">
-                            <span class="product__name"> {{shop.name}} </span>
-                            <a href="" class="button-light"> Mercería Paquita </a>
+                            <span class="product__name">  </span>
+                            <a href="" class="button-light">{{promotion.shop.name}} </a>
+                            <h1>Hol</h1>
                         </article>
                     </div>
                     <div class="col-sm">
@@ -73,13 +75,14 @@
         <div class="row ms-3">                            
             <div class="product__container bd-grid">
                 <div class="row">        
-                {% for shop in shops %}
-                    <article class="product">
-                        <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
-                        <span class="product__name"> {{shop.name}} </span>
-                        <span class="product__price"> 3€/kg </span>
-                        <a href="" class="button-light"> Añadir </a>
-                    </article>
+                {% for promotion_product in promotions_products %}
+                    <div class="col-sm">
+                        <article class="product">
+                            <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
+                            <a class="product__name"> {{promotion_product.product.name}} </a>
+                            <p class="product__name"> {{promotion_product.product.description}} </p>
+                        </article>
+                    </div>
                 {% empty %}                    
                     <div class="col-sm">
                         <article class="product">

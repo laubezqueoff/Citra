@@ -7,28 +7,6 @@
 <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'> 
 {% endblock %}
 {% block contenido %}
-  <!--<header class="l-header" id="header">
-    <nav class="nav bd-grid">
-      <div class="nav__toggle" id="nav-toggle">
-        <i class='bx bxs-grid'></i>
-      </div>
-      <a href="#" class="nav__logo">Roby</a>
-
-      <div class="nav__menu" id="nav-menu">
-        <ul class="nav__list">
-          <li class="nav__item"><a href="#" class="nav__link"></a></li>
-          <li class="nav__item"><a href="#" class="nav__link"></a></li>
-          <li class="nav__item"><a href="#" class="nav__link"></a></li>
-          <li class="nav__item"><a href="#" class="nav__link"></a></li>
-          <li class="nav__item"><a href="#" class="nav__link"></a></li>
-        </ul>
-      </div>
-
-      <div class="nav__shop">
-        <i class='bx bxs-shopping-bag' ></i>
-      </div>
-    </nav>
-  </header>-->
 <main class="l-main">
   
   <div class="container">
@@ -44,20 +22,23 @@
             <a class="nav-link" href="#">Moda</a>
           </nav>
         </div>
-        {% if context.1 == 'Owner' %}
-          <h1>Efectivamente, soy un owner</h1>
-        {% endif %}
         <div class="col-6">          
           <h4 class="section-title"> Productos </h4>          
             <div class="product__container bd-grid">
               <div class="row">
-                {% for prod in products %}
+                {% for prod, promotionProduct in productsPromotion.items %}
                   <div class="col">
                     <article class="product">
                       <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
                       <p id = "nombre{{prod.id}}">{{prod.name}}</p>
                       <p id = "precio{{prod.id}}">{{prod.price}}</p>
-                      <button id="boton" onclick="añadir({{prod.id}})">añadir</button>
+                      {% if context.1 == 'User' %}
+                        <button id="boton" onclick="añadir({{prod.id}})">Añadir</button>
+                      {% elif context.1 == 'Owner' and promotionProduct and prod.shop.owner.person.id|stringformat:"i" == context.0 %}
+                        <button id="boton" onclick="promocionarProductoSemanal({{prod.id}})">Promocionar Semanal</button>
+                        <button id="boton" onclick="promocionarProductoMensual({{prod.id}})">Promocionar Mensual</button>
+                      {% else %}
+                      {% endif %}
                     </article>
                   </div>
                 {% empty %}
@@ -91,7 +72,7 @@
             <h4 class="section-title">Info</h4>
             <p>Horario: L-S 9:30-20:30</p>
             <p>Dirección: {{shop.address}}</p>
-         
+         {% if context.1 == 'User' %}
             <h4 class="section-title">Cesta</h4>
             <table id = "table">
               <tr>
@@ -105,12 +86,95 @@
             {% csrf_token %}
             <input id="submit" type="button" value="Reservar" onclick="reserva()"/>
             <button class="button-light"><a style="text-decoration: none;" class="button-light" href="{{shop.id}}/reviews"> Valoraciones </a></button>
+
+            {% endif %}
+          {% if context.1 == 'Owner' and promotionShop and shop.owner.person.id|stringformat:"i" == context.0 %}
+            {% comment %} <button onclick="location.href='{% url 'promotion_week_shop' shop.id %}'">
+              Promociona tu tienda (semanal)
+            </button> {% endcomment %}
+            <button onclick="promocionarTiendaSemanal({{shop.id}})">
+              Promociona tu tienda (semanal)
+            </button>
+              <br>
+            <button onclick="promocionarTiendaMensual({{shop.id}})">
+              Promociona tu tienda (mensual)
+            </button>
+          {% endif %}
         </div>
       </div>
   </div>
 </main>
 
 <script>
+  function promocionarProductoSemanal (id_product) {
+    data = {
+        id_product: id_product,
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+    }
+    url = window.location.origin + '/product/' + id_product + '/promotionweekproduct'
+    $.ajax({
+        url: url,
+        data: data,
+        type: 'POST',
+        success: function (data) {
+            confirm("Promocion realizada")
+            window.location.replace(window.location.origin + data.url);
+        }
+    });
+  }
+
+  function promocionarProductoMensual (id_product) {
+    data = {
+        id_product: id_product,
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+    }
+    url = window.location.origin + '/product/' + id_product + '/promotionmonthproduct'
+    $.ajax({
+        url: url,
+        data: data,
+        type: 'POST',
+        success: function (data) {
+            confirm("Promocion realizada")
+            window.location.replace(window.location.origin + data.url);
+        }
+    });
+  }
+  function promocionarTiendaSemanal (id_shop) {
+    data = {
+        id_shop: id_shop,
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+    }
+    url = window.location.origin + '/shops/' + id_shop + '/promotionweekshop'
+    console.log(url)
+    $.ajax({
+        url: url,
+        data: data,
+        type: 'POST',
+        success: function (data) {
+            confirm("Promocion realizada")
+            window.location.replace(window.location.origin + data.url);
+        }
+    });
+  }
+
+  function promocionarTiendaMensual (id_shop) {
+    data = {
+        id_shop: id_shop,
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+    }
+    url = window.location.origin + '/shops/' + id_shop + '/promotionmonthshop'
+    console.log(url)
+    $.ajax({
+        url: url,
+        data: data,
+        type: 'POST',
+        success: function (data) {
+            confirm("Promocion realizada")
+            window.location.replace(window.location.origin + data.url);
+        }
+    });
+  }
+
   function añadir (id) {
     var nombre = document.getElementById('nombre'+id).innerHTML
     var precio = document.getElementById('precio'+id).innerHTML
@@ -144,7 +208,7 @@
 }
 
 function vaciarCarrito() {
-    if (confirm("多Quieres vaciar el carrito?")) {
+    if (confirm("¿Quieres vaciar el carrito?")) {
         document.getElementById('tbody').remove();
         var table = document.getElementById('table');
         var tbody = document.createElement('tbody');
@@ -174,7 +238,7 @@ function reserva() {
         type: 'POST',
         success: function (data) {
             confirm("Reserva realizada")
-            window.location.replace(window.location.origin+ data.url);
+            window.location.replace(window.location.origin + data.url);
         }
     });
 };
