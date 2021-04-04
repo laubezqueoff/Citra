@@ -22,18 +22,17 @@ Chat / Citra
                 <div class="container user">
                     <img src="/static/images/user.png"  class="right" style="float:left"> 
                     <p>{{m.text}}</p>
-                    <span class="time-right">8:55 AM, Today</span>                 
+                    <span class="time-right">{{m.date}}</span>                 
                                        
                 </div>        
         {% else %}
                 <div class="container shop">                    
                     <img src="/static/images/shop.png" alt="Avatar" style="float:right">                                           
                     <p style="float:right">{{m.text}}</p>
-                    <span class="time-left" style="float:down">8:40 AM, Today</span>                  
+                    <span class="time-left" style="float:down">{{m.date}}</span>                
                 </div>
         {% endif %}
     {% empty %}
-        <h2>Pregunta a la tienda!</h2>
         <h3>No hay mensajes</h3>
     {% endfor %}
             <div class="card-footer">

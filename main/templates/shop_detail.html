@@ -86,6 +86,7 @@
             {% csrf_token %}
             <input id="submit" type="button" value="Reservar" onclick="reserva()"/>
             <button class="button-light"><a style="text-decoration: none;" class="button-light" href="{{shop.id}}/reviews"> Valoraciones </a></button>
+            <button class="button-light"><a style="text-decoration: none;" class="button-light" href="{% url 'newChat' shop.pk %}"> Iniciar Chat </a></button>
 
             {% endif %}
           {% if context.1 == 'Owner' and promotionShop and shop.owner.person.id|stringformat:"i" == context.0 %}

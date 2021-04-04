@@ -20,7 +20,7 @@
             <div class="product__container bd-grid">
                 <div class="row">        
                 {% for promotion in promotions_shops %}
-                    <div class="col-sm">
+                    <div class="col-sm-2">
                         <article class="product">
                             <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
                             <a class="product__name" href="{% url 'shop' promotion.shop.pk %}"> {{promotion.shop.name}} </a>
@@ -76,7 +76,7 @@
             <div class="product__container bd-grid">
                 <div class="row">        
                 {% for promotion_product in promotions_products %}
-                    <div class="col-sm">
+                    <div class="col-sm-2">
                         <article class="product">
                             <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
                             <a class="product__name"> {{promotion_product.product.name}} </a>

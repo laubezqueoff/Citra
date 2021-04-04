@@ -12,10 +12,11 @@
         <div class="row">                            
             <div class="product__container bd-grid">
                 {% for book in bookings %}
-                <div class="col">
+                <div class="col-2">
                     <article class="product">
                         <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
                         <span class="product__name"> {{book.product.shop.name}} </span>
+                        <span class="product__name"> {{book.product.name}} </span>
                         <span class="product__price"> {{book.product.price}} </span>
                     </article>
                 </div>

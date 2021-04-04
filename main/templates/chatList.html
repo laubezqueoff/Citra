@@ -23,7 +23,7 @@
       <th scope="row"></th>
       <td><img src="{{row.shop.picture}}" alt="Avatar" style="float:left">  </td>
       <td>{{row.shop.name}}</td>
-      <td>{{row.shop.shopType}}</td>
+      <td>{{row.shop.shopType.name}}</td>
       <td><a href= "{% url 'chat' row.id %}">Accede al chat</a></td>
     </tr> 
     {% else %} 
