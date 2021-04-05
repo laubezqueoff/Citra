@@ -30,6 +30,7 @@ urlpatterns = [
     path("logout/", views.logout, name="logout"),
     path('product/<id_product>/promotionweekproduct', views.promotion_week_product, name="promotion_week_product"),
     path('product/<id_product>/promotionmonthproduct', views.promotion_month_product, name="promotion_month_product"),
+    path("products/<id_product>", views.product_details, name="products"),
     path('shops/<id_shop>/promotionweekshop', views.promotion_week_shop, name="promotion_week_shop"),
     path('shops/<id_shop>/promotionmonthshop', views.promotion_month_shop, name="promotion_month_shop"),
     path('shops/', views.list_shop, name="shops"),

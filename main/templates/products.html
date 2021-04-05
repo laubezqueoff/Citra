@@ -1,0 +1,118 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}
+Productos / Citra
+{% endblock %}
+
+{% block contenido %}
+
+<section class = "seccion_productos">
+    <div class="row g-0">
+        <div class="col-lg-5 p-5 ">
+            <div class="p-5 w-100 mb-auto">
+                <img src="{% static 'images/fruta.jpg' %}" class="d-block w-100 rounded border border-dark" alt="Negocio local">
+            </div>
+        </div>
+        <div class="col-lg-6 d-flex flex-column align-items-end">
+            <div class="px-lg-5 pt-lg-4 pb-lg-3 p-4 w-100 mb-auto">
+                <div class="px-lg-5 py-lg-4 p-4 w-100 align-self-center ">
+                    <div class="d-flex justify-content-around mb-4">
+                        <h1 class=" fw-bold me-auto">Producto</h1>
+                        {% if context.1 == 'Owner' and promotionProduct and product.shop.owner.person.id|stringformat:"i" == context.0 %}
+                            <button id="boton" onclick="promocionarProductoSemanal({{product.id}})">Promocionar Semanal</button>
+                            <button id="boton" onclick="promocionarProductoMensual({{product.id}})">Promocionar Mensual</button>
+                        {% endif %}
+                    </div>
+                    <form method="POST">{% csrf_token %}
+                        {% if context.1 == 'Owner' %}
+                        <div class=" pt-lg-2 pb-5">
+                            <div class="mb-4 border border-dark rounded-2">
+                                <input type="text" class="form-control " placeholder="Introduce el nombre del producto" id="name" name="name" value="{{product.name}}">
+                            </div>
+                            
+                                <div class="mb-4 border border-dark rounded-2">
+                                    <select name="select" class="form-control" placeholder="Tipo de producto" id="type" name="type">
+                                        {% for ty in types %}
+                                            <option value="{{ty.name}}">{{ty.name}}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="mb-4 border border-dark rounded-2 input-group">
+                                    <input type="number" class="form-control" placeholder="Precio del producto" id="price" name="price" value="{{product.price}}">
+                                    <span class="input-group-text">€</span>
+                                </div>                           
+                                <div class="mb-4 border border-dark rounded-2">
+                                    <input type="text" class="form-control" placeholder="Descripción del producto" id="description" name="description" value="{{product.description}}">
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-around fondo-blur">
+                                <button type="submit" class="btn btn-outline-dark  color-botones-products flex-grow-1 me-2 fw-bold ">Guardar cambios</button>
+                                <button type="submit" class="btn btn-outline-dark flex-grow-1 ms-2 me-2 fw-bold">Cancelar</button>
+                                <button type="submit" class="btn btn-outline-dark flex-grow-3 ms-2 fw-bold">Borrar</button>
+                            </div>
+                        {% else %}
+                        <div class=" pt-lg-2 pb-5">
+                            <div class="mb-4 border border-dark rounded-2">
+                                <span class="input-group-text" id="name" name="name" value="">{{product.name}}</span>
+                            </div>
+                            
+                                <div class="mb-4 border border-dark rounded-2">
+                                    <span class="input-group-text"  id="type" name="type" value="">{{product.productType.name}}</span>
+                                </div>
+                                <div class="mb-4 border border-dark rounded-2">
+                                    <span class="input-group-text" id="price" name="price" value="">{{product.price}} €</span>
+                                </div>                           
+                                <div class="mb-4 border border-dark rounded-2">
+                                    <span class="input-group-text" id="description" name="description" value="">{{product.description}}</span>
+                                </div>
+                            </div>
+                        {% endif %}
+                    </form>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</section>
+
+<script>
+  function promocionarProductoSemanal (id_product) {
+    data = {
+        id_product: id_product,
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+    }
+    url = window.location.origin + '/product/' + id_product + '/promotionweekproduct';
+    $.ajax({
+        url: url,
+        data: data,
+        type: 'POST',
+        success: function (data) {
+            confirm("Promocion realizada")
+            window.location.replace(window.location.origin);
+        }
+    });
+  }
+
+  function promocionarProductoMensual (id_product) {
+    data = {
+        id_product: id_product,
+        csrfmiddlewaretoken: '{{ csrf_token }}',
+    }
+    url = window.location.origin + '/product/' + id_product + '/promotionmonthproduct'
+    $.ajax({
+        url: url,
+        data: data,
+        type: 'POST',
+        success: function (data) {
+            confirm("Promocion realizada")
+            window.location.replace(window.location.origin);
+        }
+    });
+  }
+</script>
+
+{% endblock %}
