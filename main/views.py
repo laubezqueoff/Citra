@@ -43,10 +43,10 @@ def login(request):
             # Es importante pasar el context en todas las vistas.
             # Cambiar index.html por tu vista en tu método
             msg = msg_error
-            return render(request, 'login.html',{"msg":msg})
+            return render(request, 'login.html',{"msg":msg, 'tienda': ''})
          
     else: #Si es un GET redirijimos a la vista de login
-        return render(request, 'login.html')
+        return render(request, 'login.html', {'tienda': ''})
 
 
 def logout(request):
