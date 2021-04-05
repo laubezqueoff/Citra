@@ -9,6 +9,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="{% static 'css/style_base.css' %}"/>
 </head>
 <style>
 </style>
@@ -27,11 +29,11 @@
                 <li class="nav-item" style="margin: auto; font-size:20px;">
                     <a class="nav-link active" aria-current="page" href="/">Inicio</a>
                     <input type="hidden" id="context"  name="context" value="{{context}}">
-
                 </li>
                 <li class="nav-item nav-link" style="margin-left: 25px; font-size:20px; font-weight: bold; text-align:center;">|</li>
                 <li class="nav-item" style="margin-left: 25px; font-size:20px;">
-                <a class="nav-link" href="#">Buscar</a>
+                {% comment %} <a class="nav-link" href="#">Buscar</a> {% endcomment %}
+                <a class="nav-link" href="{% url 'shops' %}">Listado Tiendas</a>
                 </li>
                 <li class="nav-item nav-link" style="margin-left: 25px; font-size:20px; font-weight: bold; text-align:center;">|</li>
                 
@@ -43,7 +45,7 @@
 
                 {% endif %}
                 <li class="nav-item" style="margin-left: 25px; font-size:20px;">
-                <a class="nav-link" href="./about.html" >Sobre nosotros</a>
+                <a class="nav-link" href="{% url 'about' %}" >Sobre nosotros</a>
                 </li>
             </ul>
             <ul class="navbar-nav">
@@ -55,11 +57,12 @@
                     </a>
 
                     <ul class="dropdown-menu dropdown-menu-left" style="right: 0; left: auto;" aria-labelledby="dropdownMenuLink">
-                        <li><a class="dropdown-item" href="">Perfil</a></li>
+                        {% comment %} <li><a class="dropdown-item" href="">Perfil</a></li> {% endcomment %}
                         {% if context.1 == 'User' %}  
-                            <li><a class="dropdown-item d-inline-block" onclick="location.href='{% url 'list_booking_user'%}'">Reservas</a></li>
+                            <li><a class="dropdown-item d-inline-block" href="{% url 'list_booking_user'%}">Reservas</a></li>
                         {% elif context.1 == 'Owner' %}
-                            <li><a class="dropdown-item d-inline-block" onclick="location.href='{% url 'list_booking_owner'%}'">Reservas</a></li>
+                            <li><a class="dropdown-item d-inline-block" href="{% url 'shop' tienda.pk %}">Mi tienda</a></li>
+                            <li><a class="dropdown-item d-inline-block" href="{% url 'list_booking_owner'%}">Reservas</a></li>
                         {% endif %}
 
                         <li><a class="dropdown-item" href="{% url 'chats' %}">Chats</a></li>

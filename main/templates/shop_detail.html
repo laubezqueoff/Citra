@@ -3,8 +3,8 @@
 
 
  {% block cabecera %}
-<link rel="stylesheet" href="{% static 'css/style_shop.css' %}"/>
-<link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'> 
+  <link rel="stylesheet" href="{% static 'css/style_shop.css' %}"/>
+  <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'> 
 {% endblock %}
 {% block contenido %}
 <main class="l-main">
@@ -26,42 +26,23 @@
           <h4 class="section-title"> Productos </h4>          
             <div class="product__container bd-grid">
               <div class="row">
-                {% for prod, promotionProduct in productsPromotion.items %}
+                {% for prod in products %}
                   <div class="col">
                     <article class="product">
                       <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
-                      <p id = "nombre{{prod.id}}">{{prod.name}}</p>
+                      <a id = "nombre{{prod.id}}" class="product__name" href="{% url 'products' prod.pk %}">{{prod.name}}</a>
+                      {% comment %} <p id = "nombre{{prod.id}}">{{prod.name}}</p> {% endcomment %}
                       <p id = "precio{{prod.id}}">{{prod.price}}</p>
                       {% if context.1 == 'User' %}
                         <button id="boton" onclick="añadir({{prod.id}})">Añadir</button>
-                      {% elif context.1 == 'Owner' and promotionProduct and prod.shop.owner.person.id|stringformat:"i" == context.0 %}
+                      {% comment %} {% elif context.1 == 'Owner' and promotionProduct and prod.shop.owner.person.id|stringformat:"i" == context.0 %}
                         <button id="boton" onclick="promocionarProductoSemanal({{prod.id}})">Promocionar Semanal</button>
                         <button id="boton" onclick="promocionarProductoMensual({{prod.id}})">Promocionar Mensual</button>
-                      {% else %}
+                      {% else %} {% endcomment %}
                       {% endif %}
                     </article>
                   </div>
                 {% empty %}
-                <article class="product">
-                  <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
-                  <span class="product__name"> Manzana </span>
-                  <span class="product__price"> 3€/kg </span>
-                  <a href="" class="button-light"> Añadir </a>
-                </article>
-                <article class="product">
-                  <img src="{% static 'images/naranja.jpg' %}" alt ="" class="product__img">
-                  <span class="product__name"> Naranja </span>
-                  <span class="product__price"> 2€/kg </span>
-                  <a href="" class="button-light"> Añadir </a>
-                </article>
-              </div>
-              <div class="column">
-                <article class="product">
-                  <img src="{% static 'images/kiwi.jpg' %}" alt ="" class="product__img">
-                  <span class="product__name"> Kiwi </span>
-                  <span class="product__price"> 5€/kg </span>
-                  <a href="" class="button-light"> Añadir </a>
-                </article>
                 {% endfor %}
               </div>
             </div>
@@ -70,11 +51,12 @@
         <div class="col">
           
             <h4 class="section-title">Info</h4>
+            <p>Tienda: {{shop.name}}</p>
             <p>Horario: L-S 9:30-20:30</p>
             <p>Dirección: {{shop.address}}</p>
          {% if context.1 == 'User' %}
             <h4 class="section-title">Cesta</h4>
-            <table id = "table">
+            <table class="table table-hover" id = "table">
               <tr>
                 <th>Nombre</th>
                 <th>Precio</th>
@@ -82,22 +64,25 @@
               </tr>
               <tbody id='tbody'></tbody>
             </table>
-            <button id="boton2" onclick="vaciarCarrito()">Vaciar Carrito</button>
+            <button id="boton2" type="button" class="btn btn-light" onclick="vaciarCarrito()">Vaciar Carrito</button>
             {% csrf_token %}
-            <input id="submit" type="button" value="Reservar" onclick="reserva()"/>
-            <button class="button-light"><a style="text-decoration: none;" class="button-light" href="{{shop.id}}/reviews"> Valoraciones </a></button>
-            <button class="button-light"><a style="text-decoration: none;" class="button-light" href="{% url 'newChat' shop.pk %}"> Iniciar Chat </a></button>
+            <input id="submit" type="button" class="btn btn-light" value="Reservar" onclick="reserva()"/>
+            
+            <h4 class="section-title">Otras acciones</h4>
+            <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="{{shop.id}}/reviews"> Valoraciones </a></button>
+            <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="{% url 'newChat' shop.pk %}"> Iniciar Chat </a></button>
 
             {% endif %}
           {% if context.1 == 'Owner' and promotionShop and shop.owner.person.id|stringformat:"i" == context.0 %}
             {% comment %} <button onclick="location.href='{% url 'promotion_week_shop' shop.id %}'">
               Promociona tu tienda (semanal)
             </button> {% endcomment %}
-            <button onclick="promocionarTiendaSemanal({{shop.id}})">
+            <h4 class="section-title">Otras acciones</h4>
+            <button type="button" class="btn btn-outline-warning" onclick="promocionarTiendaSemanal({{shop.id}})">
               Promociona tu tienda (semanal)
             </button>
               <br>
-            <button onclick="promocionarTiendaMensual({{shop.id}})">
+            <button type="button" class="btn btn-outline-warning" onclick="promocionarTiendaMensual({{shop.id}})">
               Promociona tu tienda (mensual)
             </button>
           {% endif %}
@@ -245,6 +230,5 @@ function reserva() {
 };
 </script>
 
-<script src="{% static 'js/main.js' %}"
 {% endblock %}
 

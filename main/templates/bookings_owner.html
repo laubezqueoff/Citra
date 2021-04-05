@@ -7,7 +7,7 @@
 <main class="l-main">    
     <div class="container">
         <div class="row">
-            <h4 class="section-title">Mis reservas</h4>
+            <h4 class="section-title mt-lg-2 ">Mis reservas</h4>
         </div>
         <div class="row">                            
             <div class="product__container bd-grid">
@@ -15,29 +15,14 @@
                 <div class="col">
                     <article class="product">
                         <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
-                        <span class="product__price"> {{book.product.name}} </span>
-                        <span class="product__price"> {{book.product.price}} </span>
-                        <span class="product__price"> {{book.user.person.name}} </span>
+                        <span class="product__name"> Tienda: {{book.product.name}} </span>
+                        <span class="product__price"> Nombre Producto: {{book.product.price}} </span>
+                        <span class="product__price"> Cantidad Reservada: {{book.quantity}} </span>
+                        <span class="product__price"> Nombre del usuario: {{book.user.person.name}} </span>
                         <button onclick="aceptar({{book.id}})">Aceptar</button>
-                        <a href="" class="button-light"> Cancelar </a>
                     </article>
                 </div>
                 {% empty %}
-                <div class="col">
-                    <article class="product">
-                        <h2 class="section-title">Frutería Paquita</h4>
-                        <span class="product__name"> Manzanas 2 €/kg  </span>
-                        <span class="product__name"> Naranjas 2 €/kg  </span>
-                        <a href="" class="button-light"> Cancelar </a>
-                        <a href="" class="button-light"> Aceptar </a>
-                    </article>
-                    <article class="product">
-                        <h2 class="section-title">Mercería Loli</h4>
-                        <span class="product__name"> Tela de flores 2€/m </span>
-                        <a href="" class="button-light"> Cancelar </a>
-                        <a href="" class="button-light"> Aceptar </a>
-                    </article>
-                </div>
                 {% endfor %}
             </div>
         </div>
