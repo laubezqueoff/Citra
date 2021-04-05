@@ -422,7 +422,7 @@ def get_chat_new(request, id_shop):
             print(newChat.pk)
             isSentByUser= False
             if rol== 'User':
-                isSendByUser=True
+                isSentByUser=True
             ChatMessage.objects.create(text=text, chat= newChat,date=date.today(), isSentByUser=isSentByUser).save()
             return redirect('/shop/chat/'+str(newChat.pk))
 
