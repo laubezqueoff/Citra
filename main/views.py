@@ -211,6 +211,8 @@ def threads_list(request):
     if rol == "User":
         threads = Thread.objects.all
         return render(request, 'threads.html', {'threads':threads, 'context':context, 'tienda': tienda})
+    else:
+        return render(request, 'prohibido.html', {'context':context, 'tienda': tienda})
 
 def forumMessages_list(request,id_thread):
     person_id, rol, rol_id, is_active = get_context(request)
@@ -227,6 +229,8 @@ def forumMessages_list(request,id_thread):
         for m in thread.forummessage_set.all():
             forumMessages.append(m)
         return render(request, 'thread.html', {'forumMessages':forumMessages,'threadName':threadName, 'context':context, 'tienda': tienda})
+    else:
+        return render(request, 'prohibido.html', {'context':context, 'tienda': tienda})
 
 def promotion_week_shop(request, id_shop):
     person_id, rol, rol_id, is_active = get_context(request)
