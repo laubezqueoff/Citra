@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Foro / Citra
+{% endblock %}
+{% block contenido %}
+<div class="container container-thread" style="margin-top:5px;">
+	<div class="row">
+        </div>
+		<div class="col-md-12">
+    	 <table class="table table-list-search">
+                    <thead>
+                        <tr>
+                            <th style="font-size:20px;">{{threadName}}</th>
+                            <th style="font-size:20px;"></th>
+                            <th style="font-size:20px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th style="font-color:#000!important;">Comentarios</th>
+                            <th style="font-color:#000!important;">Usuario</th>
+                            <th style="font-color:#000!important;">Fecha de publicación</th>
+                        </tr>	
+                        {% for row in forumMessages %}
+                        <tr class="mensaje-foro" style="color: rgb(49, 49, 49) !important;">
+                            <th>{{row.text}}</th>
+                            <th>{{row.user.person.username}}</th>
+                            <th>{{row.date}}</th>
+                        </tr>	    
+                        {% endfor %}
+                    </tbody>
+                </table>   
+		</div>
+	</div>
+    <div class="container">
+        <div class="input-group">
+            <form method='POST' class="input-group">{% csrf_token %}
+                <input type="text" class="form-control form-control-lg"  placeholder="Añade un comentario" name="text" id="text" />
+                <input type='submit' class="btn btn-outline-dark" style="float:left;background-color: #ffd3b6;">
+            </form>
+                <button type='submit' onclick="history.back()" class="btn"> Volver </button>  
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block cabecera %}<link rel="stylesheet" href="{% static 'css/style_book_list.css' %}"/>{% endblock %}
+{% block title %}Mis reservas / Citra{% endblock %}
+{% block contenido %}
+<main class="l-main">    
+    <div class="container">
+        <div class="row">
+            <h4 class="section-title mt-lg-2 ">Mis reservas</h4>
+        </div>
+        <div class="row ms-3">                            
+            <div class="product__container bd-grid">
+                <div class="row">
+                    {% for book, quantity in bookingsQuantity.items %}
+                    <div class="card col-sm-2 mt-3 product">
+                            <img src="{% static 'images/manzana.jpg' %}" alt ="" class="card-img-top">
+                            <span class="product__name">Tienda: {{book.product.shop.name}} </span>
+                            <span class="product__name">Nombre Producto: {{book.product.name}} </span>
+                            <span class="product__price">Precio: {{quantity}} € </span>
+                            <span class="product__price">Cantidad Reservada: {{book.quantity}} </span>
+                    </div>
+                    {% empty %}
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+
+
+
+{% endblock %}

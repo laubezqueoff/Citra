@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block cabecera %}
+  <title> Citra / Lista de chats </title>
+{% endblock %}
+
+{% block contenido %}
+
+
+<table class="table table-striped ">
+  <thead>
+    <tr>
+      <th scope="col">Chats</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+  {% for row in chats %}
+    {% if context.1 == 'User' %}
+    <tr>
+      <th scope="row"></th>
+      {% comment %} <td><img src="{% static 'images/manzana.jpg' %}" alt="Avatar" style="float:left">  </td> {% endcomment %}
+      <td>{{row.shop.name}}</td>
+      <td>{{row.shop.shopType.name}}</td>
+      <td><a href= "{% url 'chat' row.id %}">Accede al chat</a></td>
+    </tr> 
+    {% else %} 
+    <tr>
+      <th scope="row"></th>
+      <td>{{row.shop.name}}</td>
+      <td>{{row.user.person.username}}</td>
+      <td><a href= "{% url 'chat' row.id %}">Accede al chat</a></td>
+    </tr>
+    {% endif %}
+
+  {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}

@@ -1,0 +1,19 @@
+{% load static %}
+
+<!DOCTYPE html>
+
+<html>
+<head>{% block cabecera %} {% endblock %}</head>
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
+{% include "header.html" %}
+<body class="bg-color">
+<div id="page-container">
+        <div id="content-wrap">
+            {% block contenido %}  {% endblock %}
+        </div>
+      </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
+</body>
+{% include "footer.html" %}
+</html>

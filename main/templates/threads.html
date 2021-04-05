@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Foro / Citra
+{% endblock %}
+{% block contenido %}
+<div class="container container-thread" style="margin-top:5px;">
+	<div class="row">
+        </div>
+		<div class="col-md-11">
+    	 <table class="table table-list-search">
+                    <thead>
+                        <tr>
+                            <th style="font-size:20px;">Lista de hilos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in threads %}
+                                <tr>
+                                    <th style="font-color:#000!important;"><a name="id_thread" style="text-decoration: none;" href="{{row.id}}">{{row.name}}</a></th>
+                                </tr>	    
+                        {% endfor %}
+                    </tbody>
+                </table>   
+		</div>
+	</div>
+</div>
+{% endblock %}

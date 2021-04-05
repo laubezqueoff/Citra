@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block cabecera %}<link rel="stylesheet" href="{% static 'css/style_login.css' %}"/>{% endblock %}
+{% block title %}Login / Citra{% endblock %}
+{% block contenido %}
+
+<section class = "seccion_login">
+    <div class="row g-0">
+        <div class="col-lg-7">
+            <div id="myCarousel" class="carousel slide p-5 " data-bs-ride="carousel">
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img src="{% static 'images/fruta.jpg' %}" class="d-block w-100" alt="Negocio local">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'images/sevilla.jpg' %}" class="d-block w-100" alt="...">
+                    </div>
+                    <div class="carousel-item">
+                        <img src="{% static 'images/localBusiness.jpg' %}" class="d-block w-100" alt="...">
+                    </div>
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel"  data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#myCarousel"  data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+            </div>
+        </div>
+        <div class="col-lg-5 d-flex flex-column align-items-end">
+            <div class="px-lg-5 pt-lg-4 pb-lg-3 p-4 w-100 mb-auto">
+            </div>
+            <div class="px-lg-5 py-lg-4 p-4 w-100 align-self-center">
+                  <h1 class="mb-4 fw-bold">Bienvenido a Citra</h1>
+
+                {% if msg %}
+                <div class="pb-4 w-100 fw-bold align-self-center ">
+                    {{msg}}
+                </div>
+                {% endif%}
+                <form method="POST">{% csrf_token %}
+                    <div class="mb-4">
+                        <label for="exampleInputEmail1" class="form-label fw-bold">Usuario</label>
+                        <input type="text" class="form-control " placeholder="Introduce el Email" id="username" name="username">
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="exampleInputPassword1" class="form-label fw-bold">Contraseña</label>
+                        <input type="password" class="form-control mb-2" placeholder="Introduce la contraseña" id="password" name="password">
+                        <a href="#" id="emailHelp" class="form-text text-muted text-decoration-none">¿Has olvidado la contraseña?</a>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark w-100 fw-bold">Iniciar sesión</button>
+                    
+                </form>
+            </div>
+            <div class="text-center px-lg-5 pt-lg-4 pb-lg-1 p-4 w-100 mt-auto">
+                <p class="d-inline-block mb-0">¿Todavía no tienes cuenta? </p><a href="#" class="fw-bold text-decoration-none"> Crea una ahora </a>
+            </div>
+            <div class="text-center px-lg-5 pt-lg-4 pb-lg-3 p-4 w-100 mt-auto">
+                <p class="d-inline-block mb-0">¿Te gustaría mostrar tus productos?</p><a href="#" class="fw-bold text-decoration-none"> Crea una tienda </a>
+            </div>
+        </div>
+
+
+    </div>
+
+</section>
+
+{% endblock %}

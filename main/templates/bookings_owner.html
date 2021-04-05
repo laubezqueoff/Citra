@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block cabecera %}<link rel="stylesheet" href="{% static 'css/style_book_list.css' %}"/>{% endblock %}
+{% block title %}Mis reservas / Citra{% endblock %}
+{% block contenido %}
+<main class="l-main">    
+    <div class="container">
+        <div class="row">
+            <h4 class="section-title mt-lg-2 ">Mis reservas</h4>
+        </div>
+        <div class="row">                            
+            <div class="product__container bd-grid">
+                {% for book in bookings %}
+                <div class="col">
+                    <article class="product">
+                        <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
+                        <span class="product__name"> Tienda: {{book.product.name}} </span>
+                        <span class="product__price"> Nombre Producto: {{book.product.price}} </span>
+                        <span class="product__price"> Cantidad Reservada: {{book.quantity}} </span>
+                        <span class="product__price"> Nombre del usuario: {{book.user.person.name}} </span>
+                        <button onclick="aceptar({{book.id}})">Aceptar</button>
+                    </article>
+                </div>
+                {% empty %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    function aceptar(id) {
+        data = {
+            id: id,
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+        }
+        $.ajax({
+            url: 'acceptbookings/',
+            data: data,
+            type: 'POST',
+            success: function (data) {
+                console.log(window.location.origin)
+                console.log(window.location.origin + data.url)
+                window.location.replace(window.location.origin + data.url);
+            }
+        });
+    }
+</script>
+
+{% endblock %}

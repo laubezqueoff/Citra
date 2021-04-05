@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+ {% block cabecera %}
+    <link rel="stylesheet" href="{% static 'css/style_shop_promotion.css' %}"/>
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'> 
+    <title> Citra / Inicio </title>
+{% endblock %}
+
+
+{% block contenido %}
+    <main class="l-main">
+    
+    <div class="container">
+        <div class="row">
+            <h4 class="section-title mt-lg-2 ">Tiendas en promoción</h4>
+        </div>
+        <div class="row ms-3">                            
+            <div class="product__container bd-grid">
+                <div class="row">        
+                {% for promotion in promotions_shops %}
+                    <div class="card col-sm-2 mt-3 product">
+                            <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
+                            <a class="product__name" href="{% url 'shop' promotion.shop.pk %}"> {{promotion.shop.name}} </a>
+                            <p class="product__name"> {{promotion.shop.description}} </p>
+                    </div>
+                {% empty %}                    
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <h4 class="section-title mt-lg-4">Productos en promoción</h4>
+        </div>
+        <div class="row ms-3">                            
+            <div class="product__container bd-grid">
+                <div class="row">        
+                {% for promotion_product in promotions_products %}
+                    <div class="card col-sm-2 mt-3 product">
+                        <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
+                        <a class="product__name" href="{% url 'shop' promotion_product.product.shop.pk %}"> {{promotion_product.product.shop.name}} </a>
+                        <p class="product__name"> {{promotion_product.product.name}} </p>
+                        <p class="product__name"> {{promotion_product.product.description}} </p>
+                    </div>
+                {% empty %}
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
