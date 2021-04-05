@@ -36,7 +36,9 @@ def login(request):
             promotions_shops = Promotion.objects.filter(product=None)
             promotions_products = Promotion.objects.filter(shop=None)
 
-            return render(request, 'home.html', {"context" : context, 'promotions_shops': promotions_shops, 'promotions_products': promotions_products})
+            tienda = miTienda(person_id)
+
+            return render(request, 'home.html', {"context" : context, 'promotions_shops': promotions_shops, 'promotions_products': promotions_products, 'tienda': tienda})
         except:
             # Es importante pasar el context en todas las vistas.
             # Cambiar index.html por tu vista en tu método
@@ -157,10 +159,10 @@ def get_context(request):
 
 
 def promotion_week_product(request, id_product):
-    try:
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    if (is_active):
         product = get_object_or_404(Product, pk=id_product) 
-        person_id,rol,rol_id,is_active = get_context(request)
-        context = [person_id, rol, rol_id, is_active]
         promotion = Promotion.objects.filter(product=product).exists()
         if (not(promotion) and str(product.shop.owner.person.id) == person_id):
             promotionType = PromotionType.objects.get(id=0) # semanal
@@ -174,15 +176,16 @@ def promotion_week_product(request, id_product):
                 }
             return JsonResponse(data)
         else:
-            return render(request, 'prohibido.html', {'context':context})
-    except:
+            tienda = miTienda(person_id)
+            return render(request, 'prohibido.html', {'context':context, 'tienda': tienda})
+    else:
         return render(request, 'prohibido.html')
 
 def promotion_month_product(request, id_product):
-    try:
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    if (is_active):
         product = get_object_or_404(Product, pk=id_product) 
-        person_id,rol,rol_id,is_active = get_context(request)
-        context = [person_id, rol, rol_id, is_active]
         promotion = Promotion.objects.filter(product=product).exists()
         if (not(promotion) and str(product.shop.owner.person.id) == person_id):
             promotionType = PromotionType.objects.get(id=1) # mensual
@@ -196,21 +199,24 @@ def promotion_month_product(request, id_product):
                 }
             return JsonResponse(data)
         else:
-                return render(request, 'prohibido.html', {'context':context})
-    except:
+            tienda = miTienda(person_id)
+            return render(request, 'prohibido.html', {'context':context, 'tienda': tienda})
+    else:
         return render(request, 'prohibido.html')
 
 def threads_list(request):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
+    tienda = miTienda(person_id)
     if rol == "User":
         threads = Thread.objects.all
-        return render(request, 'threads.html', {'threads':threads, 'context':context})
+        return render(request, 'threads.html', {'threads':threads, 'context':context, 'tienda': tienda})
 
 def forumMessages_list(request,id_thread):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     thread= get_object_or_404(Thread, pk= id_thread)
+    tienda = miTienda(person_id)
     if rol == "User":
         if request.method == 'POST':
             text = request.POST['text']
@@ -220,7 +226,7 @@ def forumMessages_list(request,id_thread):
         forumMessages = []
         for m in thread.forummessage_set.all():
             forumMessages.append(m)
-        return render(request, 'thread.html', {'forumMessages':forumMessages,'threadName':threadName, 'context':context})
+        return render(request, 'thread.html', {'forumMessages':forumMessages,'threadName':threadName, 'context':context, 'tienda': tienda})
 
 def promotion_week_shop(request, id_shop):
     person_id, rol, rol_id, is_active = get_context(request)
@@ -243,7 +249,8 @@ def promotion_week_shop(request, id_shop):
                 }
             return JsonResponse(data)
         else:
-            return render(request, 'prohibido.html', {'context':context})
+            tienda = miTienda(person_id)
+            return render(request, 'prohibido.html', {'context':context, 'tienda': tienda})
     else:
         return render(request, 'prohibido.html')
 
@@ -270,24 +277,39 @@ def promotion_month_shop(request, id_shop):
                 }
             return JsonResponse(data)
         else:
-            return render(request, 'prohibido.html', {'context':context})
+            tienda = miTienda(person_id)
+            return render(request, 'prohibido.html', {'context':context, 'tienda': tienda})
     else:
         return render(request, 'prohibido.html')
+
+def product_details(request, id_product):
+    product = get_object_or_404(Product, pk=id_product)
+    types = ProductType.objects.all()   
+    productType = []
+    for ty in types:
+        productType.append(ty)
+    
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    promotionProduct = Promotion.objects.filter(product=product).exists()
+    tienda = miTienda(person_id)
+    return render(request, 'products.html', {'product': product, 'types' : productType, "context" : context, "promotionProduct" : not(promotionProduct), 'tienda': tienda})
 
 def list_shop(request):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     shops = Shop.objects.all()
-    return render(request, 'shops.html', {'shops': shops,'context':context})
+    tienda = miTienda(person_id)
+    return render(request, 'shops.html', {'shops': shops,'context':context, 'tienda': tienda})
 
 
 def shop_details(request, id_shop):
     shop = get_object_or_404(Shop, pk=id_shop)
     products = Product.objects.filter(shop=shop)
     promotionShop = Promotion.objects.filter(shop=shop).exists()
-    productsPromotion = {}
-    for prod in products:
-        productsPromotion[prod] = not(Promotion.objects.filter(product=prod).exists())
+    # productsPromotion = {}
+    # for prod in products:
+    #     productsPromotion[prod] = not(Promotion.objects.filter(product=prod).exists())
     try:
         person_id, rol, rol_id, is_active = get_context(request)
         context = [person_id, rol, rol_id, is_active]
@@ -295,8 +317,8 @@ def shop_details(request, id_shop):
         person_id = 0
         rol = 'User no registrado'
         context = [person_id, rol]
-
-    return render(request, 'shop_detail.html', {'shop': shop, 'products': products, 'context': context, 'promotionShop': not(promotionShop), 'productsPromotion': productsPromotion})
+    tienda = miTienda(person_id)
+    return render(request, 'shop_detail.html', {'shop': shop, 'products': products, 'context': context, 'promotionShop': not(promotionShop), 'tienda': tienda})
 
 def get_chats_list(request):
     ''' Muestra una lista de todos los chats que el usuario activo, sea user u owner, tenga. \n
@@ -305,6 +327,7 @@ def get_chats_list(request):
     '''
     person_id,rol,rol_id,is_active = get_context(request)
     context = [person_id,rol,rol_id,is_active]
+    tienda = miTienda(person_id)
 
     chats= []
 
@@ -324,10 +347,10 @@ def get_chats_list(request):
                 
             i+= 1
     else: 
-        return render(request,'error.html', {"context" : context}, status=403)
+        return render(request,'error.html', {"context" : context, 'tienda': tienda}, status=403)
 
     print(chats)
-    return render(request, "chatList.html", {"context" : context, "chats" : chats}, status=200)
+    return render(request, "chatList.html", {"context" : context, "chats" : chats, 'tienda': tienda}, status=200)
 
 
 def get_chat(request, id_chat):
@@ -337,19 +360,20 @@ def get_chat(request, id_chat):
     '''
     person_id,rol,rol_id,is_active= get_context(request)
     context = [person_id,rol,rol_id,is_active]
+    tienda = miTienda(person_id)
     if (is_active):
         chat= get_object_or_404(Chat, pk= id_chat)
         # TODO: if para comprobar que el usuario forma parte de ese chat
         if str(rol) == 'User':
             if not (int(chat.user.id) == int(person_id)):
                 print(True)
-                return render(request,'prohibido.html', {"context" : context},status=403)
+                return render(request,'prohibido.html', {"context" : context, 'tienda': tienda},status=403)
         elif str(rol) == 'Owner':
             if not(int(chat.shop.owner.id) == int(person_id)):
                 print(False)
-                return render(request,'prohibido.html', {"context" : context},status=403)
+                return render(request,'prohibido.html', {"context" : context, 'tienda': tienda},status=403)
         else:
-            return render(request,'prohibido.html', {"context" : context},status=403)
+            return render(request,'prohibido.html', {"context" : context, 'tienda': tienda},status=403)
 
         if request.method == 'POST':
             form = MessageForm(data=request.POST)
@@ -363,7 +387,7 @@ def get_chat(request, id_chat):
                 return redirect('/shop/chat/'+str(chat.id))
         chat_message = ChatMessage.objects.filter(chat=chat)
         form = MessageForm()
-        return render(request, 'chat.html', {"context" : context, "messages" : chat_message, 'form': form})
+        return render(request, 'chat.html', {"context" : context, "messages" : chat_message, 'form': form, 'tienda': tienda})
     else:
         return render(request,'prohibido.html',status=403)
 
@@ -375,9 +399,10 @@ def get_chat_new(request, id_shop):
 
     person_id,rol,rol_id,is_active = get_context(request)
     context = [person_id,rol,rol_id,is_active]
+    tienda = miTienda(person_id)
     print(rol)
     if rol =='Admin' or rol=='Owner':
-        return render(request,'error.html', {"context" : context}, status=403)
+        return render(request,'error.html', {"context" : context, 'tienda':tienda}, status=403)
     shop=get_object_or_404(Shop, pk= id_shop)
     user= get_object_or_404(CustomUser, pk=person_id)
     try:
@@ -403,7 +428,7 @@ def get_chat_new(request, id_shop):
 
     chat_message=[]
     form = MessageForm()
-    return render(request, 'chat.html', {"context" : context, "messages" : chat_message, 'form': form,'shop_id' : id_shop})
+    return render(request, 'chat.html', {"context" : context, "messages" : chat_message, 'form': form,'shop_id' : id_shop, 'tienda': tienda})
 
 
 def home(request):
@@ -411,7 +436,8 @@ def home(request):
     promotions_products = Promotion.objects.filter(shop=None)
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
-    return render(request, 'home.html', {"context": context, 'promotions_shops': promotions_shops, 'promotions_products': promotions_products})
+    tienda = miTienda(person_id)
+    return render(request, 'home.html', {"context": context, 'promotions_shops': promotions_shops, 'promotions_products': promotions_products, 'tienda': tienda})
 
 def booking(request):
     person_id, rol, rol_id, is_active = get_context(request)
@@ -437,19 +463,21 @@ def booking(request):
 def list_booking_user(request):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
+    tienda = miTienda(person_id)
     if (is_active):
         user = CustomUser.objects.get(id=person_id)
         bookings = Booking.objects.filter(user=user).filter(isAccepted=False)
         bookingsQuantity = {}
         for book in bookings:
             bookingsQuantity[book] = book.product.price * book.quantity
-        return render(request, 'bookings_user.html', {'bookingsQuantity': bookingsQuantity, 'context': context})
+        return render(request, 'bookings_user.html', {'bookingsQuantity': bookingsQuantity, 'context': context, 'tienda': tienda})
     else:
         return render(request, 'prohibido.html')
 
 def list_booking_owner(request):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
+    tienda = miTienda(person_id)
     if (is_active):
         owner = Owner.objects.get(id=person_id)
         bookings = Booking.objects.filter(isAccepted=False)
@@ -457,7 +485,7 @@ def list_booking_owner(request):
         for book in bookings:
             if book.product.shop.owner.id == owner.id:
                 reservas.append(book)
-        return render(request, 'bookings_owner.html', {'bookings': reservas, 'context': context})
+        return render(request, 'bookings_owner.html', {'bookings': reservas, 'context': context, 'tienda': tienda})
     else:
         return render(request, 'prohibido.html')
 
@@ -501,24 +529,26 @@ def review_list(request, id_shop):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     shop = get_object_or_404(Shop, pk= id_shop)
+    tienda = miTienda(person_id)
     if rol == "User":
 
         reviews = []
         for m in shop.review_set.all():
             reviews.append(m)
 
-        return render(request, 'reviews.html', {'reviews':reviews, 'context':context}) #a la vista de todas las reviews
+        return render(request, 'reviews.html', {'reviews':reviews, 'context':context, 'tienda': tienda}) #a la vista de todas las reviews
     else:
-        return render(request, 'prohibido.html', {'context':context})
+        return render(request, 'prohibido.html', {'context':context, 'tienda': tienda})
 
 def review_form(request, id_shop):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     shop = get_object_or_404(Shop, pk= id_shop)
+    tienda = miTienda(person_id)
     if rol == "User":
         if request.method == 'GET':
             form = ReviewForm()
-            return render(request, 'review.html', {'form':form, 'context':context}) #al formulario vacio
+            return render(request, 'review.html', {'form':form, 'context':context, 'tienda': tienda}) #al formulario vacio
         if request.method == 'POST':  
             form = ReviewForm(data=request.POST)         
             if form.is_valid():
@@ -529,19 +559,30 @@ def review_form(request, id_shop):
                 reviews = []
                 for m in shop.review_set.all():
                     reviews.append(m)
-                return redirect('../', {'reviews':reviews, 'context':context}) #a la vista las reviews de la tienda
+                return redirect('../', {'reviews':reviews, 'context':context, 'tienda': tienda}) #a la vista las reviews de la tienda
             else:
-                return render(request, 'review.html', {'form':form, 'context':context}) #de vuelta al formulario a rellenarlo correctamente
+                return render(request, 'review.html', {'form':form, 'context':context, 'tienda': tienda}) #de vuelta al formulario a rellenarlo correctamente
     else:
-        return render(request, 'prohibido.html', {'context':context})
+        return render(request, 'prohibido.html', {'context':context, 'tienda': tienda})
 
 def about(request):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
-    return render(request, 'about.html', {"context": context})
+    tienda = miTienda(person_id)
+    return render(request, 'about.html', {"context": context, 'tienda': tienda})
 
 def error_404(request, exception):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
-    return render(request,'error.html', {'context': context})
-        
+    tienda = miTienda(person_id)
+    return render(request,'error.html', {'context': context, "tienda":tienda})
+
+def miTienda(person_id):
+    try:
+        person = Person.objects.get(id=person_id)
+        owner = Owner.objects.get(person=person)
+        shop = Shop.objects.get(owner=owner)
+    except:
+        shop = ''
+
+    return shop
