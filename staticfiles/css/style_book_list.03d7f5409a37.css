@@ -175,11 +175,7 @@ img{
     background-color: var(--dark-color-lighten);
     border-radius: .5rem;
     transition: .3s;
-    height: 300px;
-    width: 200px;
     float: left;
-    margin-left: 2rem;
-    margin-right: 2rem;
 
 }
 

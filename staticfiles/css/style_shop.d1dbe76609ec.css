@@ -165,6 +165,9 @@ img{
 
 }
 
+.tablacss{
+    color: red;
+}
 
 .product{
     position: relative;
@@ -178,8 +181,6 @@ img{
     height: 300px;
     width: 200px;
     float: left;
-    margin-left: 2rem;
-    margin-right: 2rem;
 
 }
 
@@ -236,7 +237,10 @@ img{
     grid-template-columns: repeat(auto-fit, minmax(100px,2fr));
     
 }
-
+.column{
+    width: 50%;
+    float: left;
+}
 
 
 }

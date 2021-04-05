@@ -7,6 +7,7 @@ install:
 script:
 - cd Citra
 - cp travis_local_settings.py local_settings.py
+- python manage.py test
 deploy:
   buildpack: python
   provider: heroku
