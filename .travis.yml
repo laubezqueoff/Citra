@@ -7,7 +7,7 @@ install:
 script:
 - cd Citra
 - cp travis_local_settings.py local_settings.py
-- cd..
+- cd ..
 - python ./manage.py test
 deploy:
   buildpack: python
