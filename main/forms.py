@@ -9,3 +9,5 @@ class ReviewForm(forms.Form):
     rating = forms.IntegerField(label='Puntuación')
     title = forms.CharField(label='Título')
     description = forms.CharField()
+class UserSearchForm(forms.Form):
+    username = forms.CharField(label='Username')

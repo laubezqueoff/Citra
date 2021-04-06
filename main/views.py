@@ -3,7 +3,7 @@ import requests
 from datetime import date
 from django.shortcuts import render, redirect, get_object_or_404
 import urllib.request
-from main.forms import MessageForm, ReviewForm
+from main.forms import MessageForm, ReviewForm, UserSearchForm
 from django.http import Http404
 import json
 from django.http import JsonResponse
@@ -590,3 +590,70 @@ def miTienda(person_id):
         shop = ''
 
     return shop
+
+def get_owners(request):
+    ''' Muestra un listado con todos los owners que hay registrados.\n
+        POST    -> None \n
+        GET     -> Muestra los owners listados.
+    '''
+    person_id,rol,rol_id,is_active= get_context(request)
+    context = [person_id,rol,rol_id,is_active]
+    tienda = miTienda(person_id)
+    if (is_active):
+        if str(rol) == 'Admin':
+            if request.method == 'POST': 
+                form = UserSearchForm(data=request.POST)
+                if form.is_valid():
+                    username = form.cleaned_data['username']
+                    person_list= Person.objects.filter(username=username)
+                    i=0
+                    for p in person_list:
+                        owners = Owner.objects.filter(person=p)
+                        if(i>0):
+                            owners = owners | Owner.objects.filter(person=p)
+                        i=+1
+                        print(owners)
+                    return render(request, 'chat.html', {"context" : context, "owners" : owners, 'form': form, 'tienda': tienda})
+            else:
+                form = UserSearchForm()
+                owners = Owner.objects.all()
+                print(owners)
+                return render(request, 'chat.html', {"context" : context, "owners" : owners, 'form': form, 'tienda': tienda})
+        else:
+            return render(request,'prohibido.html',{"context" : context, 'tienda': tienda},status=403)
+    else:
+        return render(request,'prohibido.html',status=403)
+
+def get_users(request):
+    ''' Muestra un listado con todos los usuarios que hay registrados.\n
+        POST    -> None \n
+        GET     -> Muestra los usuarios registrados en una lista.
+    '''
+    person_id,rol,rol_id,is_active= get_context(request)
+    context = [person_id,rol,rol_id,is_active]
+    tienda = miTienda(person_id)
+    if (is_active):
+        if str(rol) == 'Admin':
+            if request.method == 'POST': 
+                form = UserSearchForm(data=request.POST)
+                if form.is_valid():
+                    username = form.cleaned_data['username']
+                    person_list= Person.objects.filter(username=username)
+                    i=0
+                    for p in person_list:
+                        users = CustomUser.objects.filter(person=p)
+                        if(i>0):
+                            users = users | CustomUser.objects.filter(person=p)
+                        i=+1
+                        print(users)
+
+                    return render(request, 'chat.html', {"context" : context, "users" : users, 'form': form, 'tienda': tienda})
+            else:
+                form = UserSearchForm()
+                users = CustomUser.objects.all()
+                print(users)
+                return render(request, 'chat.html', {"context" : context, "owners" : users, 'form': form, 'tienda': tienda})
+        else:
+            return render(request,'prohibido.html',{"context" : context, 'tienda': tienda},status=403)
+    else:
+        return render(request,'prohibido.html',status=403)

@@ -47,6 +47,8 @@ urlpatterns = [
     path('shops/<id_shop>/reviews/new/', views.review_form, name='review'),
     path('shop/bookings/',views.list_booking_owner,name="list_booking_owner"),
     path('user/bookings/',views.list_booking_user,name="list_booking_user"),
+    path('owners/',views.get_owners,name="list_owners"),
+    path('users/',views.get_users,name="list_users"),
     path('about/',views.about,name="about"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
