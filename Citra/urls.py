@@ -48,6 +48,9 @@ urlpatterns = [
     path('shop/bookings/',views.list_booking_owner,name="list_booking_owner"),
     path('user/bookings/',views.list_booking_user,name="list_booking_user"),
     path('about/',views.about,name="about"),
+    path('register/',views.register,name="register"),
+
+
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 handler404 = 'main.views.error_404'

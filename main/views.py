@@ -590,3 +590,9 @@ def miTienda(person_id):
         shop = ''
 
     return shop
+
+
+def register(request):
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    return render(request, 'register_user.html', {"context": context})
