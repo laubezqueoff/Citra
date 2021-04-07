@@ -286,6 +286,36 @@ def promotion_month_shop(request, id_shop):
     else:
         return render(request, 'prohibido.html')
 
+def product_create(request, id_shop):
+    shop = get_object_or_404(Shop, pk=id_shop)
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    tienda = miTienda(person_id)
+    if (is_active and rol == "Owner"):
+        if request.method == 'POST':
+            form = ProductForm(request.POST)
+            if form.is_valid:
+                # product.name = form.cleaned_data['name']
+                # product.price = form.cleaned_data['price']
+                # product.description = form.cleaned_data['description']
+                # product = Product()
+                # product.name = request.POST['name']
+                # product.price = request.POST['price']
+                # product.description = request.POST['description']
+                # product.productType = ProductType.objects.get(name=request.POST['select'])
+                # product.image = request.FILES.get('image')
+                # product.save()
+                product = Product.objects.create(name=request.POST['name'], price=request.POST['price'], description= request.POST['description'], productType= ProductType.objects.get(name=request.POST['select']), picture= request.FILES.get('picture'), shop= shop)
+                return redirect('/shops/'+str(shop.id))
+        form = ProductForm()
+        types = ProductType.objects.all()   
+        productType = []
+        for ty in types:
+            productType.append(ty)
+        return render(request, 'create_product.html', {'shop': shop, 'types' : productType, "context" : context, 'tienda': tienda, 'form':form})
+    else:
+        return render(request, 'prohibido.html', {"context" : context, 'tienda': tienda})
+
 def product_details(request, id_product):
     product = get_object_or_404(Product, pk=id_product)
     person_id, rol, rol_id, is_active = get_context(request)

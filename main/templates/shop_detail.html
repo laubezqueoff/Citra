@@ -31,14 +31,9 @@
                     <article class="product">
                       <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
                       <a id = "nombre{{prod.id}}" class="product__name" href="{% url 'products' prod.pk %}">{{prod.name}}</a>
-                      {% comment %} <p id = "nombre{{prod.id}}">{{prod.name}}</p> {% endcomment %}
                       <p id = "precio{{prod.id}}">{{prod.price}}</p>
                       {% if context.1 == 'User' %}
                         <button id="boton" onclick="añadir({{prod.id}})">Añadir</button>
-                      {% comment %} {% elif context.1 == 'Owner' and promotionProduct and prod.shop.owner.person.id|stringformat:"i" == context.0 %}
-                        <button id="boton" onclick="promocionarProductoSemanal({{prod.id}})">Promocionar Semanal</button>
-                        <button id="boton" onclick="promocionarProductoMensual({{prod.id}})">Promocionar Mensual</button>
-                      {% else %} {% endcomment %}
                       {% endif %}
                     </article>
                   </div>
@@ -86,6 +81,8 @@
               Promociona tu tienda (mensual)
             </button>
           {% endif %}
+            <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="{% url 'product_create' shop.pk %}"> Añadir Productos </a></button>
+
         </div>
       </div>
   </div>

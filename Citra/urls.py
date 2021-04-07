@@ -28,6 +28,7 @@ urlpatterns = [
     path('threads/<id_thread>', views.forumMessages_list),
     path("login/", views.login, name="login"),
     path("logout/", views.logout, name="logout"),
+    path('product/<id_shop>/create', views.product_create, name="product_create"),
     path('product/<id_product>/promotionweekproduct', views.promotion_week_product, name="promotion_week_product"),
     path('product/<id_product>/promotionmonthproduct', views.promotion_month_product, name="promotion_month_product"),
     path("products/<id_product>", views.product_details, name="products"),
@@ -48,6 +49,7 @@ urlpatterns = [
     path('shop/bookings/',views.list_booking_owner,name="list_booking_owner"),
     path('user/bookings/',views.list_booking_user,name="list_booking_user"),
     path('about/',views.about,name="about"),
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+# ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = 'main.views.error_404'

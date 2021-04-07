@@ -12,7 +12,8 @@ Productos / Citra
     <div class="row g-0">
         <div class="col-lg-5 p-5 ">
             <div class="p-5 w-100 mb-auto">
-                <img src="{% static 'images/fruta.jpg' %}" class="d-block w-100 rounded border border-dark" alt="Negocio local">
+                {% comment %} <img src="{% static 'images/fruta.jpg' %}" class="d-block w-100 rounded border border-dark" alt="Negocio local"> {% endcomment %}
+                <img src="{{product.picture.url}}" class="d-block w-100 rounded border border-dark" alt="Negocio local">
             </div>
         </div>
         <div class="col-lg-6 d-flex flex-column align-items-end">
@@ -25,7 +26,7 @@ Productos / Citra
                             <button id="boton" onclick="promocionarProductoMensual({{product.id}})">Promocionar Mensual</button>
                         {% endif %}
                     </div>
-                    <form accept-charset="UTF-8" action="" method="post">{% csrf_token %}
+                    <form accept-charset="UTF-8" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
                         {% if context.1 == 'Owner' and product.shop.owner.person.id|stringformat:"i" == context.0%}
                         <div class=" pt-lg-2 pb-5">
                             <div class="mb-4 border border-dark rounded-2">
