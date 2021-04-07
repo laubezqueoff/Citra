@@ -590,3 +590,20 @@ def miTienda(person_id):
         shop = ''
 
     return shop
+
+
+def myreviews_list(request, id_shop):
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+
+    shop = get_object_or_404(Shop, pk= id_shop)
+    tienda = miTienda(person_id)
+
+    if rol == "Owner":
+        reviews = []
+        for m in shop.review_set.all():
+            reviews.append(m)
+
+        return render(request, 'reviews.html', {'reviews':reviews, 'context':context, 'tienda': tienda})
+    else:
+        return render(request, 'prohibido.html', {'context':context, 'tienda': tienda})
