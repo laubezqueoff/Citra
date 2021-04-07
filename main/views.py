@@ -48,6 +48,62 @@ def login(request):
     else: #Si es un GET redirijimos a la vista de login
         return render(request, 'login.html', {'tienda': ''})
 
+def register(request):
+    ''' Logea una persona en la aplicación.\n
+        POST    -> Lleva la inicio con el contexto actualizado \n
+        GET     -> Lleva al formulario de login
+    '''
+    #msg_success = "Bienvenido a la aplicación"
+    msg_error  = "El nombre y la contraseña no coinciden"
+
+
+    if request.method == 'POST': #Si es un POST redirijimos a la vista de index con el context actualizado
+
+        rol = request.POST['rol'] 
+        
+        try:
+            #Parametros tomados del post
+                username = request.POST['username']             
+                password = request.POST['password']            
+                name = request.POST['name']                
+                phoneNumber = request.POST['phoneNumber'] 
+                zipCode = request.POST['zipCode']              
+                email = request.POST['email'] 
+                   
+                #Parámetros autogenerados   
+                registerDate = date.today()
+                isBanned = False
+
+                p = Person(username=username, password=password, name=name, phoneNumber=phoneNumber, email=email, zipCode=zipCode, registerDate=registerDate, isBanned=isBanned)
+                p.save()
+
+                p = Person.objects.get(username=username,password=password)
+
+                if rol == "Owner":
+                    co = Owner(person=p)
+                    co.save()
+
+                if rol == "User":
+                    cu = CustomUser(person=p)
+                    cu.save()
+
+                print(p)  
+                print(cu)
+                rol_and_id = whoIsWho(p)
+
+                update_context(request,p.id,rol_and_id[0],rol_and_id[1],True)
+                person_id,rol,rol_id,is_active = get_context(request)
+                context = [person_id,rol,rol_id,is_active]
+
+                if rol == "Owner": return render(request, 'home.html', {"context" : context})
+                if rol == "User": return render(request, 'home.html', {"context" : context})
+
+        except:
+            msg = msg_error
+            return render(request, 'login.html',{"msg":msg})
+         
+    else: #Si es un GET redirijimos a la vista de login
+        return render(request, 'register_user.html')
 
 def logout(request):
     ''' Deslogea una persona en la aplicación.\n
@@ -590,9 +646,3 @@ def miTienda(person_id):
         shop = ''
 
     return shop
-
-
-def register(request):
-    person_id, rol, rol_id, is_active = get_context(request)
-    context = [person_id, rol, rol_id, is_active]
-    return render(request, 'register_user.html', {"context": context})
