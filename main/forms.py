@@ -8,4 +8,8 @@ class MessageForm(forms.Form):
 class ReviewForm(forms.Form):
     rating = forms.IntegerField(label='Puntuación')
     title = forms.CharField(label='Título')
-    description = forms.CharField()
+    description = forms.CharField(label='Descripción')
+
+class ReportForm(forms.Form):
+    title = forms.CharField(label='Título')
+    description = forms.CharField(label='Descripción')

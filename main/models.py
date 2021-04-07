@@ -27,6 +27,14 @@ class Owner(models.Model):
     person = models.ForeignKey(Person, on_delete=models.CASCADE)
 
 
+## MODELO DE REPORTE ########################################################
+
+class Report(models.Model):
+    title = models.CharField(max_length=20)
+    description = models.TextField(max_length=60)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
+
+
 ## MODELOS DE TIENDA Y PRODUCTOS ############################################
 
 class ShopType(models.Model):

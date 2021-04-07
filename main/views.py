@@ -3,7 +3,7 @@ import requests
 from datetime import date
 from django.shortcuts import render, redirect, get_object_or_404
 import urllib.request
-from main.forms import MessageForm, ReviewForm
+from main.forms import MessageForm, ReviewForm, ReportForm
 from django.http import Http404
 import json
 from django.http import JsonResponse
@@ -590,3 +590,20 @@ def miTienda(person_id):
         shop = ''
 
     return shop
+
+def report_form(request):
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    
+    if request.method == 'GET':
+        form = ReportForm()
+        return render(request, 'report.html', {'form':form, 'context':context})
+    if request.method == 'POST':  
+        form = ReportForm(data=request.POST)
+        if form.is_valid():
+            title = form.cleaned_data['title']
+            description = form.cleaned_data['description']
+            Report.objects.create(title = title, description = description, person = Person.objects.get(id=person_id))
+            return render(request, '../', {'form':form, 'context':context})
+        else:
+            return render(request, 'report.html', {'form':form, 'context':context})
