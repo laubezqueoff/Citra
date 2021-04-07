@@ -81,6 +81,25 @@
             <button type="button" class="btn btn-outline-warning" onclick="promocionarTiendaSemanal({{shop.id}})">
               Promociona tu tienda (semanal)
             </button>
+
+            <form id="pagaMens" action= "{% url 'promotion_week_shop' shop.id %}" method="POST">
+              {% csrf_token %} 
+              
+              <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" id="separated3"
+              data-key="{{ stripe_key }}" data-description="Premium mensual" data-amount="500"
+              data-locale="es" data-currency="eur" data-label="Promocionar una semana 5€">
+              </script>
+            </form>
+
+
+            <form id="pagaMens" action= "{% url 'promotion_month_shop' shop.id %}" method="POST">
+              {% csrf_token %} 
+              
+              <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" id="separated3"
+              data-key="{{ stripe_key }}" data-description="Premium mensual" data-amount="1000"
+              data-locale="es" data-currency="eur" data-label="Promocionar un mes 10€">
+              </script>
+            </form>
               <br>
             <button type="button" class="btn btn-outline-warning" onclick="promocionarTiendaMensual({{shop.id}})">
               Promociona tu tienda (mensual)
@@ -91,75 +110,75 @@
   </div>
 </main>
 
-<script>
-  function promocionarProductoSemanal (id_product) {
-    data = {
-        id_product: id_product,
-        csrfmiddlewaretoken: '{{ csrf_token }}',
-    }
-    url = window.location.origin + '/product/' + id_product + '/promotionweekproduct'
-    $.ajax({
-        url: url,
-        data: data,
-        type: 'POST',
-        success: function (data) {
-            confirm("Promocion realizada")
-            window.location.replace(window.location.origin + data.url);
-        }
-    });
-  }
+ <script>
+  // function promocionarProductoSemanal (id_product) {
+  //   data = {
+  //       id_product: id_product,
+  //       csrfmiddlewaretoken: '{{ csrf_token }}',
+  //   }
+  //   url = window.location.origin + '/product/' + id_product + '/promotionweekproduct'
+  //   $.ajax({
+  //       url: url,
+  //       data: data,
+  //       type: 'POST',
+  //       success: function (data) {
+  //           confirm("Promocion realizada")
+  //           window.location.replace(window.location.origin + data.url);
+  //       }
+  //   });
+  // }
 
-  function promocionarProductoMensual (id_product) {
-    data = {
-        id_product: id_product,
-        csrfmiddlewaretoken: '{{ csrf_token }}',
-    }
-    url = window.location.origin + '/product/' + id_product + '/promotionmonthproduct'
-    $.ajax({
-        url: url,
-        data: data,
-        type: 'POST',
-        success: function (data) {
-            confirm("Promocion realizada")
-            window.location.replace(window.location.origin + data.url);
-        }
-    });
-  }
-  function promocionarTiendaSemanal (id_shop) {
-    data = {
-        id_shop: id_shop,
-        csrfmiddlewaretoken: '{{ csrf_token }}',
-    }
-    url = window.location.origin + '/shops/' + id_shop + '/promotionweekshop'
-    console.log(url)
-    $.ajax({
-        url: url,
-        data: data,
-        type: 'POST',
-        success: function (data) {
-            confirm("Promocion realizada")
-            window.location.replace(window.location.origin + data.url);
-        }
-    });
-  }
+  // function promocionarProductoMensual (id_product) {
+  //   data = {
+  //       id_product: id_product,
+  //       csrfmiddlewaretoken: '{{ csrf_token }}',
+  //   }
+  //   url = window.location.origin + '/product/' + id_product + '/promotionmonthproduct'
+  //   $.ajax({
+  //       url: url,
+  //       data: data,
+  //       type: 'POST',
+  //       success: function (data) {
+  //           confirm("Promocion realizada")
+  //           window.location.replace(window.location.origin + data.url);
+  //       }
+  //   });
+  // }
+  // function promocionarTiendaSemanal (id_shop) {
+  //   data = {
+  //       id_shop: id_shop,
+  //       csrfmiddlewaretoken: '{{ csrf_token }}',
+  //   }
+  //   url = window.location.origin + '/shops/' + id_shop + '/promotionweekshop'
+  //   console.log(url)
+  //   $.ajax({
+  //       url: url,
+  //       data: data,
+  //       type: 'POST',
+  //       success: function (data) {
+  //           confirm("Promocion realizada")
+  //           window.location.replace(window.location.origin + data.url);
+  //       }
+  //   });
+  // }
 
-  function promocionarTiendaMensual (id_shop) {
-    data = {
-        id_shop: id_shop,
-        csrfmiddlewaretoken: '{{ csrf_token }}',
-    }
-    url = window.location.origin + '/shops/' + id_shop + '/promotionmonthshop'
-    console.log(url)
-    $.ajax({
-        url: url,
-        data: data,
-        type: 'POST',
-        success: function (data) {
-            confirm("Promocion realizada")
-            window.location.replace(window.location.origin + data.url);
-        }
-    });
-  }
+  // function promocionarTiendaMensual (id_shop) {
+  //   data = {
+  //       id_shop: id_shop,
+  //       csrfmiddlewaretoken: '{{ csrf_token }}',
+  //   }
+  //   url = window.location.origin + '/shops/' + id_shop + '/promotionmonthshop'
+  //   console.log(url)
+  //   $.ajax({
+  //       url: url,
+  //       data: data,
+  //       type: 'POST',
+  //       success: function (data) {
+  //           confirm("Promocion realizada")
+  //           window.location.replace(window.location.origin + data.url);
+  //       }
+  //   });
+  // } -->
 
   function añadir (id) {
     var nombre = document.getElementById('nombre'+id).innerHTML
@@ -230,5 +249,6 @@ function reserva() {
 };
 </script>
 
+                
 {% endblock %}
 
