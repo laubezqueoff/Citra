@@ -596,3 +596,8 @@ def register(request):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     return render(request, 'register_user.html', {"context": context})
+
+def registerShop(request):
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    return render(request, 'register_shop.html', {"context": context})
