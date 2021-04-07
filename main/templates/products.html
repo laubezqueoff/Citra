@@ -25,8 +25,8 @@ Productos / Citra
                             <button id="boton" onclick="promocionarProductoMensual({{product.id}})">Promocionar Mensual</button>
                         {% endif %}
                     </div>
-                    <form method="POST">{% csrf_token %}
-                        {% if context.1 == 'Owner' %}
+                    <form accept-charset="UTF-8" action="" method="post">{% csrf_token %}
+                        {% if context.1 == 'Owner' and product.shop.owner.person.id|stringformat:"i" == context.0%}
                         <div class=" pt-lg-2 pb-5">
                             <div class="mb-4 border border-dark rounded-2">
                                 <input type="text" class="form-control " placeholder="Introduce el nombre del producto" id="name" name="name" value="{{product.name}}">
@@ -35,7 +35,11 @@ Productos / Citra
                                 <div class="mb-4 border border-dark rounded-2">
                                     <select name="select" class="form-control" placeholder="Tipo de producto" id="type" name="type">
                                         {% for ty in types %}
-                                            <option value="{{ty.name}}">{{ty.name}}</option>
+                                            {% if ty.name == product.productType.name %}
+                                                <option value="{{ty.name}}" selected="true">{{ty.name}}</option>
+                                            {% else %}
+                                                <option value="{{ty.name}}">{{ty.name}}</option>
+                                            {% endif %}
                                         {% endfor %}
                                     </select>
                                 </div>
@@ -57,7 +61,6 @@ Productos / Citra
                             <div class="mb-4 border border-dark rounded-2">
                                 <span class="input-group-text" id="name" name="name" value="">{{product.name}}</span>
                             </div>
-                            
                                 <div class="mb-4 border border-dark rounded-2">
                                     <span class="input-group-text"  id="type" name="type" value="">{{product.productType.name}}</span>
                                 </div>

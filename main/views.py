@@ -3,7 +3,7 @@ import requests
 from datetime import date
 from django.shortcuts import render, redirect, get_object_or_404
 import urllib.request
-from main.forms import MessageForm, ReviewForm
+from main.forms import MessageForm, ReviewForm, ProductForm
 from django.http import Http404
 import json
 from django.http import JsonResponse
@@ -288,16 +288,27 @@ def promotion_month_shop(request, id_shop):
 
 def product_details(request, id_product):
     product = get_object_or_404(Product, pk=id_product)
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    promotionProduct = Promotion.objects.filter(product=product).exists()
+    tienda = miTienda(person_id)
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            product.name = form.cleaned_data['name']
+            product.price = form.cleaned_data['price']
+            product.description = form.cleaned_data['description']
+            product.productType = ProductType.objects.get(name=request.POST['select'])
+            product.save()
+            return redirect('/shops/'+str(product.shop.id))
+
+    form = ProductForm()
     types = ProductType.objects.all()   
     productType = []
     for ty in types:
         productType.append(ty)
     
-    person_id, rol, rol_id, is_active = get_context(request)
-    context = [person_id, rol, rol_id, is_active]
-    promotionProduct = Promotion.objects.filter(product=product).exists()
-    tienda = miTienda(person_id)
-    return render(request, 'products.html', {'product': product, 'types' : productType, "context" : context, "promotionProduct" : not(promotionProduct), 'tienda': tienda})
+    return render(request, 'products.html', {'form': form, 'product': product, 'types' : productType, "context" : context, "promotionProduct" : not(promotionProduct), 'tienda': tienda})
 
 def list_shop(request):
     person_id, rol, rol_id, is_active = get_context(request)
