@@ -605,7 +605,7 @@ def get_owners(request):
                 form = UserSearchForm(data=request.POST)
                 if form.is_valid():
                     username = form.cleaned_data['username']
-                    person_list= Person.objects.filter(username=username)
+                    person_list= Person.objects.filter(username__icontains=username)
                     i=0
                     for p in person_list:
                         owners = Owner.objects.filter(person=p)
@@ -638,7 +638,7 @@ def get_users(request):
                 form = UserSearchForm(data=request.POST)
                 if form.is_valid():
                     username = form.cleaned_data['username']
-                    person_list= Person.objects.filter(username=username)
+                    person_list= Person.objects.filter(username__icontains=username)
                     i=0
                     for p in person_list:
                         users = CustomUser.objects.filter(person=p)
