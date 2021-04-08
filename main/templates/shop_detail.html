@@ -68,11 +68,12 @@
             <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="{% url 'newChat' shop.pk %}"> Iniciar Chat </a></button>
 
             {% endif %}
-          {% if context.1 == 'Owner' and promotionShop and shop.owner.person.id|stringformat:"i" == context.0 %}
+          {% if context.1 == 'Owner' and shop.owner.person.id|stringformat:"i" == context.0 %}
             {% comment %} <button onclick="location.href='{% url 'promotion_week_shop' shop.id %}'">
               Promociona tu tienda (semanal)
             </button> {% endcomment %}
             <h4 class="section-title">Otras acciones</h4>
+            {% if promotionShop %}
             <button type="button" class="btn btn-outline-warning" onclick="promocionarTiendaSemanal({{shop.id}})">
               Promociona tu tienda (semanal)
             </button>
@@ -80,9 +81,9 @@
             <button type="button" class="btn btn-outline-warning" onclick="promocionarTiendaMensual({{shop.id}})">
               Promociona tu tienda (mensual)
             </button>
-          {% endif %}
+            {% endif %}
             <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="{% url 'product_create' shop.pk %}"> Añadir Productos </a></button>
-
+          {% endif %}
         </div>
       </div>
   </div>
