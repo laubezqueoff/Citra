@@ -49,7 +49,7 @@ urlpatterns = [
     path('user/bookings/',views.list_booking_user,name="list_booking_user"),
     path('about/',views.about,name="about"),
     path('register/',views.register,name="register"),
-    path('registerShop/',views.registerShop,name="registerShop"),
+    #path('registerShop/',views.registerShop,name="registerShop"),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

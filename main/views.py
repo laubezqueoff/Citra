@@ -63,12 +63,12 @@ def register(request):
         
         try:
             #Parametros tomados del post
-                username = request.POST['username']             
-                password = request.POST['password']            
-                name = request.POST['name']                
-                phoneNumber = request.POST['phoneNumber'] 
-                zipCode = request.POST['zipCode']              
-                email = request.POST['email'] 
+                username        =   request.POST['username']             
+                password        =   request.POST['password']            
+                name            =   request.POST['name']                
+                phoneNumber     =   request.POST['phoneNumber'] 
+                zipCode         =   request.POST['zipCode']              
+                email           =   request.POST['email'] 
                    
                 #Parámetros autogenerados   
                 registerDate = date.today()
@@ -82,6 +82,23 @@ def register(request):
                 if rol == "Owner":
                     co = Owner(person=p)
                     co.save()
+
+                    shopName        =   request.POST['shopName']
+                    shopType        =   request.POST['shopType']
+                    schedule        =   request.POST['schedule']
+                    description     =   request.POST['description']
+                    picture         =   request.POST['picture']
+                    address         =   request.POST['address']
+                    owner           =   request.POST['owner']
+                    durationBooking =   request.POST['durationBooking']
+                    address         =   request.POST['address']
+                    
+                    co = Owner.objects.get(person=p)
+                    shopType = ShopType.objects.get(id=int(shopType))
+                    shop = Shop.objects.get(name=name,shopType=null,schedule=schedule,description=description,picture=picture,address=address,owner=co,durationBooking=durationBooking)
+
+
+
 
                 if rol == "User":
                     cu = CustomUser(person=p)
