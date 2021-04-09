@@ -13,6 +13,7 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+
 from django.contrib import admin
 from django.urls import path
 from main import populate, views
@@ -28,11 +29,15 @@ urlpatterns = [
     path('threads/<id_thread>', views.forumMessages_list),
     path("login/", views.login, name="login"),
     path("logout/", views.logout, name="logout"),
-    path('product/<id_product>/promotionweekproduct', views.promotion_week_product, name="promotion_week_product"),
-    path('product/<id_product>/promotionmonthproduct', views.promotion_month_product, name="promotion_month_product"),
+    path('product/<id_product>/promotionweekproduct',
+         views.promotion_week_product, name="promotion_week_product"),
+    path('product/<id_product>/promotionmonthproduct',
+         views.promotion_month_product, name="promotion_month_product"),
     path("products/<id_product>", views.product_details, name="products"),
-    path('shops/<id_shop>/promotionweekshop', views.promotion_week_shop, name="promotion_week_shop"),
-    path('shops/<id_shop>/promotionmonthshop', views.promotion_month_shop, name="promotion_month_shop"),
+    path('shops/<id_shop>/promotionweekshop',
+         views.promotion_week_shop, name="promotion_week_shop"),
+    path('shops/<id_shop>/promotionmonthshop',
+         views.promotion_month_shop, name="promotion_month_shop"),
     path('shops/', views.list_shop, name="shops"),
     path('shop/bookings/acceptbookings/', views.accept_booking),
     path('shops/<id_shop>', views.shop_details, name="shop"),
@@ -42,12 +47,16 @@ urlpatterns = [
     path('shops/booking/', views.booking),
     path('error/', views.error),
     path('forbidden/', views.forbidden),
-    path('booking/',views.booking),
+    path('booking/', views.booking),
     path('shops/<id_shop>/reviews/', views.review_list, name='reviews'),
     path('shops/<id_shop>/reviews/new/', views.review_form, name='review'),
-    path('shop/bookings/',views.list_booking_owner,name="list_booking_owner"),
-    path('user/bookings/',views.list_booking_user,name="list_booking_user"),
-    path('about/',views.about,name="about"),
+    path('shop/bookings/', views.list_booking_owner, name="list_booking_owner"),
+    path('user/bookings/', views.list_booking_user, name="list_booking_user"),
+    path('about/', views.about, name="about"),
+    path('shops/<id_shop>/edit', views.updateShop, name='update_shop'),
+
+
+
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
 handler404 = 'main.views.error_404'
