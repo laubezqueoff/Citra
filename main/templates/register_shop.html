@@ -15,27 +15,27 @@
                 <h1 class="mb-4 fw-bold">Datos del propietario</h1>
                   <div class="mb-4">
                       <label for="name" class="form-label fw-bold">Nombre</label>
-                      <input type="text" class="form-control form-control-sm " placeholder="Introduzca su Nombre" id="name" name="name">
+                      <input type="text" class="form-control form-control-sm " placeholder="Introduzca su Nombre" id="name" name="name" required>
                   </div>
                   <div class="mb-4">
                       <label for="phoneNumber" class="form-label fw-bold">Número de teléfono</label>
-                      <input type="text" class="form-control form-control-sm " placeholder="Introduzca su Número" id="phoneNumber" name="phoneNumber">
+                      <input type="number" class="form-control form-control-sm " placeholder="Introduzca su Número" id="phoneNumber" name="phoneNumber" required>
                   </div>
                   <div class="mb-4">
                       <label for="zipCode" class="form-label fw-bold">Código postal</label>
-                      <input type="text" class="form-control form-control-sm " placeholder="Introduzca su código postal" id="zipCode" name="zipCode">
+                      <input type="number" class="form-control form-control-sm " placeholder="Introduzca su código postal" id="zipCode" name="zipCode" required>
                   </div>
                   <div class="mb-4">
                       <label for="email" class="form-label fw-bold">Email</label>
-                      <input type="email" class="form-control form-control-sm " placeholder="Introduzca su Email" id="email" name="email">
+                      <input type="email" class="form-control form-control-sm " placeholder="Introduzca su Email" id="email" name="email" required>
                   </div>
                   <div class="mb-4">
                       <label for="usuario" class="form-label fw-bold">Usuario</label>
-                      <input type="text" class="form-control form-control-sm " placeholder="Introduzca un nombre de usuario" id="username" name="username">
+                      <input type="text" class="form-control form-control-sm " placeholder="Introduzca un nombre de usuario" id="username" name="username" required>
                   </div>                  
                   <div class="mb-4">
                       <label for="exampleInputPassword1" class="form-label fw-bold">Contraseña</label>
-                      <input type="password" class="form-control mb-2 form-control-sm " placeholder="Introduce la contraseña" id="password" name="password">
+                      <input type="password" class="form-control mb-2 form-control-sm " placeholder="Introduce la contraseña" id="password" name="password" required>
                   </div>
                   <input type="hidden" value="Owner" id="rol" name="rol">
            
@@ -46,32 +46,35 @@
         <div class="col me-5">
             <div class="m-5">
                 <h1 class="mb-4 fw-bold">Datos de la tienda</h1>
-                  <div class="mb-4">
-                      <label for="shopName" class="form-label fw-bold">Nombre de la tienda</label>
-                      <input type="text" class="form-control form-control-sm " placeholder="Introduzca el Nombre de la tienda" id="shopName" name="shopName">
-                  </div>
-                  <div class="mb-4">
-                      <label for="shopType" class="form-label fw-bold">Tipo de tienda</label>
-                      <input type="number" class="form-control form-control-sm " placeholder="Introduzca su Número" id="shopType" name="shopType">
-                  </div>
-                  <div class="mb-4">
-                      <label for="schedule" class="form-label fw-bold">Horario de apertura</label>
-                      <input type="text" class="form-control form-control-sm " placeholder="Introduzca su código postal" id="schedule" name="schedule">
-                  </div>
-                  <div class="mb-4">
-                      <label for="description" class="form-label fw-bold">Descripción de la tienda</label>
-                      <input type="text" class="form-control form-control-sm " placeholder="Introduzca una descripción de su tienda" id="description" name="description">
-                  </div>
-                  <div class="mb-4">
-                      <label for="address" class="form-label fw-bold">Dirección</label>
-                      <input type="text" class="form-control form-control-sm " placeholder="Introduzca un nombre de usuario" id="address" name="address">
-                  </div>                  
-                  <div class="mb-4">
-                      <label for="durationBooking" class="form-label fw-bold">Tiempo de reserva de producto</label>
-                      <input type="password" class="form-control mb-2 form-control-sm " placeholder="Introduce la contraseña" id="durationBooking" name="durationBooking">
-                  </div>
-                  <label> Imagen de la tienda </label>
-                  <input type="file" id="picture" name="picture">
+                    <div class="mb-4">
+                        <label for="shopName" class="form-label fw-bold">Nombre de la tienda</label>
+                        <input type="text" class="form-control form-control-sm " placeholder="Introduzca el Nombre de la tienda" id="shopName" name="shopName" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="shopType" class="form-label fw-bold">Tipo de tienda</label>
+                        <input type="number" class="form-control form-control-sm " placeholder="Introduzca su Número" id="shopType" name="shopType" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="schedule" class="form-label fw-bold">Horario de apertura</label>
+                        <input type="text" class="form-control form-control-sm " placeholder="Introduzca el horario de disponibilidad de la tienda" id="schedule" name="schedule" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="description" class="form-label fw-bold">Descripción de la tienda</label>
+                        <input type="text" class="form-control form-control-sm " placeholder="Introduzca una descripción de la tienda" id="description" name="description" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="address" class="form-label fw-bold">Dirección</label>
+                        <input type="text" class="form-control form-control-sm " placeholder="Introduzca la dirección de la tienda" id="address" name="address" required>
+                    </div>                  
+                    <div class="mb-4">
+                        <label for="durationBooking" class="form-label fw-bold">Tiempo de reserva de producto</label>
+                        <input type="text" class="form-control mb-2 form-control-sm " placeholder="Introduce la duración en la que la reserva estará disponible" id="durationBooking" name="durationBooking" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="picture" class="form-label fw-bold me-5">Imagen de la tienda</label>
+                        <input type="file" id="picture" name="picture" required>
+                    </div> 
+
            
           </div>
         </div>
