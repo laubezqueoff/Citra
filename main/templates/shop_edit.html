@@ -1,58 +1,64 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}
-Mi tienda
-{% endblock %}
+{% block title %}Mi tienda / Citra{% endblock %}
 
 {% block contenido %}
-<form accept-charset="UTF-8" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
-    <div class=" pt-lg-2 pb-5">
-        <label>Nombre: </label>
-        <div class="mb-4 border border-dark rounded-2">
-            
-            <input type="text" class="form-control " placeholder="Introduce el nombre tienda" id="name" name="name" value='{{shop.name}}' required>
-        </div>
-        
-        <label>Duracion de la reserva:</label>
-        <div class="mb-4 border border-dark rounded-2 input-group">
-             
-            <input type="number" class="form-control" id="durationBooking" name="durationBooking" value='{{shop.durationBooking}}' required>
-        
-        </div>
 
 
-        <label>Horario: </label>
-        <div class="mb-4 border border-dark rounded-2 input-group">
-             
-            <input type="text" class="form-control" placeholder="Horario" id="schedule" name="schedule" value='{{shop.schedule}}' required>
-            <span class="input-group-text">€</span>
-        </div>
-    
-        <div class="mb-4 border border-dark rounded-2 input-group">
-        <label>Imagen: <label>
-            <input type="file" id="picture" name="picture" >
-        <br>
-    </div>
-    <div class="mb-4 border border-dark rounded-2 input-group"></div>
-        <label>Descripción: <label>
-        <div class="mb-4 border border-dark rounded-2">
-            
-        <input type="text" class="form-control "  id="description" name="description " value='{{shop.description}}'>
-        </div>
-    
-        <label>Direccion: <label>
-            <div class="mb-4 border border-dark rounded-2">
-                
-                <input type="text" class="form-control " placeholder="Dirección" id="address" name="address"  value='{{shop.address}}'>
+<container class="container-fluid">
+    <form accept-charset="UTF-8"  method="post" enctype="multipart/form-data">{% csrf_token %}
+
+    <div class="row justify-content-center m-0">
+        <div class="col-8">
+            <div class="m-5">
+                <h1 class="mb-4 fw-bold">Datos de la tienda</h1>
+                <form method="POST">{% csrf_token %}
+                    <div class="mb-4">
+                        <label for="name" class="form-label fw-bold">Nombre</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca el nombre de la tienda" id="name" name="name" value='{{shop.name}}' required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="schedule" class="form-label fw-bold">Horario de apertura</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca el horario de la tienda" id="schedule" name="schedule" value='{{shop.schedule}}' required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="description" class="form-label fw-bold">Descripción de la tienda</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca la descripción de la tienda" id="description" name="description " value='{{shop.description}}' required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="address" class="form-label fw-bold">Dirección</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca la dirección de la tienda" id="address" name="address"  value='{{shop.address}}' required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="durationBooking" class="form-label fw-bold">Duración de la reserva</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca la duración máxima de la reserva" id="durationBooking" name="durationBooking" value='{{shop.durationBooking}}' required>
+                    </div>                  
+                    <div class="mb-4">
+                        <label for="picture" class="form-label fw-bold me-5">Imagen del fondo</label>
+                        <input type="file" id="picture" name="picture" >
+                    </div>
+
+                    <div class="row m-0">
+                        <div class="d-flex justify-content-center mt-3">
+                            <button type="submit" class="btn btn-outline-dark  color-botones-products flex-grow-1 me-2 fw-bold ">Update</button>
+                            <button type="submit" class="btn btn-outline-dark flex-grow-1 ms-2 me-2 fw-bold">Cancelar</button>
+                            
+                        </div>
+                    </div>
+                    
+           
             </div>
-    </div>
-    <div class="d-flex justify-content-around fondo-blur">
-        <button type="submit" class="btn btn-outline-dark  color-botones-products flex-grow-1 me-2 fw-bold ">Update</button>
-        <button type="submit" class="btn btn-outline-dark flex-grow-1 ms-2 me-2 fw-bold">Cancelar</button>
+        </div>
     </div>
 
 </form>
+
+</container>
+
+
+
+
 
 
 {% endblock %}
