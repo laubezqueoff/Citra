@@ -29,6 +29,9 @@ class Owner(models.Model):
 
 ## MODELO DE REPORTE ########################################################
 
+class ReportReason(models.Model):
+    name = models.CharField(max_length=40)
+
 class Report(models.Model):
     title = models.CharField(max_length=20)
     description = models.TextField(max_length=60)
