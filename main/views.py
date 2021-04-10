@@ -52,47 +52,45 @@ def registerShop(request):
     if request.method == 'POST': #Si es un POST redirijimos a la vista de index con el context actualizado  
         try:
             #Parametros tomados del post
-                username        =   request.POST['username']             
-                password        =   request.POST['password']            
-                name            =   request.POST['name']                
-                phoneNumber     =   request.POST['phoneNumber'] 
-                zipCode         =   request.POST['zipCode']              
-                email           =   request.POST['email'] 
+            username        =   request.POST['username']             
+            password        =   request.POST['password']            
+            name            =   request.POST['name']                
+            phoneNumber     =   request.POST['phoneNumber'] 
+            zipCode         =   request.POST['zipCode']              
+            email           =   request.POST['email'] 
                    
-                #Parámetros autogenerados   
-                registerDate = date.today()
-                isBanned = False
+            #Parámetros autogenerados   
+            registerDate = date.today()
+            isBanned = False
 
-                p = Person(username=username, password=password, name=name, phoneNumber=phoneNumber, email=email, zipCode=zipCode, registerDate=registerDate, isBanned=isBanned)
-                p.save()
+            p = Person(username=username, password=password, name=name, phoneNumber=phoneNumber, email=email, zipCode=zipCode, registerDate=registerDate, isBanned=isBanned)
+            p.save()
 
-                p = Person.objects.get(username=username,password=password)
+            p = Person.objects.get(username=username,password=password)
 
+            co = Owner(person=p)
+            co.save()
 
-                co = Owner(person=p)
-                co.save()
+            shopName        =   request.POST['shopName']
+            shopType        =   request.POST['shopType']
+            schedule        =   request.POST['schedule']
+            description     =   request.POST['description']
+            picture         =   request.FILES.get('picture')
+            address         =   request.POST['address']
+            durationBooking =   request.POST['durationBooking']
 
-                shopName        =   request.POST['shopName']
-                shopType        =   request.POST['shopType']
-                schedule        =   request.POST['schedule']
-                description     =   request.POST['description']
-                picture         =   request.POST['picture']
-                address         =   request.POST['address']
-                durationBooking =   request.POST['durationBooking']
-                address         =   request.POST['address']
-                    
-                co = Owner.objects.get(person=p)
-                shopType = ShopType.objects.get(id=int(shopType))
-                shop = Shop.objects.get(name=name,shopType=null,schedule=schedule,description=description,picture=picture,address=address,owner=co,durationBooking=durationBooking)
+            co = Owner.objects.get(person=p)
+            shopType = ShopType.objects.get(id=int(shopType))
+            shop = Shop.objects.create(name=name,shopType=shopType,schedule=schedule,description=description,picture=picture,address=address,owner=co,durationBooking=durationBooking)
 
-                rol_and_id = whoIsWho(p)
-                update_context(request,p.id,rol_and_id[0],rol_and_id[1],True)
-                person_id,rol,rol_id,is_active = get_context(request)
-                context = [person_id,rol,rol_id,is_active]
+            update_context(request,p.id,"Owner",co.id,True)
+            person_id,rol,rol_id,is_active = get_context(request)
+            context = [person_id,rol,rol_id,is_active]
 
-                return render(request, 'home.html', {"context" : context})
+            return redirect('/home/')
 
         except:
+            print("------------------------------")
             return render(request, 'login.html')
          
     else:
@@ -209,6 +207,7 @@ def update_context(request, person_id, rol, rol_id, is_active):
         request.session['rol_id'] = str(rol_id)
         request.session['is_active'] = str(is_active)
     except:
+        print("---------")
         res = False
 
     return res
