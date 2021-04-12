@@ -305,7 +305,6 @@ def promotion_week_product(request, id_product):
             promocion = Promotion.objects.create(
                 owner=owner, shop=None, startDate=time, endDate=endtime, promotionType=promotionType, product=product)
             tienda = miTienda(person_id)
-           # return render(request, 'home.html', {'promocion': promocion, 'context': context, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY, 'tienda': tienda})
             return redirect("home")
         else:
 
@@ -332,8 +331,6 @@ def promotion_month_product(request, id_product):
             promocion = Promotion.objects.create(
                 owner=owner, shop=None, startDate=time, endDate=endtime, promotionType=promotionType, product=product)
             tienda = miTienda(person_id)
-           #  return JsonResponse(data)
-            # return render(request, "home.html", {'promocion': promocion, 'context': context, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY, 'tienda': tienda})
             return redirect("home")
         else:
 
@@ -381,8 +378,6 @@ def promotion_week_shop(request, id_shop):
         promotion = Promotion.objects.filter(shop=shop).exists()
 
         if (not(promotion) and str(shop.owner.person.id) == person_id):
-            # person_id, rol, rol_id, is_active = get_context(request)
-            # context = [person_id, rol, rol_id, is_active]
             promotionType = PromotionType.objects.get(id=0)
             owner = Owner.objects.get(person=person_id)
             time = date.today()
@@ -393,7 +388,7 @@ def promotion_week_shop(request, id_shop):
             promocion = Promotion.objects.create(
                 owner=owner, shop=shop, startDate=time, endDate=endtime, promotionType=promotionType, product=None)
             tienda = miTienda(person_id)
-            return render(request, "home.html", {'promocion': promocion, 'context': context, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY, 'tienda': tienda})
+            return redirect("home")
         else:
             tienda = miTienda(person_id)
             return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
@@ -409,9 +404,6 @@ def promotion_month_shop(request, id_shop):
         promotion = Promotion.objects.filter(shop=shop).exists()
 
         if (not(promotion) and str(shop.owner.person.id) == person_id):
-            # shop = get_object_or_404(Shop, pk=id_shop)
-            # person_id, rol, rol_id, is_active = get_context(request)
-            # context = [person_id, rol, rol_id, is_active]
             promotionType = PromotionType.objects.get(id=1)
             owner = Owner.objects.get(person=person_id)
             time = date.today()
@@ -424,7 +416,7 @@ def promotion_month_shop(request, id_shop):
             promocion = Promotion.objects.create(
                 owner=owner, shop=shop, startDate=time, endDate=endtime, promotionType=promotionType, product=None)
             tienda = miTienda(person_id)
-            return render(request, "home.html", {'promocion': promocion, 'context': context, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY, 'tienda': tienda})
+            return redirect("home")
         else:
 
             return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
@@ -533,7 +525,7 @@ def product_details(request, id_product):
     for ty in types:
         productType.append(ty)
     
-    return render(request, 'products.html', {'form': form, 'product': product, 'types' : productType, "context" : context, "promotionProduct" : not(promotionProduct), 'tienda': tienda})
+    return render(request, 'products.html', {'stripe_key': settings.STRIPE_PUBLISHABLE_KEY,'form': form, 'product': product, 'types' : productType, "context" : context, "promotionProduct" : not(promotionProduct), 'tienda': tienda})
 
 def list_shop(request):
     person_id, rol, rol_id, is_active = get_context(request)

@@ -26,7 +26,7 @@ Productos / Citra
                         <h1 class=" fw-bold me-auto">Producto</h1>
                         {% if context.1 == 'Owner' and promotionProduct and product.shop.owner.person.id|stringformat:"i" == context.0 %}
 
-                        <form id="pagaMens" action= "{% url 'promotion_week_product' product.id %}" method="POST">
+                          <form id="pagaMens" action= "{% url 'promotion_week_product' product.id %}" method="POST">
                             {% csrf_token %} 
                             
                             <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" id="separated3"

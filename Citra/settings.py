@@ -103,7 +103,8 @@ WSGI_APPLICATION = 'Citra.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': str(BASE_DIR / "db.sqlite3"),
+        # 'NAME': str(BASE_DIR / "db.sqlite3"),
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
@@ -194,6 +195,7 @@ LOGGING = {
 }
 
 DEBUG_PROPAGATE_EXCEPTIONS = True
+
 TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(os.path.dirname(__file__)),
                  'static', 'templates'),

@@ -23,7 +23,7 @@
                     <div class="card col-sm-2 mt-3 product">
                             <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
                             <a class="product__name" href="{% url 'shop' promotion.shop.pk %}"> {{promotion.shop.name}} </a>
-                            <p class="product__name"> {{promotion.shop.description}} </p>
+                            <p> <b>{{promotion.shop.description}} </b></p>
                     </div>
                 {% empty %}                    
                 {% endfor %}
