@@ -97,6 +97,7 @@ class Booking(models.Model):
     product = models.ForeignKey(Product, on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
 
+
 class Review(models.Model):
     rating = models.IntegerField(range(1, 5))
     title = models.CharField(max_length=20)

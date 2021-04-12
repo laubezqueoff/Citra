@@ -339,6 +339,30 @@ def promotion_month_shop(request, id_shop):
         return render(request, 'prohibido.html')
 
 
+def activate_shop(request, id_shop):
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    if (is_active):
+        shop = get_object_or_404(Shop, pk=id_shop)
+        subscription = Subscription.objects.filter(shop=shop).exists()
+        if (not(subscription) and str(shop.owner.person.id) == person_id):
+            subscriptionType = SubscriptionType.objects.get(id=0)
+            owner = Owner.objects.get(person=person_id)
+            time = date.today()
+            endtime = (time + timedelta(days=30))
+            person = Person.objects.get(id=person_id)
+            get_or_create_customer(email=person.email, source=None)
+            charge(amount=1000, source=request.POST.get('stripeToken'))
+            suscripcion = Subscription.objects.create(
+                subscriptionType=subscriptionType, startDate=time, endDate=endtime, owner=owner, shop=shop)
+            tienda = miTienda(person_id)
+            return render(request, "home.html", {'suscripcion': suscripcion, 'context': context, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY, 'tienda': tienda})
+        else:
+            return redirect('/')
+    else:
+        return render(request, 'prohibido.html')
+
+
 def product_details(request, id_product):
     product = get_object_or_404(Product, pk=id_product)
     types = ProductType.objects.all()
