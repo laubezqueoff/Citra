@@ -3,7 +3,7 @@ import requests
 from datetime import date
 from django.shortcuts import render, redirect, get_object_or_404
 import urllib.request
-from main.forms import MessageForm, ReviewForm
+from main.forms import MessageForm, ReviewForm, ProductForm
 from django.http import Http404
 import json
 from django.http import JsonResponse
@@ -286,18 +286,85 @@ def promotion_month_shop(request, id_shop):
     else:
         return render(request, 'prohibido.html')
 
+def product_create(request, id_shop):
+    shop = get_object_or_404(Shop, pk=id_shop)
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    tienda = miTienda(person_id)
+    if (is_active and rol == "Owner" and str(shop.owner.person.id) == person_id):
+        if request.method == 'POST':
+            form = ProductForm(request.POST)
+            if form.is_valid():
+                price = form.cleaned_data['price']
+                product = Product.objects.create(name=request.POST['name'], price=price, description= request.POST['description'], productType= ProductType.objects.get(name=request.POST['select']), picture= request.FILES.get('picture'), shop= shop)
+                return redirect('/shops/'+str(shop.id))
+            else:
+                types = ProductType.objects.all()   
+                productType = []
+                for ty in types:
+                    productType.append(ty)
+                return render(request, 'create_product.html', {'form': form, 'types' : productType, "context" : context, 'tienda': tienda})
+
+        form = ProductForm()
+        types = ProductType.objects.all()   
+        productType = []
+        for ty in types:
+            productType.append(ty)
+        return render(request, 'create_product.html', {'shop': shop, 'types' : productType, "context" : context, 'tienda': tienda, 'form':form})
+    else:
+        return render(request, 'prohibido.html', {"context" : context, 'tienda': tienda})
+
+def product_delete(request, id_product):
+    product = get_object_or_404(Product, pk=request.POST.get('id_product'))
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    shop_id = product.shop.id
+    if (is_active and rol == "Owner" and str(product.shop.owner.person.id) == person_id):
+        product.delete()
+        data = {
+            'url': "/shops/" + str(product.shop.id)
+        }
+        return JsonResponse(data)
+        
+    else:
+        data = {
+            'url': "/prohibido/"
+        }
+        return JsonResponse(data)
+        
+
 def product_details(request, id_product):
     product = get_object_or_404(Product, pk=id_product)
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    promotionProduct = Promotion.objects.filter(product=product).exists()
+    tienda = miTienda(person_id)
+    if request.method == 'POST':
+        form = ProductForm(request.POST)
+        if form.is_valid():
+            product.name = form.cleaned_data['name']
+            product.price = form.cleaned_data['price']
+            product.description = form.cleaned_data['description']
+            product.productType = ProductType.objects.get(name=request.POST['select'])
+            if request.FILES.get('picture') != None:
+                product.picture = request.FILES.get('picture')
+            product.save()
+            return redirect('/shops/'+str(product.shop.id))
+        else:
+            types = ProductType.objects.all()   
+            productType = []
+            for ty in types:
+                productType.append(ty)
+            return render(request, 'products.html', {'form': form, 'product': product, 'types' : productType, "context" : context, "promotionProduct" : not(promotionProduct), 'tienda': tienda})
+
+
+    form = ProductForm()
     types = ProductType.objects.all()   
     productType = []
     for ty in types:
         productType.append(ty)
     
-    person_id, rol, rol_id, is_active = get_context(request)
-    context = [person_id, rol, rol_id, is_active]
-    promotionProduct = Promotion.objects.filter(product=product).exists()
-    tienda = miTienda(person_id)
-    return render(request, 'products.html', {'product': product, 'types' : productType, "context" : context, "promotionProduct" : not(promotionProduct), 'tienda': tienda})
+    return render(request, 'products.html', {'form': form, 'product': product, 'types' : productType, "context" : context, "promotionProduct" : not(promotionProduct), 'tienda': tienda})
 
 def list_shop(request):
     person_id, rol, rol_id, is_active = get_context(request)
