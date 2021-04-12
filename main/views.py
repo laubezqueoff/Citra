@@ -454,8 +454,6 @@ def activate_shop(request, id_shop):
             return redirect('/')
     else:
         return render(request, 'prohibido.html')
-    else:
-        return render(request, 'prohibido.html')
 
 def product_create(request, id_shop):
     shop = get_object_or_404(Shop, pk=id_shop)

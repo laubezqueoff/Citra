@@ -10,3 +10,4 @@ django_heroku
 gunicorn
 Pillow
 whitenoise
+stripe
