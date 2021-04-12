@@ -1,0 +1,12 @@
+requests
+coverage
+Django
+djangorestframework
+django-cors-headers
+requests
+django-filter
+django-nose
+django_heroku
+gunicorn
+Pillow
+whitenoise

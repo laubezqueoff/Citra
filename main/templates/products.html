@@ -12,7 +12,11 @@ Productos / Citra
     <div class="row g-0">
         <div class="col-lg-5 p-5 ">
             <div class="p-5 w-100 mb-auto">
+            {% if product.picture == None %}
                 <img src="{% static 'images/fruta.jpg' %}" class="d-block w-100 rounded border border-dark" alt="Negocio local">
+            {% else %}
+                <img src="{{product.picture.url}}" class="d-block w-100 rounded border border-dark" alt="Negocio local">
+            {% endif %}
             </div>
         </div>
         <div class="col-lg-6 d-flex flex-column align-items-end">
@@ -25,45 +29,53 @@ Productos / Citra
                             <button id="boton" onclick="promocionarProductoMensual({{product.id}})">Promocionar Mensual</button>
                         {% endif %}
                     </div>
-                    <form method="POST">{% csrf_token %}
-                        {% if context.1 == 'Owner' %}
+                    <form accept-charset="UTF-8" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+                        {% if context.1 == 'Owner' and product.shop.owner.person.id|stringformat:"i" == context.0%}
+                        {% comment %} {{form.errors}} {% endcomment %}
                         <div class=" pt-lg-2 pb-5">
                             <div class="mb-4 border border-dark rounded-2">
-                                <input type="text" class="form-control " placeholder="Introduce el nombre del producto" id="name" name="name" value="{{product.name}}">
+                                <input type="text" class="form-control " placeholder="Introduce el nombre del producto" id="name" name="name" value="{{product.name}}" required>
                             </div>
-                            
+
                                 <div class="mb-4 border border-dark rounded-2">
-                                    <select name="select" class="form-control" placeholder="Tipo de producto" id="type" name="type">
+                                    <select name="select" class="form-control" placeholder="Tipo de producto" id="type" name="type" required>
                                         {% for ty in types %}
-                                            <option value="{{ty.name}}">{{ty.name}}</option>
+                                            {% if ty.name == product.productType.name %}
+                                                <option value="{{ty.name}}" selected="true">{{ty.name}}</option>
+                                            {% else %}
+                                                <option value="{{ty.name}}">{{ty.name}}</option>
+                                            {% endif %}
                                         {% endfor %}
                                     </select>
                                 </div>
                                 <div class="mb-4 border border-dark rounded-2 input-group">
-                                    <input type="number" class="form-control" placeholder="Precio del producto" id="price" name="price" value="{{product.price}}">
+                                    <input type="number" class="form-control" placeholder="Precio del producto" id="price" name="price" value="{{product.price}}" required>
                                     <span class="input-group-text">€</span>
-                                </div>                           
+                                </div>
+                                {{form.errors.price}}
+
                                 <div class="mb-4 border border-dark rounded-2">
                                     <input type="text" class="form-control" placeholder="Descripción del producto" id="description" name="description" value="{{product.description}}">
                                 </div>
+                                    <label> Cambiar Imagen </label>
+                                    <input type="file" id="picture" name="picture">
                             </div>
                             <div class="d-flex justify-content-around fondo-blur">
                                 <button type="submit" class="btn btn-outline-dark  color-botones-products flex-grow-1 me-2 fw-bold ">Guardar cambios</button>
                                 <button type="submit" class="btn btn-outline-dark flex-grow-1 ms-2 me-2 fw-bold">Cancelar</button>
-                                <button type="submit" class="btn btn-outline-dark flex-grow-3 ms-2 fw-bold">Borrar</button>
+                                <button onclick="eliminarProducto({{product.id}})" class="btn btn-outline-dark flex-grow-3 ms-2 fw-bold">Borrar</button>
                             </div>
                         {% else %}
                         <div class=" pt-lg-2 pb-5">
                             <div class="mb-4 border border-dark rounded-2">
                                 <span class="input-group-text" id="name" name="name" value="">{{product.name}}</span>
                             </div>
-                            
                                 <div class="mb-4 border border-dark rounded-2">
                                     <span class="input-group-text"  id="type" name="type" value="">{{product.productType.name}}</span>
                                 </div>
                                 <div class="mb-4 border border-dark rounded-2">
                                     <span class="input-group-text" id="price" name="price" value="">{{product.price}} €</span>
-                                </div>                           
+                                </div>
                                 <div class="mb-4 border border-dark rounded-2">
                                     <span class="input-group-text" id="description" name="description" value="">{{product.description}}</span>
                                 </div>
@@ -80,6 +92,25 @@ Productos / Citra
 </section>
 
 <script>
+    function eliminarProducto(id_product) {
+        if (confirm('¿De verdad quieres eliminar este producto?')) {
+            data = {
+                id_product: id_product,
+                csrfmiddlewaretoken: '{{ csrf_token }}',
+            }
+            url = window.location.origin + '/product/' + id_product + '/delete';
+            $.ajax({
+                url: url,
+                data: data,
+                type: 'POST',
+                success: function (data) {
+                    window.location.replace(window.location.origin + data.url);
+                    window.reload();
+                }
+            });
+        }
+    }
+
   function promocionarProductoSemanal (id_product) {
     data = {
         id_product: id_product,
