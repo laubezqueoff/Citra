@@ -49,6 +49,10 @@
             <p>Tienda: {{shop.name}}</p>
             <p>Horario: L-S 9:30-20:30</p>
             <p>Dirección: {{shop.address}}</p>
+
+            
+            <a class="nav-link" href="{{shop.id}}/edit" name="Editar tienda">Editar tienda</a>
+
          {% if context.1 == 'User' %}
             <h4 class="section-title">Cesta</h4>
             <table class="table table-hover" id = "table">
