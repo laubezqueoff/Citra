@@ -792,9 +792,17 @@ def review_list(request, id_shop):
         reviews = []
         for m in shop.review_set.all():
             reviews.append(m)
+        return render(request, 'reviews.html', {'reviews':reviews, 'context':context, 'tienda': tienda}) #a la vista de todas las reviews
 
-        # a la vista de todas las reviews
-        return render(request, 'reviews.html', {'reviews': reviews, 'context': context, 'tienda': tienda})
+    if rol == "Owner":
+        if(shop.id == tienda.id):
+            reviews = []
+            for m in tienda.review_set.all():
+                reviews.append(m)
+            return render(request, 'reviews.html', {'reviews':reviews, 'context':context, 'tienda': tienda})
+        else:
+            return render(request, 'prohibido.html', {'context':context, 'tienda': tienda})
+        
     else:
         return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
 
