@@ -462,8 +462,6 @@ def booking(request):
         }
         return JsonResponse(data)
 
-        
-
 def list_booking_user(request):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
@@ -508,25 +506,6 @@ def chat_list(request):
 
 def forbidden(request):
     return render(request, 'prohibido.html')
-
-def booking(request):
-    person_id, rol, rol_id, is_active = get_context(request)
-    context = [person_id, rol, rol_id, is_active]
-    if (is_active):
-        user = CustomUser.objects.get(id=person_id)
-        for reserva in json.loads(request.POST.get('key_1_string')):
-            product = Product.objects.get(id=reserva['id'])
-            Booking.objects.create(startDate=date.today(),endDate=date.today(), product=product,title='Prueba',quantity=reserva['cantidad'], isAccepted=False, user=user)
-
-        data = {
-            'url': "/user/bookings/"
-        }
-        return JsonResponse(data)
-    else:
-        data = {
-            'url': "/prohibido/"
-        }
-        return JsonResponse(data)
 
 
 def review_list(request, id_shop):
@@ -617,11 +596,31 @@ def report_shop_form(request, id_shop):
     else:  
         return render(request, 'prohibido.html', {'context':context})
 
-# def report_user_form(request, id_booking):
-#     person_id, rol, rol_id, is_active = get_context(request)
-#     context = [person_id, rol, rol_id, is_active]
+def report_user_form(request, id_booking):
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
 
-#     if rol == "Owner"
+    if rol == "Owner":
+        if request.method == 'GET':
+            form = ReportForm()
+            return render(request, 'report.html', {'form':form, 'context':context})
+
+        if request.method == 'POST': 
+            booking = Booking.objects.get(id = id_booking)
+            user = CustomUser.objects.get(id = booking.user)
+            id_reported_person = user.person
+
+            form = ReportForm(data=request.POST)
+            if form.is_valid():
+                title = form.cleaned_data['title']
+                description = form.cleaned_data['description']
+                Report.objects.create(title = title, description = description, person = Person.objects.get(id=id_reported_person))
+                return render(request, '../', {'form':form, 'context':context})
+            else:
+                return render(request, 'report.html', {'form':form, 'context':context})
+
+    else:
+        return render(request, 'prohibido.html', {'context':context})
 
 def report_from_chat_form(request, id_chat):
     person_id, rol, rol_id, is_active = get_context(request)

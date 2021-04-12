@@ -42,14 +42,13 @@ urlpatterns = [
     path('shops/booking/', views.booking),
     path('error/', views.error),
     path('forbidden/', views.forbidden),
-    path('booking/',views.booking),
     path('shops/<id_shop>/reviews/', views.review_list, name='reviews'),
     path('shops/<id_shop>/reviews/new/', views.review_form, name='review'),
     path('shop/bookings/',views.list_booking_owner,name="list_booking_owner"),
     path('user/bookings/',views.list_booking_user,name="list_booking_user"),
     path('about/',views.about,name="about"),
     path('shops/<id_shop>/report/', views.report_shop_form, name="report_shop"),
-    # path('shops/<id_shop>/report/', views.report_user_form, name="report_user"),
+    path('shop/bookings/<id_booking>/report/', views.report_user_form, name="report_user"),
     path('shop/chat/<id_chat>/report/', views.report_from_chat_form, name='report_chat'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
