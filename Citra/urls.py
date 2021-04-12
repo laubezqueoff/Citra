@@ -38,6 +38,8 @@ urlpatterns = [
          views.promotion_week_shop, name="promotion_week_shop"),
     path('shops/<id_shop>/promotionmonthshop',
          views.promotion_month_shop, name="promotion_month_shop"),
+    path('shops/<id_shop>/activateshop',
+         views.activate_shop, name="activate_shop"),
     path('shops/', views.list_shop, name="shops"),
     path('shop/bookings/acceptbookings/', views.accept_booking),
     path('shops/<id_shop>', views.shop_details, name="shop"),

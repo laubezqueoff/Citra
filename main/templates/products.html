@@ -25,8 +25,25 @@ Productos / Citra
                     <div class="d-flex justify-content-around mb-4">
                         <h1 class=" fw-bold me-auto">Producto</h1>
                         {% if context.1 == 'Owner' and promotionProduct and product.shop.owner.person.id|stringformat:"i" == context.0 %}
-                            <button id="boton" onclick="promocionarProductoSemanal({{product.id}})">Promocionar Semanal</button>
-                            <button id="boton" onclick="promocionarProductoMensual({{product.id}})">Promocionar Mensual</button>
+
+                        <form id="pagaMens" action= "{% url 'promotion_week_product' product.id %}" method="POST">
+                            {% csrf_token %} 
+                            
+                            <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" id="separated3"
+                            data-key="{{ stripe_key }}" data-description="Premium mensual" data-amount="200"
+                            data-locale="es" data-currency="eur" data-label="Promocionar una semana 2€">
+                            </script>
+                          </form>
+
+                          <form id="pagasem" action= "{% url 'promotion_month_product' product.id %}" method="POST">
+                            {% csrf_token %} 
+                            
+                            <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" id="separated3"
+                            data-key="{{ stripe_key }}" data-description="Premium mensual" data-amount="500"
+                            data-locale="es" data-currency="eur" data-label="Promocionar un mes 5€">
+                            </script>
+                          </form>
+                        
                         {% endif %}
                     </div>
                     <form accept-charset="UTF-8" action="" method="post" enctype="multipart/form-data">{% csrf_token %}

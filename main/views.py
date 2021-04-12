@@ -8,6 +8,8 @@ from django.http import Http404
 import json
 from django.http import JsonResponse
 from datetime import timedelta
+import stripe
+from Citra import settings
 
 
 def login(request):
@@ -253,9 +255,42 @@ def get_context(request):
     return person_id, rol, rol_id, is_active
 
 
+def get_or_create_customer(email: str, source: str) -> stripe.Customer:
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    connected_customers = stripe.Customer.list()
+    for customer in connected_customers:
+        if customer.email == email:
+            return customer
+    return stripe.Customer.create(
+        email=email,
+        source=source
+    )
+
+
+def is_customer(email: str) -> bool:
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    connected_customers = stripe.Customer.list()
+    for customer in connected_customers:
+        if customer.email == email:
+            return True
+
+    return False
+
+# Amount x100 = centimos
+
+
+def charge(amount: int, source: str) -> None:
+    stripe.Charge.create(
+        amount=amount,
+        currency='eur',
+        description='A event payment',
+        source=source)
+
+
 def promotion_week_product(request, id_product):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
+
     if (is_active):
         product = get_object_or_404(Product, pk=id_product)
         promotion = Promotion.objects.filter(product=product).exists()
@@ -264,15 +299,16 @@ def promotion_week_product(request, id_product):
             owner = Owner.objects.get(person=person_id)
             time = date.today()
             endtime = (time + timedelta(days=7))
+            person = Person.objects.get(id=person_id)
+            get_or_create_customer(email=person.email, source=None)
+            charge(amount=300, source=request.POST.get('stripeToken'))
             promocion = Promotion.objects.create(
                 owner=owner, shop=None, startDate=time, endDate=endtime, promotionType=promotionType, product=product)
-            # return render(request, 'promotionproduct.html', {'promocion':promocion, 'context':context})
-            data = {
-                'url': ""
-            }
-            return JsonResponse(data)
-        else:
             tienda = miTienda(person_id)
+           # return render(request, 'home.html', {'promocion': promocion, 'context': context, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY, 'tienda': tienda})
+            return redirect("home")
+        else:
+
             return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
     else:
         return render(request, 'prohibido.html')
@@ -281,6 +317,7 @@ def promotion_week_product(request, id_product):
 def promotion_month_product(request, id_product):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
+    print(settings.STRIPE_PUBLISHABLE_KEY)
     if (is_active):
         product = get_object_or_404(Product, pk=id_product)
         promotion = Promotion.objects.filter(product=product).exists()
@@ -289,15 +326,17 @@ def promotion_month_product(request, id_product):
             owner = Owner.objects.get(person=person_id)
             time = date.today()
             endtime = (time + timedelta(days=30))
-
+            person = Person.objects.get(id=person_id)
+            get_or_create_customer(email=person.email, source=None)
+            charge(amount=500, source=request.POST.get('stripeToken'))
             promocion = Promotion.objects.create(
                 owner=owner, shop=None, startDate=time, endDate=endtime, promotionType=promotionType, product=product)
-            data = {
-                'url': ""
-            }
-            return JsonResponse(data)
-        else:
             tienda = miTienda(person_id)
+           #  return JsonResponse(data)
+            # return render(request, "home.html", {'promocion': promocion, 'context': context, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY, 'tienda': tienda})
+            return redirect("home")
+        else:
+
             return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
     else:
         return render(request, 'prohibido.html')
@@ -348,13 +387,13 @@ def promotion_week_shop(request, id_shop):
             owner = Owner.objects.get(person=person_id)
             time = date.today()
             endtime = (time + timedelta(days=7))
-            print(promotionType)
+            person = Person.objects.get(id=person_id)
+            get_or_create_customer(email=person.email, source=None)
+            charge(amount=500, source=request.POST.get('stripeToken'))
             promocion = Promotion.objects.create(
                 owner=owner, shop=shop, startDate=time, endDate=endtime, promotionType=promotionType, product=None)
-            data = {
-                'url': ""
-            }
-            return JsonResponse(data)
+            tienda = miTienda(person_id)
+            return render(request, "home.html", {'promocion': promocion, 'context': context, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY, 'tienda': tienda})
         else:
             tienda = miTienda(person_id)
             return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
@@ -377,16 +416,44 @@ def promotion_month_shop(request, id_shop):
             owner = Owner.objects.get(person=person_id)
             time = date.today()
             endtime = (time + timedelta(days=30))
+            person = Person.objects.get(id=person_id)
             print(promotionType)
+            get_or_create_customer(email=person.email, source=None)
+            charge(amount=1000, source=request.POST.get('stripeToken'))
+
             promocion = Promotion.objects.create(
                 owner=owner, shop=shop, startDate=time, endDate=endtime, promotionType=promotionType, product=None)
-            data = {
-                'url': ""
-            }
-            return JsonResponse(data)
-        else:
             tienda = miTienda(person_id)
+            return render(request, "home.html", {'promocion': promocion, 'context': context, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY, 'tienda': tienda})
+        else:
+
             return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
+    else:
+        return render(request, 'prohibido.html')
+
+
+def activate_shop(request, id_shop):
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    if (is_active):
+        shop = get_object_or_404(Shop, pk=id_shop)
+        subscription = Subscription.objects.filter(shop=shop).exists()
+        if (not(subscription) and str(shop.owner.person.id) == person_id):
+            subscriptionType = SubscriptionType.objects.get(id=0)
+            owner = Owner.objects.get(person=person_id)
+            time = date.today()
+            endtime = (time + timedelta(days=30))
+            person = Person.objects.get(id=person_id)
+            get_or_create_customer(email=person.email, source=None)
+            charge(amount=1000, source=request.POST.get('stripeToken'))
+            suscripcion = Subscription.objects.create(
+                subscriptionType=subscriptionType, startDate=time, endDate=endtime, owner=owner, shop=shop)
+            tienda = miTienda(person_id)
+            return render(request, "home.html", {'suscripcion': suscripcion, 'context': context, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY, 'tienda': tienda})
+        else:
+            return redirect('/')
+    else:
+        return render(request, 'prohibido.html')
     else:
         return render(request, 'prohibido.html')
 
@@ -493,7 +560,8 @@ def shop_details(request, id_shop):
         rol = 'User no registrado'
         context = [person_id, rol]
     tienda = miTienda(person_id)
-    return render(request, 'shop_detail.html', {'shop': shop, 'products': products, 'context': context, 'promotionShop': not(promotionShop), 'tienda': tienda})
+    return render(request, 'shop_detail.html', {'shop': shop, 'products': products, 'context': context, 'promotionShop': not(promotionShop), 'tienda': tienda, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY})
+
 
 
 def get_chats_list(request):
