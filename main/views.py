@@ -8,6 +8,7 @@ from django.http import Http404
 import json
 from django.http import JsonResponse
 from datetime import timedelta
+from datetime import datetime
 import stripe
 from Citra import settings
 
@@ -306,6 +307,12 @@ def promotion_week_product(request, id_product):
                 owner=owner, shop=None, startDate=time, endDate=endtime, promotionType=promotionType, product=product)
             tienda = miTienda(person_id)
             return redirect("home")
+        elif (promotion and str(product.shop.owner.person.id) == person_id):
+            time = date.today()
+            endtime = (time + timedelta(days=7))
+            promocion = Promotion.objects.filter(product = product).update(startDate=time, endDate=endtime)
+            tienda = miTienda(person_id)
+            return redirect("home")
         else:
 
             return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
@@ -332,8 +339,13 @@ def promotion_month_product(request, id_product):
                 owner=owner, shop=None, startDate=time, endDate=endtime, promotionType=promotionType, product=product)
             tienda = miTienda(person_id)
             return redirect("home")
+        elif (promotion and str(product.shop.owner.person.id) == person_id):
+            time = date.today()
+            endtime = (time + timedelta(days=30))
+            promocion = Promotion.objects.filter(product = product).update(startDate=time, endDate=endtime)
+            tienda = miTienda(person_id)
+            return redirect("home")
         else:
-
             return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
     else:
         return render(request, 'prohibido.html')
@@ -389,6 +401,12 @@ def promotion_week_shop(request, id_shop):
                 owner=owner, shop=shop, startDate=time, endDate=endtime, promotionType=promotionType, product=None)
             tienda = miTienda(person_id)
             return redirect("home")
+        elif (promotion and str(shop.owner.person.id) == person_id):
+            time = date.today()
+            endtime = (time + timedelta(days=7))
+            promocion = Promotion.objects.filter(shop = shop).update(startDate=time, endDate=endtime)
+            tienda = miTienda(person_id)
+            return redirect("home")
         else:
             tienda = miTienda(person_id)
             return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
@@ -415,6 +433,12 @@ def promotion_month_shop(request, id_shop):
 
             promocion = Promotion.objects.create(
                 owner=owner, shop=shop, startDate=time, endDate=endtime, promotionType=promotionType, product=None)
+            tienda = miTienda(person_id)
+            return redirect("home")
+        elif (promotion and str(shop.owner.person.id) == person_id):
+            time = date.today()
+            endtime = (time + timedelta(days=30))
+            promocion = Promotion.objects.filter(shop = shop).update(startDate=time, endDate=endtime)
             tienda = miTienda(person_id)
             return redirect("home")
         else:
@@ -670,8 +694,9 @@ def get_chat_new(request, id_shop):
 
 
 def home(request):
-    promotions_shops = Promotion.objects.filter(product=None)
-    promotions_products = Promotion.objects.filter(shop=None)
+    today = date.today()
+    promotions_shops = Promotion.objects.filter(product=None, endDate__gte = today)
+    promotions_products = Promotion.objects.filter(shop=None, endDate__gte = today)
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     tienda = miTienda(person_id)
