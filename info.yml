@@ -1,0 +1,56 @@
+project:
+  name: 'Citra'
+  owner: 'afternoon'
+  teamId: '17'
+  identities:
+    github:
+      url: 'https://github.com/laubezqueoff/Citra'
+    heroku:
+      url: 'https://citra-develop.herokuapp.com'
+    travis:
+      url: 'https://travis-ci.com/github/laubezqueoff/Citra'
+  members:
+    member:
+      name: 'Vicente'
+      surname: 'López' 
+      githubUsername: 'viclopvaz1'
+    member:
+      name: 'Enrique'
+      surname: 'Jordá' 
+      githubUsername: 'enrjorarr'
+    member:
+      name: 'Alberto'
+      surname: 'Cordón' 
+      githubUsername: 'albcorare26'
+    member:
+      name: 'Luis'
+      surname: 'Rodríguez' 
+      githubUsername: 'luirodvid'
+    member:
+      name: 'Antonio Jesús'
+      surname: 'García' 
+      githubUsername: 'AntonioJesusGarciaNieto'
+    member:
+      name: 'Antonio'
+      surname: 'Corredera' 
+      githubUsername: 'antcorlav'
+    member:
+      name: 'Daniel'
+      surname: 'Benítez' 
+      githubUsername: 'danbenveg'
+    member:
+      name: 'José'
+      surname: 'Ruiz' 
+      githubUsername: 'josruialb1'
+    member:
+      name: 'Laura'
+      surname: 'Beza' 
+      githubUsername: 'laubezqueoff'
+    member:
+      name: 'Pablo'
+      surname: 'Muñoz' 
+      githubUsername: 'pabmundel'
+    member:
+      name: 'Laura'
+      surname: 'Portillo' 
+      githubUsername: 'lauporsol'
