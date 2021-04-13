@@ -524,7 +524,7 @@ def product_details(request, id_product):
     productType = []
     for ty in types:
         productType.append(ty)
-    
+    print(product.picture)
     return render(request, 'products.html', {'stripe_key': settings.STRIPE_PUBLISHABLE_KEY,'form': form, 'product': product, 'types' : productType, "context" : context, "promotionProduct" : not(promotionProduct), 'tienda': tienda})
 
 def list_shop(request):

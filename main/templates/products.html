@@ -15,7 +15,7 @@ Productos / Citra
             {% if product.picture == None %}
                 <img src="{% static 'images/fruta.jpg' %}" class="d-block w-100 rounded border border-dark" alt="Negocio local">
             {% else %}
-                <img src="{{product.picture.url}}" class="d-block w-100 rounded border border-dark" alt="Negocio local">
+                <img src="{{product.picture}}" class="d-block w-100 rounded border border-dark" alt="Negocio local">
             {% endif %}
             </div>
         </div>
