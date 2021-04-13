@@ -16,47 +16,47 @@ project:
         githubUsername: 'governifyauditor'
         pivotalUsername: 'governifyauditor'
         herokuEmail: 'governify.auditor@gmail.com'
-      member2:
-        name: 'Vicente'
-        surname: 'López' 
-        githubUsername: 'viclopvaz1'
-      member3:
-        name: 'Enrique'
-        surname: 'Jordá' 
-        githubUsername: 'enrjorarr'
-      member4:
-        name: 'Alberto'
-        surname: 'Cordón' 
-        githubUsername: 'albcorare26'
-      member5:
-        name: 'Luis'
-        surname: 'Rodríguez' 
-        githubUsername: 'luirodvid'
-      member6:
-        name: 'Antonio Jesús'
-        surname: 'García' 
-        githubUsername: 'AntonioJesusGarciaNieto'
-      member7:
-        name: 'Antonio'
-        surname: 'Corredera' 
-        githubUsername: 'antcorlav'
-      member8:
-        name: 'Daniel'
-        surname: 'Benítez' 
-        githubUsername: 'danbenveg'
-      member9:
-        name: 'José'
-        surname: 'Ruiz' 
-        githubUsername: 'josruialb1'
-      member10:
-        name: 'Laura'
-        surname: 'Beza' 
-        githubUsername: 'laubezqueoff'
-      member11:
-        name: 'Pablo'
-        surname: 'Muñoz' 
-        githubUsername: 'pabmundel'
-      member12:
-        name: 'Laura'
-        surname: 'Portillo' 
-        githubUsername: 'lauporsol'
+    member2:
+      name: 'Vicente'
+      surname: 'López' 
+      githubUsername: 'viclopvaz1'
+    member3:
+      name: 'Enrique'
+      surname: 'Jordá' 
+      githubUsername: 'enrjorarr'
+    member4:
+      name: 'Alberto'
+      surname: 'Cordón' 
+      githubUsername: 'albcorare26'
+    member5:
+      name: 'Luis'
+      surname: 'Rodríguez' 
+      githubUsername: 'luirodvid'
+    member6:
+      name: 'Antonio Jesús'
+      surname: 'García' 
+      githubUsername: 'AntonioJesusGarciaNieto'
+    member7:
+      name: 'Antonio'
+      surname: 'Corredera' 
+      githubUsername: 'antcorlav'
+    member8:
+      name: 'Daniel'
+      surname: 'Benítez' 
+      githubUsername: 'danbenveg'
+    member9:
+      name: 'José'
+      surname: 'Ruiz' 
+      githubUsername: 'josruialb1'
+    member10:
+      name: 'Laura'
+      surname: 'Beza' 
+      githubUsername: 'laubezqueoff'
+    member11:
+      name: 'Pablo'
+      surname: 'Muñoz' 
+      githubUsername: 'pabmundel'
+    member12:
+      name: 'Laura'
+      surname: 'Portillo' 
+      githubUsername: 'lauporsol'
