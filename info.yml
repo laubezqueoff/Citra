@@ -10,12 +10,12 @@ project:
     travis:
       url: 'https://travis-ci.com/github/laubezqueoff/Citra'
   members:
-  member1:
-      name: 'Governify'
-      surname: 'Auditor' 
-      githubUsername: 'governifyauditor'
-      pivotalUsername: 'governifyauditor'
-      herokuEmail: 'governify.auditor@gmail.com'
+    member1:
+        name: 'Governify'
+        surname: 'Auditor' 
+        githubUsername: 'governifyauditor'
+        pivotalUsername: 'governifyauditor'
+        herokuEmail: 'governify.auditor@gmail.com'
     member2:
       name: 'Vicente'
       surname: 'López' 
