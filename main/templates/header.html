@@ -32,7 +32,11 @@
                 </li>
                 <li class="nav-item nav-link" style="margin-left: 25px; font-size:20px; font-weight: bold; text-align:center;">|</li>
                 <li class="nav-item" style="margin-left: 25px; font-size:20px;">
-                {% comment %} <a class="nav-link" href="#">Buscar</a> {% endcomment %}
+                <form method="post" action='/search_shop/' class="nav-link">{% csrf_token %}
+                    <input class="form-control d-inline" type="text" name="shop_name" id="shop_name" />
+                </form>
+                <li class="nav-item nav-link" style="margin-left: 25px; font-size:20px; font-weight: bold; text-align:center;">|</li>
+                <li class="nav-item" style="margin-left: 25px; font-size:20px;"> 
                 <a class="nav-link" href="{% url 'shops' %}">Listado Tiendas</a>
                 </li>
                 <li class="nav-item nav-link" style="margin-left: 25px; font-size:20px; font-weight: bold; text-align:center;">|</li>

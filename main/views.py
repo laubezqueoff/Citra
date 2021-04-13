@@ -3,7 +3,7 @@ import requests
 from datetime import date
 from django.shortcuts import render, redirect, get_object_or_404
 import urllib.request
-from main.forms import MessageForm, ReviewForm, ProductForm, FormShop
+from main.forms import MessageForm, ReviewForm, ProductForm, FormShop, NameShopForm
 from django.http import Http404
 import json
 from django.http import JsonResponse
@@ -668,6 +668,22 @@ def get_chat_new(request, id_shop):
     form = MessageForm()
     return render(request, 'chat.html', {"context": context, "messages": chat_message, 'form': form, 'shop_id': id_shop, 'tienda': tienda})
 
+def search_shop(request):
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    tienda = miTienda(person_id)
+    if request.method == 'POST':
+        form = NameShopForm(data=request.POST)
+        if form.is_valid():
+            shop_name = form.cleaned_data['shop_name']
+            shops = Shop.objects.filter(name__contains=shop_name)
+            shopType = ShopType.objects.all()
+            return render(request, 'search_shop.html', {'context': context, 'tienda': tienda, 'shops': shops, 'shopType': shopType, "shop_name": shop_name})
+
+    form = NameShopForm()
+    promotions_shops = Promotion.objects.filter(product=None)
+    promotions_products = Promotion.objects.filter(shop=None)
+    return render(request, 'home.html', {"context": context, 'promotions_shops': promotions_shops, 'promotions_products': promotions_products, 'tienda': tienda, 'form': form})
 
 def home(request):
     promotions_shops = Promotion.objects.filter(product=None)

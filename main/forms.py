@@ -8,6 +8,8 @@ from main.models import Shop
 class MessageForm(forms.Form):
     text = forms.CharField(label='Mensaje')
 
+class NameShopForm(forms.Form):
+    shop_name = forms.CharField(label='Nombre')
 
 class ReviewForm(forms.Form):
     rating = forms.IntegerField(label='Puntuación')
