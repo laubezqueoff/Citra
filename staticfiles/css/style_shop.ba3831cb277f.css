@@ -37,12 +37,11 @@
 }
 
 
-@media screen and (min-width: px){
+@media screen and (min-width: 768px){
     :root{
         --big-font-size: 1.5rem;
         --bigger-font-size: 2rem;
         --biggest-font-size: 3rem;
-        --h2-font-size: 1.25rem;
         --normal-font-size: 1rem;
         --smaller-font-size: .875rem;
 
@@ -88,10 +87,6 @@ img{
     display: block;
 }
 
-
-
-
-
 /* buttons */
 .button{
     display: inline-block;
@@ -125,10 +120,6 @@ img{
 }
 
 /* class css  */
-
-.section{
-    padding: 5rem 0 2rem;
-}
 
 .section-title{
     position: relative;

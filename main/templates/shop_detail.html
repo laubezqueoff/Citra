@@ -11,7 +11,7 @@
   
   <div class="container">
       <div class="row">
-        <img src="{% static 'images/tienda_tienda.jpg' %}">
+        <img class="img-fluid" src="{% static 'images/tienda_tienda.jpg' %}">
       </div>
       <div class="row">
         <div class="col">
@@ -21,35 +21,11 @@
             <a class="nav-link" href="#">Higiene</a>
             <a class="nav-link" href="#">Moda</a>
           </nav>
-        </div>
-        <div class="col-6">          
-          <h4 class="section-title"> Productos </h4>          
-            <div class="product__container bd-grid">
-              <div class="row">
-                {% for prod in products %}
-                  <div class="col">
-                    <article class="product">
-                      <img src="{{prod.picture}}" alt ="" class="product__img">
-                      <a id = "nombre{{prod.id}}" class="product__name" href="{% url 'products' prod.pk %}">{{prod.name}}</a>
-                      <p id = "precio{{prod.id}}">{{prod.price}}</p>
-                      {% if context.1 == 'User' %}
-                        <button id="boton" onclick="añadir({{prod.id}})">Añadir</button>
-                      {% endif %}
-                    </article>
-                  </div>
-                {% empty %}
-                {% endfor %}
-              </div>
-            </div>
-        </div>
-
-        <div class="col">
-          
+        <div class="col">          
             <h4 class="section-title">Info</h4>
             <p>Tienda: {{shop.name}}</p>
             <p>Horario: L-S 9:30-20:30</p>
             <p>Dirección: {{shop.address}}</p>
-
             
             <a class="nav-link" href="{{shop.id}}/edit" name="Editar tienda">Editar tienda</a>
 
@@ -118,6 +94,27 @@
             {% endif %}
             <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="{% url 'product_create' shop.pk %}"> Añadir Productos </a></button>
           {% endif %}
+        </div>
+        </div>
+        <div class="col-6">          
+          <h4 class="section-title"> Productos </h4>          
+            <div class="product__container bd-grid">
+              <div class="row">
+                {% for prod in products %}
+                  <div class="col">
+                    <article class="product">
+                      <img class = "img-fluid" src="{{prod.picture}}" width="150" height="200" alt ="" class="product__img">
+                      <a id = "nombre{{prod.id}}" class="product__name" href="{% url 'products' prod.pk %}">{{prod.name}}</a>
+                      <p id = "precio{{prod.id}}">{{prod.price}}</p>
+                      {% if context.1 == 'User' %}
+                        <button id="boton" onclick="añadir({{prod.id}})">Añadir</button>
+                      {% endif %}
+                    </article>
+                  </div>
+                {% empty %}
+                {% endfor %}
+              </div>
+            </div>
         </div>
       </div>
   </div>

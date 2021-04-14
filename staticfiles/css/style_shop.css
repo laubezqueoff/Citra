@@ -37,11 +37,12 @@
 }
 
 
-@media screen and (min-width: 768px){
+@media screen and (min-width: px){
     :root{
         --big-font-size: 1.5rem;
         --bigger-font-size: 2rem;
         --biggest-font-size: 3rem;
+        --h2-font-size: 1.25rem;
         --normal-font-size: 1rem;
         --smaller-font-size: .875rem;
 
@@ -87,6 +88,10 @@ img{
     display: block;
 }
 
+
+
+
+
 /* buttons */
 .button{
     display: inline-block;
@@ -120,6 +125,10 @@ img{
 }
 
 /* class css  */
+
+.section{
+    padding: 5rem 0 2rem;
+}
 
 .section-title{
     position: relative;
@@ -178,6 +187,7 @@ img{
     background-color: var(--dark-color-lighten);
     border-radius: .5rem;
     transition: .3s;
+    margin-top:2rem;
     height: 300px;
     width: 200px;
     float: left;
@@ -242,5 +252,24 @@ img{
     float: left;
 }
 
+.row::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  
+  [class*="col-"] {
+    float: left;
+    padding: 15px;
+  }
+  
+
+  .col-6 {width: 100%;}
+  .col-7 {width: 100%;}
+
+  .responsive {
+    width: 100%;
+    height: auto;
+  }
 
 }
