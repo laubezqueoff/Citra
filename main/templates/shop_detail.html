@@ -17,9 +17,10 @@
         <div class="col">
         <h4 class="section-title">Categorías</h4>
           <nav class="nav flex-column">
-            <a class="nav-link active" aria-current="page" href="#">Alimentación</a>
-            <a class="nav-link" href="#">Higiene</a>
-            <a class="nav-link" href="#">Moda</a>
+            {% for pt in productType %}
+                <a id="{{pt.id}}" class="nav-link" role="button" onclick="ordenar({{pt.id}})">{{pt.name}}</a>
+            {% endfor %}
+            <a class="nav-link" role="button" onclick="limpiarFiltro()">Limpiar filtro</a>
           </nav>
         </div>
         <div class="col-6">          
@@ -28,7 +29,7 @@
               <div class="row">
                 {% for prod in products %}
                   <div class="col">
-                    <article class="product">
+                    <article id="{{prod.productType.id}}" class="product">
                       <img src="{{prod.picture}}" alt ="" class="product__img">
                       <a id = "nombre{{prod.id}}" class="product__name" href="{% url 'products' prod.pk %}">{{prod.name}}</a>
                       <p id = "precio{{prod.id}}">{{prod.price}}</p>
@@ -50,8 +51,9 @@
             <p>Horario: L-S 9:30-20:30</p>
             <p>Dirección: {{shop.address}}</p>
 
-            
+          {% if context.1 == 'Owner' and shop.owner.person.id|stringformat:"i" == context.0 %}
             <a class="nav-link" href="{{shop.id}}/edit" name="Editar tienda">Editar tienda</a>
+          {% endif %}
 
          {% if context.1 == 'User' %}
             <h4 class="section-title">Cesta</h4>
@@ -73,9 +75,6 @@
 
             {% endif %}
           {% if context.1 == 'Owner' and shop.owner.person.id|stringformat:"i" == context.0 %}
-            {% comment %} <button onclick="location.href='{% url 'promotion_week_shop' shop.id %}'">
-              Promociona tu tienda (semanal)
-            </button> {% endcomment %}
             <h4 class="section-title">Otras acciones</h4>
             {% if promotionShop %}
             <button type="button" class="btn btn-outline-warning" onclick="promocionarTiendaSemanal({{shop.id}})">
@@ -124,75 +123,6 @@
 </main>
 
  <script>
-  // function promocionarProductoSemanal (id_product) {
-  //   data = {
-  //       id_product: id_product,
-  //       csrfmiddlewaretoken: '{{ csrf_token }}',
-  //   }
-  //   url = window.location.origin + '/product/' + id_product + '/promotionweekproduct'
-  //   $.ajax({
-  //       url: url,
-  //       data: data,
-  //       type: 'POST',
-  //       success: function (data) {
-  //           confirm("Promocion realizada")
-  //           window.location.replace(window.location.origin + data.url);
-  //       }
-  //   });
-  // }
-
-  // function promocionarProductoMensual (id_product) {
-  //   data = {
-  //       id_product: id_product,
-  //       csrfmiddlewaretoken: '{{ csrf_token }}',
-  //   }
-  //   url = window.location.origin + '/product/' + id_product + '/promotionmonthproduct'
-  //   $.ajax({
-  //       url: url,
-  //       data: data,
-  //       type: 'POST',
-  //       success: function (data) {
-  //           confirm("Promocion realizada")
-  //           window.location.replace(window.location.origin + data.url);
-  //       }
-  //   });
-  // }
-  // function promocionarTiendaSemanal (id_shop) {
-  //   data = {
-  //       id_shop: id_shop,
-  //       csrfmiddlewaretoken: '{{ csrf_token }}',
-  //   }
-  //   url = window.location.origin + '/shops/' + id_shop + '/promotionweekshop'
-  //   console.log(url)
-  //   $.ajax({
-  //       url: url,
-  //       data: data,
-  //       type: 'POST',
-  //       success: function (data) {
-  //           confirm("Promocion realizada")
-  //           window.location.replace(window.location.origin + data.url);
-  //       }
-  //   });
-  // }
-
-  // function promocionarTiendaMensual (id_shop) {
-  //   data = {
-  //       id_shop: id_shop,
-  //       csrfmiddlewaretoken: '{{ csrf_token }}',
-  //   }
-  //   url = window.location.origin + '/shops/' + id_shop + '/promotionmonthshop'
-  //   console.log(url)
-  //   $.ajax({
-  //       url: url,
-  //       data: data,
-  //       type: 'POST',
-  //       success: function (data) {
-  //           confirm("Promocion realizada")
-  //           window.location.replace(window.location.origin + data.url);
-  //       }
-  //   });
-  // } -->
-
   function añadir (id) {
     var nombre = document.getElementById('nombre'+id).innerHTML
     var precio = document.getElementById('precio'+id).innerHTML
@@ -260,6 +190,26 @@ function reserva() {
         }
     });
 };
+
+function ordenar(id_productType) {
+  var products = document.getElementsByClassName('product');
+  for (let step = 0; step < products.length; step++) {
+      if (products[step].id != id_productType.toString()) {
+          products[step].style.display = "none";
+          document.getElementById(id_productType).style.color = "red";
+      }
+  }
+}
+function limpiarFiltro() {
+  var products = document.getElementsByClassName('product');
+  var productsType = document.getElementsByClassName('nav-link');
+  for (let step = 0; step < products.length; step++) {
+      products[step].removeAttribute("style");
+  }
+  for (let step2 = 0; step2 < productsType.length; step2++) {
+      productsType[step2].removeAttribute("style");
+  }
+}
 </script>
 
                 

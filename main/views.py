@@ -539,9 +539,9 @@ def shop_details(request, id_shop):
     shop = get_object_or_404(Shop, pk=id_shop)
     products = Product.objects.filter(shop=shop)
     promotionShop = Promotion.objects.filter(shop=shop).exists()
-    # productsPromotion = {}
-    # for prod in products:
-    #     productsPromotion[prod] = not(Promotion.objects.filter(product=prod).exists())
+    productType = []
+    for prod in products:
+        productType.append(prod.productType)
     try:
         person_id, rol, rol_id, is_active = get_context(request)
         context = [person_id, rol, rol_id, is_active]
@@ -550,7 +550,7 @@ def shop_details(request, id_shop):
         rol = 'User no registrado'
         context = [person_id, rol]
     tienda = miTienda(person_id)
-    return render(request, 'shop_detail.html', {'shop': shop, 'products': products, 'context': context, 'promotionShop': not(promotionShop), 'tienda': tienda, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY})
+    return render(request, 'shop_detail.html', {'shop': shop, 'productType': set(productType), 'products': products, 'context': context, 'promotionShop': not(promotionShop), 'tienda': tienda, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY})
 
 
 
