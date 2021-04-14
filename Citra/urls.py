@@ -49,6 +49,8 @@ urlpatterns = [
     path('user/bookings/',views.list_booking_user,name="list_booking_user"),
     path('owners/',views.get_owners,name="list_owners"),
     path('users/',views.get_users,name="list_users"),
+    path('owners/<id_user>',views.get_owner,name="list_owners"),
+    path('users/<id_user>',views.get_user,name="list_users"),
     path('about/',views.about,name="about"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

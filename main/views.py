@@ -613,12 +613,12 @@ def get_owners(request):
                             owners = owners | Owner.objects.filter(person=p)
                         i=+1
                         print(owners)
-                    return render(request, 'chat.html', {"context" : context, "owners" : owners, 'form': form, 'tienda': tienda})
+                    return render(request, 'ownerListAdmin.html', {"context" : context, "owners" : owners, 'form': form, 'tienda': tienda})
             else:
                 form = UserSearchForm()
                 owners = Owner.objects.all()
                 print(owners)
-                return render(request, 'chat.html', {"context" : context, "owners" : owners, 'form': form, 'tienda': tienda})
+                return render(request, 'ownerListAdmin.html', {"context" : context, "owners" : owners, 'form': form, 'tienda': tienda})
         else:
             return render(request,'prohibido.html',{"context" : context, 'tienda': tienda},status=403)
     else:
@@ -647,12 +647,12 @@ def get_users(request):
                         i=+1
                         print(users)
 
-                    return render(request, 'chat.html', {"context" : context, "users" : users, 'form': form, 'tienda': tienda})
+                    return render(request, 'userListAdmin.html', {"context" : context, "users" : users, 'form': form, 'tienda': tienda})
             else:
                 form = UserSearchForm()
                 users = CustomUser.objects.all()
                 print(users)
-                return render(request, 'chat.html', {"context" : context, "users" : users, 'form': form, 'tienda': tienda})
+                return render(request, 'userListAdmin.html', {"context" : context, "users" : users, 'form': form, 'tienda': tienda})
         else:
             return render(request,'prohibido.html',{"context" : context, 'tienda': tienda},status=403)
     else:
@@ -677,11 +677,10 @@ def get_user(request ,id_user):
                     person = user.person
                     person.isBanned = isBanned
                     person.save()
-                    return render(request, 'chat.html', {"context" : context, "user" : user, 'form': form, 'tienda': tienda})
+                    return render(request, 'userDetailsAdmin.html', {"context" : context, "user" : user, 'form': form, 'tienda': tienda})
             else:
                 form = UserBannedForm()
-                
-                return render(request, 'chat.html', {"context" : context, "user" : user, 'form': form, 'tienda': tienda})
+                return render(request, 'userDetailsAdmin.html', {"context" : context, "user" : user, 'form': form, 'tienda': tienda})
         else:
             return render(request,'prohibido.html',{"context" : context, 'tienda': tienda},status=403)
     else:
@@ -707,11 +706,11 @@ def get_owner(request ,id_user):
                     person = owner.person
                     person.isBanned = isBanned
                     person.save()
-                    return render(request, 'chat.html', {"context" : context, "owner" : owner, 'form': form, 'tienda': tienda})
+                    return render(request, 'ownerDetailsAdmin.html', {"context" : context, "owner" : owner, 'form': form, 'tienda': tienda})
             else:
                 form = UserBannedForm()
                 
-                return render(request, 'chat.html', {"context" : context, "owner" : owner, 'form': form, 'tienda': tienda})
+                return render(request, 'ownerDetailsAdmin.html', {"context" : context, "owner" : owner, 'form': form, 'tienda': tienda})
         else:
             return render(request,'prohibido.html',{"context" : context, 'tienda': tienda},status=403)
     else:

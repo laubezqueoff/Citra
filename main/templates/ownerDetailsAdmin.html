@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block cabecera %}<link rel="stylesheet" href="{% static 'css/style_reviews.css' %}"/>
+<title> Admin / Citra</title>
+{% endblock %}
+{% block contenido %}
+<div class="container mt-5" style="margin-top:2px!important;">
+    <div class="d-flex justify-content-center row">
+        <div class="col-md-8">
+            <div class="bg-white comment-section">
+                <div class="d-flex flex-row user p-2">
+                    <div class="d-flex flex-column ml-2"><span class="name font-weight-bold" style="margin-left:10px!important; font-size:35px!important;">{{user.person.username}}</span>
+                    <span>{{owner.person.name}}</span>
+                    <span>{{owner.person.email}}</span>
+                    </div>
+                </div>
+                <div class="mt-4 p-2">
+                {% if person.user.isBanned %}
+                    <form method="POST">
+                        <button type="button" class="btn btn-outline-warning" style="" onclick="UserBannedForm(({{person.owner.isBanned}}))">
+                            Habilitar Cuenta
+                        </button>
+                    </form>
+                {% else %}
+                <form method="POST">
+                    <button type="button" class="btn btn-outline-warning" style="" onclick="UserBannedForm(({{person.owner.isBanned}}))">
+                        Banear Cuenta
+                    </button>
+                </form>
+                {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
