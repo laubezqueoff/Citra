@@ -1,6 +1,6 @@
 from main.models import Person, CustomUser, CustomAdmin, Owner, ShopType, ProductType, Shop, Product, SubscriptionType, PromotionType, Subscription, Promotion, Booking, Review, Chat, ChatMessage, Thread, ForumMessage
 import requests
-from datetime import date
+from datetime import date, datetime
 from django.shortcuts import render, redirect, get_object_or_404
 import urllib.request
 from main.forms import MessageForm, ReviewForm, ProductForm, FormShop
@@ -53,53 +53,57 @@ def login(request):
     else:  # Si es un GET redirijimos a la vista de login
         return render(request, 'login.html', {'tienda': ''})
 
+
 def registerShop(request):
-    if request.method == 'POST': #Si es un POST redirijimos a la vista de index con el context actualizado  
+    if request.method == 'POST':  # Si es un POST redirijimos a la vista de index con el context actualizado
         try:
-            #Parametros tomados del post
-            username        =   request.POST['username']             
-            password        =   request.POST['password']            
-            name            =   request.POST['name']                
-            phoneNumber     =   request.POST['phoneNumber'] 
-            zipCode         =   request.POST['zipCode']              
-            email           =   request.POST['email'] 
-                   
-            #Parámetros autogenerados   
+            # Parametros tomados del post
+            username = request.POST['username']
+            password = request.POST['password']
+            name = request.POST['name']
+            phoneNumber = request.POST['phoneNumber']
+            zipCode = request.POST['zipCode']
+            email = request.POST['email']
+
+            # Parámetros autogenerados
             registerDate = date.today()
             isBanned = False
 
-            p = Person(username=username, password=password, name=name, phoneNumber=phoneNumber, email=email, zipCode=zipCode, registerDate=registerDate, isBanned=isBanned)
+            p = Person(username=username, password=password, name=name, phoneNumber=phoneNumber,
+                       email=email, zipCode=zipCode, registerDate=registerDate, isBanned=isBanned)
             p.save()
 
-            p = Person.objects.get(username=username,password=password)
+            p = Person.objects.get(username=username, password=password)
 
             co = Owner(person=p)
             co.save()
 
-            shopName        =   request.POST['shopName']
-            shopType        =   request.POST['shopType']
-            schedule        =   request.POST['schedule']
-            description     =   request.POST['description']
-            picture         =   request.FILES.get('picture')
-            address         =   request.POST['address']
-            durationBooking =   request.POST['durationBooking']
+            shopName = request.POST['shopName']
+            shopType = request.POST['shopType']
+            schedule = request.POST['schedule']
+            description = request.POST['description']
+            picture = request.FILES.get('picture')
+            address = request.POST['address']
+            durationBooking = request.POST['durationBooking']
 
             co = Owner.objects.get(person=p)
             shopType = ShopType.objects.get(id=int(shopType))
-            shop = Shop.objects.create(name=name,shopType=shopType,schedule=schedule,description=description,picture=picture,address=address,owner=co,durationBooking=durationBooking)
+            shop = Shop.objects.create(name=name, shopType=shopType, schedule=schedule, description=description,
+                                       picture=picture, address=address, owner=co, durationBooking=durationBooking)
 
-            update_context(request,p.id,"Owner",co.id,True)
-            person_id,rol,rol_id,is_active = get_context(request)
-            context = [person_id,rol,rol_id,is_active]
+            update_context(request, p.id, "Owner", co.id, True)
+            person_id, rol, rol_id, is_active = get_context(request)
+            context = [person_id, rol, rol_id, is_active]
 
             return redirect('/home/')
 
         except:
             print("------------------------------")
             return render(request, 'login.html')
-         
+
     else:
         return render(request, 'register_shop.html')
+
 
 def register(request):
     ''' Logea una persona en la aplicación.\n
@@ -107,44 +111,46 @@ def register(request):
         GET     -> Lleva al formulario de login
     '''
     #msg_success = "Bienvenido a la aplicación"
-    msg_error  = "El nombre y la contraseña no coinciden"
+    msg_error = "El nombre y la contraseña no coinciden"
 
-    if request.method == 'POST': #Si es un POST redirijimos a la vista de index con el context actualizado
+    if request.method == 'POST':  # Si es un POST redirijimos a la vista de index con el context actualizado
         try:
-            #Parametros tomados del post
-                username        =   request.POST['username']             
-                password        =   request.POST['password']            
-                name            =   request.POST['name']                
-                phoneNumber     =   request.POST['phoneNumber'] 
-                zipCode         =   request.POST['zipCode']              
-                email           =   request.POST['email'] 
-                   
-                #Parámetros autogenerados   
-                registerDate = date.today()
-                isBanned = False
+            # Parametros tomados del post
+            username = request.POST['username']
+            password = request.POST['password']
+            name = request.POST['name']
+            phoneNumber = request.POST['phoneNumber']
+            zipCode = request.POST['zipCode']
+            email = request.POST['email']
 
-                p = Person(username=username, password=password, name=name, phoneNumber=phoneNumber, email=email, zipCode=zipCode, registerDate=registerDate, isBanned=isBanned)
-                p.save()
+            # Parámetros autogenerados
+            registerDate = date.today()
+            isBanned = False
 
-                p = Person.objects.get(username=username,password=password)
+            p = Person(username=username, password=password, name=name, phoneNumber=phoneNumber,
+                       email=email, zipCode=zipCode, registerDate=registerDate, isBanned=isBanned)
+            p.save()
 
-                cu = CustomUser(person=p)
-                cu.save()
+            p = Person.objects.get(username=username, password=password)
 
-                rol_and_id = whoIsWho(p)
+            cu = CustomUser(person=p)
+            cu.save()
 
-                update_context(request,p.id,rol_and_id[0],rol_and_id[1],True)
-                person_id,rol,rol_id,is_active = get_context(request)
-                context = [person_id,rol,rol_id,is_active]
+            rol_and_id = whoIsWho(p)
 
-                return render(request, 'home.html', {"context" : context})
+            update_context(request, p.id, rol_and_id[0], rol_and_id[1], True)
+            person_id, rol, rol_id, is_active = get_context(request)
+            context = [person_id, rol, rol_id, is_active]
+
+            return render(request, 'home.html', {"context": context})
 
         except:
             msg = msg_error
-            return render(request, 'login.html',{"msg":msg})
-         
-    else: #Si es un GET redirijimos a la vista de login
+            return render(request, 'login.html', {"msg": msg})
+
+    else:  # Si es un GET redirijimos a la vista de login
         return render(request, 'register_user.html')
+
 
 def logout(request):
     ''' Deslogea una persona en la aplicación.\n
@@ -447,6 +453,7 @@ def activate_shop(request, id_shop):
     else:
         return render(request, 'prohibido.html')
 
+
 def product_create(request, id_shop):
     shop = get_object_or_404(Shop, pk=id_shop)
     person_id, rol, rol_id, is_active = get_context(request)
@@ -457,23 +464,25 @@ def product_create(request, id_shop):
             form = ProductForm(request.POST)
             if form.is_valid():
                 price = form.cleaned_data['price']
-                product = Product.objects.create(name=request.POST['name'], price=price, description= request.POST['description'], productType= ProductType.objects.get(name=request.POST['select']), picture= request.FILES.get('picture'), shop= shop)
+                product = Product.objects.create(name=request.POST['name'], price=price, description=request.POST['description'], productType=ProductType.objects.get(
+                    name=request.POST['select']), picture=request.FILES.get('picture'), shop=shop)
                 return redirect('/shops/'+str(shop.id))
             else:
-                types = ProductType.objects.all()   
+                types = ProductType.objects.all()
                 productType = []
                 for ty in types:
                     productType.append(ty)
-                return render(request, 'create_product.html', {'form': form, 'types' : productType, "context" : context, 'tienda': tienda})
+                return render(request, 'create_product.html', {'form': form, 'types': productType, "context": context, 'tienda': tienda})
 
         form = ProductForm()
-        types = ProductType.objects.all()   
+        types = ProductType.objects.all()
         productType = []
         for ty in types:
             productType.append(ty)
-        return render(request, 'create_product.html', {'shop': shop, 'types' : productType, "context" : context, 'tienda': tienda, 'form':form})
+        return render(request, 'create_product.html', {'shop': shop, 'types': productType, "context": context, 'tienda': tienda, 'form': form})
     else:
-        return render(request, 'prohibido.html', {"context" : context, 'tienda': tienda})
+        return render(request, 'prohibido.html', {"context": context, 'tienda': tienda})
+
 
 def product_delete(request, id_product):
     product = get_object_or_404(Product, pk=request.POST.get('id_product'))
@@ -486,13 +495,13 @@ def product_delete(request, id_product):
             'url': "/shops/" + str(product.shop.id)
         }
         return JsonResponse(data)
-        
+
     else:
         data = {
             'url': "/prohibido/"
         }
         return JsonResponse(data)
-        
+
 
 def product_details(request, id_product):
     product = get_object_or_404(Product, pk=id_product)
@@ -506,26 +515,27 @@ def product_details(request, id_product):
             product.name = form.cleaned_data['name']
             product.price = form.cleaned_data['price']
             product.description = form.cleaned_data['description']
-            product.productType = ProductType.objects.get(name=request.POST['select'])
+            product.productType = ProductType.objects.get(
+                name=request.POST['select'])
             if request.FILES.get('picture') != None:
                 product.picture = request.FILES.get('picture')
             product.save()
             return redirect('/shops/'+str(product.shop.id))
         else:
-            types = ProductType.objects.all()   
+            types = ProductType.objects.all()
             productType = []
             for ty in types:
                 productType.append(ty)
-            return render(request, 'products.html', {'form': form, 'product': product, 'types' : productType, "context" : context, "promotionProduct" : not(promotionProduct), 'tienda': tienda})
-
+            return render(request, 'products.html', {'form': form, 'product': product, 'types': productType, "context": context, "promotionProduct": not(promotionProduct), 'tienda': tienda})
 
     form = ProductForm()
-    types = ProductType.objects.all()   
+    types = ProductType.objects.all()
     productType = []
     for ty in types:
         productType.append(ty)
     print(product.picture)
-    return render(request, 'products.html', {'stripe_key': settings.STRIPE_PUBLISHABLE_KEY,'form': form, 'product': product, 'types' : productType, "context" : context, "promotionProduct" : not(promotionProduct), 'tienda': tienda})
+    return render(request, 'products.html', {'stripe_key': settings.STRIPE_PUBLISHABLE_KEY, 'form': form, 'product': product, 'types': productType, "context": context, "promotionProduct": not(promotionProduct), 'tienda': tienda})
+
 
 def list_shop(request):
     person_id, rol, rol_id, is_active = get_context(request)
@@ -551,7 +561,6 @@ def shop_details(request, id_shop):
         context = [person_id, rol]
     tienda = miTienda(person_id)
     return render(request, 'shop_detail.html', {'shop': shop, 'products': products, 'context': context, 'promotionShop': not(promotionShop), 'tienda': tienda, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY})
-
 
 
 def get_chats_list(request):
@@ -658,10 +667,11 @@ def get_chat_new(request, id_shop):
             newChat.save()
             print('new chat')
             print(newChat.pk)
-            isSentByUser= False
-            if rol== 'User':
-                isSentByUser=True
-            ChatMessage.objects.create(text=text, chat= newChat,date=date.today(), isSentByUser=isSentByUser).save()
+            isSentByUser = False
+            if rol == 'User':
+                isSentByUser = True
+            ChatMessage.objects.create(
+                text=text, chat=newChat, date=date.today(), isSentByUser=isSentByUser).save()
             return redirect('/shop/chat/'+str(newChat.pk))
 
     chat_message = []
@@ -685,6 +695,7 @@ def booking(request):
         user = CustomUser.objects.get(id=person_id)
         for reserva in json.loads(request.POST.get('key_1_string')):
             product = Product.objects.get(id=reserva['id'])
+
             Booking.objects.create(startDate=date.today(), endDate=date.today(
             ), product=product, title='Prueba', quantity=reserva['cantidad'], isAccepted=False, user=user)
 
@@ -754,12 +765,20 @@ def forbidden(request):
 def booking(request):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
+
     if (is_active):
         user = CustomUser.objects.get(id=person_id)
         for reserva in json.loads(request.POST.get('key_1_string')):
             product = Product.objects.get(id=reserva['id'])
-            Booking.objects.create(startDate=date.today(), endDate=date.today(
-            ), product=product, title='Prueba', quantity=reserva['cantidad'], isAccepted=False, user=user)
+            shop = product.shop.durationBooking
+            now = datetime.now()
+            print(now + timedelta(minutes=shop))
+            finishBooking = now + timedelta(minutes=shop)
+            print(finishBooking)
+            b = Booking.objects.create(startDate=now, endDate=finishBooking, product=product,
+                                       title='Prueba', quantity=reserva['cantidad'], isAccepted=False, user=user)
+            b.save()
+            print(type(b.endDate))
 
         data = {
             'url': "/user/bookings/"
@@ -782,17 +801,18 @@ def review_list(request, id_shop):
         reviews = []
         for m in shop.review_set.all():
             reviews.append(m)
-        return render(request, 'reviews.html', {'reviews':reviews, 'context':context, 'tienda': tienda}) #a la vista de todas las reviews
+        # a la vista de todas las reviews
+        return render(request, 'reviews.html', {'reviews': reviews, 'context': context, 'tienda': tienda})
 
     if rol == "Owner":
         if(shop.id == tienda.id):
             reviews = []
             for m in tienda.review_set.all():
                 reviews.append(m)
-            return render(request, 'reviews.html', {'reviews':reviews, 'context':context, 'tienda': tienda})
+            return render(request, 'reviews.html', {'reviews': reviews, 'context': context, 'tienda': tienda})
         else:
-            return render(request, 'prohibido.html', {'context':context, 'tienda': tienda})
-        
+            return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
+
     else:
         return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
 
