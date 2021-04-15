@@ -477,6 +477,15 @@ def activate_shop(request, id_shop):
                 subscriptionType=subscriptionType, startDate=time, endDate=endtime, owner=owner, shop=shop)
             tienda = miTienda(person_id)
             return render(request, "home.html", {'suscripcion': suscripcion, 'context': context, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY, 'tienda': tienda})
+        elif (subscription and str(shop.owner.person.id) == person_id):
+            time = date.today()
+            endtime = (time + timedelta(days=30))
+            person = Person.objects.get(id=person_id)
+            get_or_create_customer(email=person.email, source=None)
+            charge(amount=1000, source=request.POST.get('stripeToken'))
+            promocion = Subscription.objects.filter(shop = shop).update(startDate=time, endDate=endtime)
+            tienda = miTienda(person_id)
+            return redirect("home")
         else:
             return redirect('/')
     else:
@@ -577,6 +586,7 @@ def shop_details(request, id_shop):
     products = Product.objects.filter(shop=shop)
     today = date.today()
     promotionShop = Promotion.objects.filter(shop=shop, endDate__gte = today).exists()
+    subscriptionShop = Subscription.objects.filter(shop=shop, endDate__gte = today).exists()
     try:
         person_id, rol, rol_id, is_active = get_context(request)
         context = [person_id, rol, rol_id, is_active]
@@ -585,7 +595,7 @@ def shop_details(request, id_shop):
         rol = 'User no registrado'
         context = [person_id, rol]
     tienda = miTienda(person_id)
-    return render(request, 'shop_detail.html', {'shop': shop, 'products': products, 'context': context, 'promotionShop': not(promotionShop), 'tienda': tienda, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY})
+    return render(request, 'shop_detail.html', {'shop': shop, 'products': products, 'context': context, 'promotionShop': not(promotionShop), 'subscriptionShop': not(subscriptionShop), 'tienda': tienda, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY})
 
 def get_chats_list(request):
     ''' Muestra una lista de todos los chats que el usuario activo, sea user u owner, tenga. \n

@@ -91,16 +91,16 @@
               </script>
             </form>
 
-
+          {% if subscriptionShop %}
             <form id="pagaMens" action= "{% url 'promotion_month_shop' shop.id %}" method="POST">
               {% csrf_token %} 
-              
+            
               <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" id="separated3"
               data-key="{{ stripe_key }}" data-description="Premium mensual" data-amount="1000"
               data-locale="es" data-currency="eur" data-label="Promocionar un mes 10€">
               </script>
             </form>
-
+          {% endif %}
             <form id="activateShop" action= "{% url 'activate_shop' shop.id %}" method="POST">
               {% csrf_token %} 
               
