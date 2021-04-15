@@ -22,12 +22,13 @@
                             <img>
                                 {% if factor == 0 %}
                                     {% static 'images/manzana.jpg' %}
-                                {% if factor == 1 %}
+                                {% elif factor == 1 %}
                                     {% static 'images/manzana.jpg' %}
-                                {% if factor == 2 %}
+                                {% elif factor == 2 %}
                                     {% static 'images/manzana.jpg' %}
-                                {% if factor == 3 %}
+                                {% elif factor == 3 %}
                                     {% static 'images/manzana.jpg' %}
+                                {% endif %}
                             </img>
                         </span>
                         <button onclick="aceptar({{book.id}})">Aceptar</button>

@@ -483,7 +483,7 @@ def list_booking_owner(request):
     if (is_active):
         owner = Owner.objects.get(id=person_id)
         bookings = Booking.objects.filter(isAccepted=False)
-        factoresConfianza = []
+        factoresConfianza = {}
         for book in bookings:
             if book.product.shop.owner.id == owner.id:
                 factoresConfianza[book] = factor_confianza(book.user.id)
@@ -654,10 +654,10 @@ def report_from_chat_form(request, id_chat):
 
 def factor_confianza(id_user): ## 0: Datos insuficientes, 1: Poco fiable, 2: Medianamente fiable, 3: Cliente fiable
     res = 0
-    user = CustomUser.objects.get(id_user)
+    user = CustomUser.objects.get(id = id_user)
     npedidos = Booking.objects.filter(user = user, isAccepted = True).count()
     if(npedidos>4):
-        nreportes = Report.objects.filter(person = Person.objects.get(id = user.person)).count()
+        nreportes = Report.objects.filter(person = Person.objects.get(id = user.person.id)).count()
         if (nreportes==0):
             res = 3
         elif(nreportes<5):
