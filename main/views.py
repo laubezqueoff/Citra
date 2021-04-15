@@ -310,6 +310,9 @@ def promotion_week_product(request, id_product):
         elif (promotion and str(product.shop.owner.person.id) == person_id):
             time = date.today()
             endtime = (time + timedelta(days=7))
+            person = Person.objects.get(id=person_id)
+            get_or_create_customer(email=person.email, source=None)
+            charge(amount=300, source=request.POST.get('stripeToken'))
             promocion = Promotion.objects.filter(product = product).update(startDate=time, endDate=endtime)
             tienda = miTienda(person_id)
             return redirect("home")
@@ -342,6 +345,9 @@ def promotion_month_product(request, id_product):
         elif (promotion and str(product.shop.owner.person.id) == person_id):
             time = date.today()
             endtime = (time + timedelta(days=30))
+            person = Person.objects.get(id=person_id)
+            get_or_create_customer(email=person.email, source=None)
+            charge(amount=500, source=request.POST.get('stripeToken'))
             promocion = Promotion.objects.filter(product = product).update(startDate=time, endDate=endtime)
             tienda = miTienda(person_id)
             return redirect("home")
@@ -404,6 +410,9 @@ def promotion_week_shop(request, id_shop):
         elif (promotion and str(shop.owner.person.id) == person_id):
             time = date.today()
             endtime = (time + timedelta(days=7))
+            person = Person.objects.get(id=person_id)
+            get_or_create_customer(email=person.email, source=None)
+            charge(amount=500, source=request.POST.get('stripeToken'))
             promocion = Promotion.objects.filter(shop = shop).update(startDate=time, endDate=endtime)
             tienda = miTienda(person_id)
             return redirect("home")
@@ -438,11 +447,13 @@ def promotion_month_shop(request, id_shop):
         elif (promotion and str(shop.owner.person.id) == person_id):
             time = date.today()
             endtime = (time + timedelta(days=30))
+            person = Person.objects.get(id=person_id)
+            get_or_create_customer(email=person.email, source=None)
+            charge(amount=1000, source=request.POST.get('stripeToken'))
             promocion = Promotion.objects.filter(shop = shop).update(startDate=time, endDate=endtime)
             tienda = miTienda(person_id)
             return redirect("home")
         else:
-
             return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
     else:
         return render(request, 'prohibido.html')
@@ -522,8 +533,10 @@ def product_details(request, id_product):
     product = get_object_or_404(Product, pk=id_product)
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
-    promotionProduct = Promotion.objects.filter(product=product).exists()
+    today = date.today()
+    promotionProduct = Promotion.objects.filter(product=product, endDate__gte = today).exists()
     tienda = miTienda(person_id)
+
     if request.method == 'POST':
         form = ProductForm(request.POST)
         if form.is_valid():
@@ -562,10 +575,8 @@ def list_shop(request):
 def shop_details(request, id_shop):
     shop = get_object_or_404(Shop, pk=id_shop)
     products = Product.objects.filter(shop=shop)
-    promotionShop = Promotion.objects.filter(shop=shop).exists()
-    # productsPromotion = {}
-    # for prod in products:
-    #     productsPromotion[prod] = not(Promotion.objects.filter(product=prod).exists())
+    today = date.today()
+    promotionShop = Promotion.objects.filter(shop=shop, endDate__gte = today).exists()
     try:
         person_id, rol, rol_id, is_active = get_context(request)
         context = [person_id, rol, rol_id, is_active]
@@ -575,8 +586,6 @@ def shop_details(request, id_shop):
         context = [person_id, rol]
     tienda = miTienda(person_id)
     return render(request, 'shop_detail.html', {'shop': shop, 'products': products, 'context': context, 'promotionShop': not(promotionShop), 'tienda': tienda, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY})
-
-
 
 def get_chats_list(request):
     ''' Muestra una lista de todos los chats que el usuario activo, sea user u owner, tenga. \n
