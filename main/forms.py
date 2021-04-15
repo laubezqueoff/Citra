@@ -14,6 +14,12 @@ class ReviewForm(forms.Form):
     title = forms.CharField(label='Título')
     description = forms.CharField()
 
+class UserSearchForm(forms.Form):
+    username = forms.CharField(label='Username')
+class UserBannedForm(forms.Form):
+    isBanned = forms.BooleanField(label='Esta Banneado', required=False)
+
+
 class ProductForm(forms.Form):
     name = forms.CharField(label="Nombre")
     description = forms.CharField(label="Descripción")
@@ -37,3 +43,4 @@ class FormShop(forms.Form):
     description = forms.CharField(label="Descripción")
     address = forms.CharField(label="Direción")
     durationBooking = forms.IntegerField(label="Duración")
+

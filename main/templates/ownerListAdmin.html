@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block cabecera %}
+  <link rel="stylesheet" href="{% static 'css/style_userListAdmin.css' %}"/>
+  <title>Admin / Citra</title>
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
+{% endblock %}
+
+{% block contenido %}
+<div class="row" style="margin-left: auto; margin-right: auto;">
+	    <div class="col-md-8" style="margin-left: auto; margin-right: auto;">
+	        <div class="card" style="background-color: #fff1e8!important;">
+			<div>
+				<form method='POST' class="input-group">{% csrf_token %}
+					<input type="text" class="form-control form-control-lg"  placeholder="Buscar" name="username" id="username" />
+					<input type='submit' class="btn btn-outline-dark" style="float:left;background-color: #ffd3b6;">
+				</form>
+			</div>
+	           <div class="card-header" style="background-color: #ffe5d4!important;">
+		            <h4>Lista de clientes registrados</h4>
+		        </div>
+		        <div class="gaadiex-list" style="margin-left: auto; margin-right: auto; align:center;">
+				{% for row in owners %}
+		            <div class="gaadiex-list-item" style="text-align:center;">
+		                <h3><a href="{{row.person.id}}" style="text-decoration: none;">{{row.person.username}}</a></h3>
+                        <h4>{{row.person.name}}</h4>
+                        <p>{{row.person.email}}</p>
+		            </div>
+				{% endfor %}
+		        </div>
+
+	        </div>
+	    </div>
+	</div>
+</div>	
+
+{% endblock %}

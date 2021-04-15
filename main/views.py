@@ -3,7 +3,9 @@ import requests
 from datetime import date, datetime
 from django.shortcuts import render, redirect, get_object_or_404
 import urllib.request
-from main.forms import MessageForm, ReviewForm, ProductForm, FormShop
+
+from main.forms import MessageForm, ReviewForm, UserSearchForm, UserBannedForm
+
 from django.http import Http404
 import json
 from django.http import JsonResponse
@@ -871,6 +873,132 @@ def miTienda(person_id):
 
     return shop
 
+def get_owners(request):
+    ''' Muestra un listado con todos los owners que hay registrados.\n
+        POST    -> Filtra en función del username \n
+        GET     -> Muestra los owners listados.
+    '''
+    person_id,rol,rol_id,is_active= get_context(request)
+    context = [person_id,rol,rol_id,is_active]
+    tienda = miTienda(person_id)
+    if (is_active):
+        if str(rol) == 'Admin':
+            if request.method == 'POST': 
+                form = UserSearchForm(data=request.POST)
+                if form.is_valid():
+                    username = form.cleaned_data['username']
+                    person_list= Person.objects.filter(username__icontains=username)
+                    i=0
+                    for p in person_list:
+                        owners = Owner.objects.filter(person=p)
+                        if(i>0):
+                            owners = owners | Owner.objects.filter(person=p)
+                        i=+1
+                        print(owners)
+                    return render(request, 'ownerListAdmin.html', {"context" : context, "owners" : owners, 'form': form, 'tienda': tienda})
+            else:
+                form = UserSearchForm()
+                owners = Owner.objects.all()
+                print(owners)
+                return render(request, 'ownerListAdmin.html', {"context" : context, "owners" : owners, 'form': form, 'tienda': tienda})
+        else:
+            return render(request,'prohibido.html',{"context" : context, 'tienda': tienda},status=403)
+    else:
+        return render(request,'prohibido.html',status=403)
+
+def get_users(request):
+    ''' Muestra un listado con todos los usuarios que hay registrados.\n
+        POST    -> Filtra en función del username \n
+        GET     -> Muestra los usuarios registrados en una lista.
+    '''
+    person_id,rol,rol_id,is_active= get_context(request)
+    context = [person_id,rol,rol_id,is_active]
+    tienda = miTienda(person_id)
+    if (is_active):
+        if str(rol) == 'Admin':
+            if request.method == 'POST': 
+                form = UserSearchForm(data=request.POST)
+                if form.is_valid():
+                    username = form.cleaned_data['username']
+                    person_list= Person.objects.filter(username__icontains=username)
+                    i=0
+                    for p in person_list:
+                        users = CustomUser.objects.filter(person=p)
+                        if(i>0):
+                            users = users | CustomUser.objects.filter(person=p)
+                        i=+1
+                        print(users)
+
+                    return render(request, 'userListAdmin.html', {"context" : context, "users" : users, 'form': form, 'tienda': tienda})
+            else:
+                form = UserSearchForm()
+                users = CustomUser.objects.all()
+                print(users)
+                return render(request, 'userListAdmin.html', {"context" : context, "users" : users, 'form': form, 'tienda': tienda})
+        else:
+            return render(request,'prohibido.html',{"context" : context, 'tienda': tienda},status=403)
+    else:
+        return render(request,'prohibido.html',status=403)
+
+def get_user(request ,id_user):
+    ''' Muestra los datos de un usuario registrado.\n
+        POST    -> Suspende la cuenta del usuario en cuestion, o la activa en caso de estarlo \n
+        GET     -> Muestra los datos del usuario.
+    '''
+    person_id,rol,rol_id,is_active= get_context(request)
+    context = [person_id,rol,rol_id,is_active]
+    tienda = miTienda(person_id)
+    if (is_active):
+        if str(rol) == 'Admin':
+            user = get_object_or_404(CustomUser,pk=id_user)
+            # user = CustomUser.objects.filter(id=id_user)
+            if request.method == 'POST': 
+                form = UserBannedForm(data=request.POST)
+                if form.is_valid():
+                    isBanned = form.cleaned_data['isBanned'] #Debe pasarse el valor original de isBanned negado
+                    print(isBanned)
+                    person = user.person
+                    person.isBanned = isBanned
+                    person.save()
+                    print(user.person.isBanned)
+                    return render(request, 'userDetailsAdmin.html', {"context" : context, "user" : user, 'form': form, 'tienda': tienda})
+            else:
+                form = UserBannedForm()
+                return render(request, 'userDetailsAdmin.html', {"context" : context, "user" : user, 'form': form, 'tienda': tienda})
+        else:
+            return render(request,'prohibido.html',{"context" : context, 'tienda': tienda},status=403)
+    else:
+        return render(request,'prohibido.html',status=403)
+
+
+def get_owner(request ,id_user):
+    ''' Muestra los datos de un owner registrado.\n
+        POST    -> Suspende la cuenta del owner en cuestión, o la activa en caso de estarlo \n
+        GET     -> Muestra los datos del owner.
+    '''
+    person_id,rol,rol_id,is_active= get_context(request)
+    context = [person_id,rol,rol_id,is_active]
+    tienda = miTienda(person_id)
+    if (is_active):
+        if str(rol) == 'Admin':
+            owner = get_object_or_404(Owner,pk=id_user)
+            # user = CustomUser.objects.filter(id=id_user)
+            if request.method == 'POST': 
+                form = UserBannedForm(data=request.POST)
+                if form.is_valid():
+                    isBanned = form.cleaned_data['isBanned'] #Debe pasarse el valor original de isBanned negado
+                    person = owner.person
+                    person.isBanned = isBanned
+                    person.save()
+                    return render(request, 'ownerDetailsAdmin.html', {"context" : context, "owner" : owner, 'form': form, 'tienda': tienda})
+            else:
+                form = UserBannedForm()
+                
+                return render(request, 'ownerDetailsAdmin.html', {"context" : context, "owner" : owner, 'form': form, 'tienda': tienda})
+        else:
+            return render(request,'prohibido.html',{"context" : context, 'tienda': tienda},status=403)
+    else:
+        return render(request,'prohibido.html',status=403)
 
 def updateShop(request, id_shop):
     person_id, rol, rol_id, is_active = get_context(request)
@@ -896,3 +1024,4 @@ def updateShop(request, id_shop):
         form = FormShop()
 
     return render(request, 'shop_edit.html', {'tienda': tienda, 'context': context, 'form': form, 'shop': shop})
+
