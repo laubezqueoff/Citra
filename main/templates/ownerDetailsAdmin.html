@@ -15,17 +15,17 @@
                     </div>
                 </div>
                 <div class="mt-4 p-2">
-                {% if person.user.isBanned %}
-                    <form method="POST">
-                        <button type="button" class="btn btn-outline-warning" style="" onclick="UserBannedForm(({{person.owner.isBanned}}))">
-                            Habilitar Cuenta
-                        </button>
+                {% if owner.person.isBanned %}
+                    <form method="POST">{% csrf_token %}
+                        <input type="hidden" value="{{owner.person.isBanned|yesno:'False,True'}}" name="isBanned">
+                        <input type="submit" value="Habilitar Cuenta" class="btn btn-outline-warning" style="")>
+                        </input>
                     </form>
                 {% else %}
-                <form method="POST">
-                    <button type="button" class="btn btn-outline-warning" style="" onclick="UserBannedForm(({{person.owner.isBanned}}))">
-                        Banear Cuenta
-                    </button>
+                <form method="POST">{% csrf_token %}
+                    <input type="hidden" value="{{owner.person.isBanned|yesno:'False,True'}}"  name="isBanned">
+                    <input type="submit" value="Banear Cuenta" class="btn btn-outline-warning" style="")>
+                    </input>
                 </form>
                 {% endif %}
                 </div>

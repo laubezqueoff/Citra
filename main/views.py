@@ -674,9 +674,11 @@ def get_user(request ,id_user):
                 form = UserBannedForm(data=request.POST)
                 if form.is_valid():
                     isBanned = form.cleaned_data['isBanned'] #Debe pasarse el valor original de isBanned negado
+                    print(isBanned)
                     person = user.person
                     person.isBanned = isBanned
                     person.save()
+                    print(user.person.isBanned)
                     return render(request, 'userDetailsAdmin.html', {"context" : context, "user" : user, 'form': form, 'tienda': tienda})
             else:
                 form = UserBannedForm()
