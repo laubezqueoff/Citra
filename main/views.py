@@ -47,6 +47,11 @@ def login(request):
             person = get_object_or_404(Person, pk=person_id)
             if person.isBanned:
                 msg = msg_error_is_banned
+                request.session['person_id']= '0'
+                request.session['rol']= 'Usuario no registrado'
+                request.session['rol_id']= '0'
+                request.session['is_active']= False
+                
                 return render(request, 'login.html', {"msg": msg, 'tienda': ''})
             return render(request, 'home.html', {"context": context, 'promotions_shops': promotions_shops, 'promotions_products': promotions_products, 'tienda': tienda})
         except:
@@ -576,7 +581,7 @@ def get_chats_list(request):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     tienda = miTienda(person_id)
-
+    print(context)
     chats = []
 
     if rol == 'User':
@@ -899,6 +904,11 @@ def get_owners(request):
                         i=+1
                         print(owners)
                     return render(request, 'ownerListAdmin.html', {"context" : context, "owners" : owners, 'form': form, 'tienda': tienda})
+                else:
+                    form = UserSearchForm()
+                    owners = Owner.objects.all()
+                    print(owners)
+                    return render(request, 'ownerListAdmin.html', {"context" : context, "owners" : owners, 'form': form, 'tienda': tienda})
             else:
                 form = UserSearchForm()
                 owners = Owner.objects.all()
@@ -930,13 +940,15 @@ def get_users(request):
                         if(i>0):
                             users = users | CustomUser.objects.filter(person=p)
                         i=+1
-                        print(users)
 
+                    return render(request, 'userListAdmin.html', {"context" : context, "users" : users, 'form': form, 'tienda': tienda})
+                else:
+                    form = UserSearchForm()
+                    users = CustomUser.objects.all()
                     return render(request, 'userListAdmin.html', {"context" : context, "users" : users, 'form': form, 'tienda': tienda})
             else:
                 form = UserSearchForm()
                 users = CustomUser.objects.all()
-                print(users)
                 return render(request, 'userListAdmin.html', {"context" : context, "users" : users, 'form': form, 'tienda': tienda})
         else:
             return render(request,'prohibido.html',{"context" : context, 'tienda': tienda},status=403)
