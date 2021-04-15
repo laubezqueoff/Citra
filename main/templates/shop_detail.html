@@ -71,6 +71,7 @@
             <h4 class="section-title">Otras acciones</h4>
             <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="{{shop.id}}/reviews"> Valoraciones </a></button>
             <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="{% url 'newChat' shop.pk %}"> Iniciar Chat </a></button>
+            <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="report"> Reportar </a></button>
 
             {% endif %}
           {% if context.1 == 'Owner' and promotionShop and shop.owner.person.id|stringformat:"i" == context.0 %}

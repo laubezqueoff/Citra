@@ -19,7 +19,7 @@
                         <span class="product__price"> Nombre Producto: {{book.product.price}} </span>
                         <span class="product__price"> Cantidad Reservada: {{book.quantity}} </span>
                          <span class="product__price"> Nombre del usuario: {{book.user.person.name}} 
-                            <img>
+                            <img src="
                                 {% if factor == 0 %}
                                     {% static 'images/manzana.jpg' %}
                                 {% elif factor == 1 %}
@@ -28,10 +28,12 @@
                                     {% static 'images/manzana.jpg' %}
                                 {% elif factor == 3 %}
                                     {% static 'images/manzana.jpg' %}
-                                {% endif %}
+                                {% endif %}">
                             </img>
                         </span>
                         <button onclick="aceptar({{book.id}})">Aceptar</button>
+                        <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="{{book.id}}/report"> Reportar </a></button>
+
                     </article>
                 </div>
                 {% empty %}
