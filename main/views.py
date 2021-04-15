@@ -484,10 +484,12 @@ def list_booking_owner(request):
         owner = Owner.objects.get(id=person_id)
         bookings = Booking.objects.filter(isAccepted=False)
         reservas = []
+        factoresConfianza = []
         for book in bookings:
             if book.product.shop.owner.id == owner.id:
                 reservas.append(book)
-        return render(request, 'bookings_owner.html', {'bookings': reservas, 'context': context, 'tienda': tienda})
+                factoresConfianza.append([book.id, factor_confianza(book.user.id)]) 
+        return render(request, 'bookings_owner.html', {'bookings': reservas, 'context': context, 'tienda': tienda, 'factoresConfianza': factoresConfianza})
     else:
         return render(request, 'prohibido.html')
 
@@ -615,7 +617,7 @@ def report_user_form(request, id_booking):
                 title = form.cleaned_data['title']
                 description = form.cleaned_data['description']
                 Report.objects.create(title = title, description = description, person = Person.objects.get(id=id_reported_person))
-                return render(request, '../', {'form':form, 'context':context})
+                return render(request, '../', {'context':context})
             else:
                 return render(request, 'report.html', {'form':form, 'context':context})
 
@@ -648,7 +650,7 @@ def report_from_chat_form(request, id_chat):
             title = form.cleaned_data['title']
             description = form.cleaned_data['description']
             Report.objects.create(title = title, description = description, person = Person.objects.get(id=id_reported_person))
-            return render(request, '../', {'form':form, 'context':context})
+            return render(request, '../', {'context':context})
         else:
             return render(request, 'report.html', {'form':form, 'context':context})
 
