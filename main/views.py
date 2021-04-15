@@ -10,7 +10,7 @@ from django.http import Http404
 import json
 from django.http import JsonResponse
 from datetime import timedelta
-import stripe
+
 from Citra import settings
 
 
@@ -21,7 +21,7 @@ def login(request):
     '''
     # msg_success = "Bienvenido a la aplicación"
     msg_error = "El nombre y la contraseña no coinciden"
-
+    msg_error_is_banned= "El usuario esta suspendido"
     if request.method == 'POST':  # Si es un POST redirijimos a la vista de index con el context actualizado
         try:
             # Sacamos el valor de la propiedad 'name' del formulario
@@ -44,7 +44,10 @@ def login(request):
             promotions_products = Promotion.objects.filter(shop=None)
 
             tienda = miTienda(person_id)
-
+            person = get_object_or_404(Person, pk=person_id)
+            if person.isBanned:
+                msg = msg_error_is_banned
+                return render(request, 'login.html', {"msg": msg, 'tienda': ''})
             return render(request, 'home.html', {"context": context, 'promotions_shops': promotions_shops, 'promotions_products': promotions_products, 'tienda': tienda})
         except:
             # Es importante pasar el context en todas las vistas.
@@ -263,26 +266,26 @@ def get_context(request):
     return person_id, rol, rol_id, is_active
 
 
-def get_or_create_customer(email: str, source: str) -> stripe.Customer:
-    stripe.api_key = settings.STRIPE_SECRET_KEY
-    connected_customers = stripe.Customer.list()
-    for customer in connected_customers:
-        if customer.email == email:
-            return customer
-    return stripe.Customer.create(
-        email=email,
-        source=source
-    )
+# def get_or_create_customer(email: str, source: str) -> stripe.Customer:
+#     stripe.api_key = settings.STRIPE_SECRET_KEY
+#     connected_customers = stripe.Customer.list()
+#     for customer in connected_customers:
+#         if customer.email == email:
+#             return customer
+#     return stripe.Customer.create(
+#         email=email,
+#         source=source
+#     )
 
 
-def is_customer(email: str) -> bool:
-    stripe.api_key = settings.STRIPE_SECRET_KEY
-    connected_customers = stripe.Customer.list()
-    for customer in connected_customers:
-        if customer.email == email:
-            return True
+# def is_customer(email: str) -> bool:
+#     stripe.api_key = settings.STRIPE_SECRET_KEY
+#     connected_customers = stripe.Customer.list()
+#     for customer in connected_customers:
+#         if customer.email == email:
+#             return True
 
-    return False
+#     return False
 
 # Amount x100 = centimos
 
