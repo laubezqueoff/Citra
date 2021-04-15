@@ -11,14 +11,25 @@
         </div>
         <div class="row">                            
             <div class="product__container bd-grid">
-                {% for book in bookings %}
+                {% for book,factor in factoresConfianza.items %}
                 <div class="col">
                     <article class="product">
                         <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
                         <span class="product__name"> Tienda: {{book.product.name}} </span>
                         <span class="product__price"> Nombre Producto: {{book.product.price}} </span>
                         <span class="product__price"> Cantidad Reservada: {{book.quantity}} </span>
-                        <span class="product__price"> Nombre del usuario: {{book.user.person.name}} </span>
+                         <span class="product__price"> Nombre del usuario: {{book.user.person.name}} 
+                            <img>
+                                {% if factor == 0 %}
+                                    {% static 'images/manzana.jpg' %}
+                                {% if factor == 1 %}
+                                    {% static 'images/manzana.jpg' %}
+                                {% if factor == 2 %}
+                                    {% static 'images/manzana.jpg' %}
+                                {% if factor == 3 %}
+                                    {% static 'images/manzana.jpg' %}
+                            </img>
+                        </span>
                         <button onclick="aceptar({{book.id}})">Aceptar</button>
                     </article>
                 </div>

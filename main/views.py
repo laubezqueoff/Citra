@@ -483,13 +483,11 @@ def list_booking_owner(request):
     if (is_active):
         owner = Owner.objects.get(id=person_id)
         bookings = Booking.objects.filter(isAccepted=False)
-        reservas = []
         factoresConfianza = []
         for book in bookings:
             if book.product.shop.owner.id == owner.id:
-                reservas.append(book)
-                factoresConfianza.append([book.id, factor_confianza(book.user.id)]) 
-        return render(request, 'bookings_owner.html', {'bookings': reservas, 'context': context, 'tienda': tienda, 'factoresConfianza': factoresConfianza})
+                factoresConfianza[book] = factor_confianza(book.user.id)
+        return render(request, 'bookings_owner.html', {'context': context, 'tienda': tienda, 'factoresConfianza': factoresConfianza})
     else:
         return render(request, 'prohibido.html')
 
