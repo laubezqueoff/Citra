@@ -1032,12 +1032,13 @@ def updateShop(request, id_shop):
                 shop.description = form.cleaned_data['description']
                 shop.address = form.cleaned_data['address']
                 shop.durationBooking = form.cleaned_data['durationBooking']
-            if request.FILES.get('picture').size > 5000000:
-                msg = 'El tamaño máximo de la imagen no puede superar 5 MB'
-                return render(request, 'shop_edit.html', {'tienda': tienda, 'context': context, 'form': form, 'shop': shop, 'msg': msg})
             else:
                 if request.FILES.get('picture') != None:
-                    shop.picture = request.FILES.get('picture')
+                    if request.FILES.get('picture').size > 5000000:
+                        msg = 'El tamaño máximo de la imagen no puede superar 5 MB'
+                        return render(request, 'shop_edit.html', {'tienda': tienda, 'context': context, 'form': form, 'shop': shop, 'msg': msg})
+                    else:
+                        shop.picture = request.FILES.get('picture')
                 shop.save()
                 return redirect('/shops/'+str(shop.id))
 
