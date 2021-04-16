@@ -76,6 +76,11 @@ Productos / Citra
                                 </div>
                                     <label> Cambiar Imagen </label>
                                     <input type="file" id="picture" name="picture">
+                                    {% if msg %}
+                                    <div class="pb-4 w-100 fw-bold align-self-center ">
+                                        {{msg}}
+                                    </div>
+                                    {% endif%}
                             </div>
                             <div class="d-flex justify-content-around fondo-blur">
                                 <button type="submit" class="btn btn-outline-dark  color-botones-products flex-grow-1 me-2 fw-bold ">Guardar cambios</button>

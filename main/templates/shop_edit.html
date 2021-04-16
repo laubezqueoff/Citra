@@ -38,10 +38,15 @@
                         <label for="picture" class="form-label fw-bold me-5">Imagen del fondo</label>
                         <input type="file" id="picture" name="picture" >
                     </div>
+                    {% if msg %}
+                    <div class="pb-4 w-100 fw-bold align-self-center ">
+                        {{msg}}
+                    </div>
+                    {% endif%}
 
                     <div class="row m-0">
                         <div class="d-flex justify-content-center mt-3">
-                            <button type="submit" class="btn btn-outline-dark  color-botones-products flex-grow-1 me-2 fw-bold ">Update</button>
+                            <button type="submit" class="btn btn-outline-dark  color-botones-products flex-grow-1 me-2 fw-bold ">Guardar cambios</button>
                             <button type="submit" class="btn btn-outline-dark flex-grow-1 ms-2 me-2 fw-bold">Cancelar</button>
                             
                         </div>

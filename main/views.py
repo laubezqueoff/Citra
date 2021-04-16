@@ -4,7 +4,7 @@ from datetime import date, datetime
 from django.shortcuts import render, redirect, get_object_or_404
 import urllib.request
 
-from main.forms import MessageForm, ReviewForm, UserSearchForm, UserBannedForm
+from main.forms import MessageForm, ReviewForm, UserSearchForm, UserBannedForm, ProductForm, FormShop
 
 from django.http import Http404
 import json
@@ -466,9 +466,18 @@ def product_create(request, id_shop):
             form = ProductForm(request.POST)
             if form.is_valid():
                 price = form.cleaned_data['price']
-                product = Product.objects.create(name=request.POST['name'], price=price, description=request.POST['description'], productType=ProductType.objects.get(
-                    name=request.POST['select']), picture=request.FILES.get('picture'), shop=shop)
-                return redirect('/shops/'+str(shop.id))
+                picture = request.FILES.get('picture')
+                if picture.size > 5000000:
+                    msg = 'El tamaño máximo de la imagen no puede superar 5 MB'
+                    types = ProductType.objects.all()
+                    productType = []
+                    for ty in types:
+                        productType.append(ty)
+                    return render(request, 'create_product.html', {'form': form, 'types': productType, "context": context, 'tienda': tienda, 'msg': msg})
+                else:
+                    product = Product.objects.create(name=request.POST['name'], price=price, description=request.POST['description'], productType=ProductType.objects.get(
+                        name=request.POST['select']), picture=picture, shop=shop)
+                    return redirect('/shops/'+str(shop.id))
             else:
                 types = ProductType.objects.all()
                 productType = []
@@ -519,10 +528,18 @@ def product_details(request, id_product):
             product.description = form.cleaned_data['description']
             product.productType = ProductType.objects.get(
                 name=request.POST['select'])
-            if request.FILES.get('picture') != None:
-                product.picture = request.FILES.get('picture')
-            product.save()
-            return redirect('/shops/'+str(product.shop.id))
+            if request.FILES.get('picture').size > 5000000:
+                msg = 'El tamaño máximo de la imagen no puede superar 5 MB'
+                types = ProductType.objects.all()
+                productType = []
+                for ty in types:
+                    productType.append(ty)
+                return render(request, 'products.html', {'form': form, 'product': product, 'types': productType, "context": context, "promotionProduct": not(promotionProduct), 'tienda': tienda, 'msg': msg})
+            else:
+                if request.FILES.get('picture') != None:
+                    product.picture = request.FILES.get('picture')
+                product.save()
+                return redirect('/shops/'+str(product.shop.id))
         else:
             types = ProductType.objects.all()
             productType = []
@@ -1015,11 +1032,14 @@ def updateShop(request, id_shop):
                 shop.description = form.cleaned_data['description']
                 shop.address = form.cleaned_data['address']
                 shop.durationBooking = form.cleaned_data['durationBooking']
-
-            if request.FILES.get('picture') != None:
-                shop.picture = request.FILES.get('picture')
-            shop.save()
-            return redirect('/shops/'+str(shop.id))
+            if request.FILES.get('picture').size > 5000000:
+                msg = 'El tamaño máximo de la imagen no puede superar 5 MB'
+                return render(request, 'shop_edit.html', {'tienda': tienda, 'context': context, 'form': form, 'shop': shop, 'msg': msg})
+            else:
+                if request.FILES.get('picture') != None:
+                    shop.picture = request.FILES.get('picture')
+                shop.save()
+                return redirect('/shops/'+str(shop.id))
 
         form = FormShop()
 

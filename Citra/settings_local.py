@@ -47,7 +47,7 @@ STRIPE_SECRET_KEY = 'sk_test_51IdHLbB265Zw8I8VZU47YfE0zuKsXbq5C7fLmjggQ2CIYKIUV0
 STRIPE_REQUEST_URI = 'http://localhost:8000/oauth/callback'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -63,7 +63,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main.apps.MainConfig',
-    'storages'
 ]
 
 MIDDLEWARE = [
@@ -201,12 +200,3 @@ TEMPLATE_DIRS = (
     os.path.join(os.path.dirname(os.path.dirname(__file__)),
                  'static', 'templates'),
 )
-
-AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID', '')
-AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY', '')
-AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME', '')
-
-AWS_S3_FILE_OVERWRITE = False
-AWS_DEFAULT_ACL = None
-
-DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
