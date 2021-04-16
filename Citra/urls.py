@@ -62,6 +62,9 @@ urlpatterns = [
     path('registerShop/',views.registerShop,name="registerShop"),
     path('shops/<id_shop>/edit', views.updateShop, name='update_shop'),
 
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = 'main.views.error_404'
