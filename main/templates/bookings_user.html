@@ -14,7 +14,7 @@
                 <div class="row">
                     {% for book, quantity in bookingsQuantity.items %}
                     <div class="card col-sm-2 mt-3 product">
-                            <img src="{% static 'images/manzana.jpg' %}" alt ="" class="card-img-top">
+                            <img src="{{book.product.picture.url}}" alt ="" class="card-img-top">
                             <span class="product__name">Tienda: {{book.product.shop.name}} </span>
                             <span class="product__name">Nombre Producto: {{book.product.name}} </span>
                             <span class="product__price">Precio: {{quantity}} € </span>
