@@ -17,7 +17,7 @@ class ReviewForm(forms.Form):
     description = forms.CharField()
 
 class UserSearchForm(forms.Form):
-    username = forms.CharField(label='Username')
+    username = forms.CharField(label='Username', required= True)
 class UserBannedForm(forms.Form):
     isBanned = forms.BooleanField(label='Esta Banneado', required=False)
 

@@ -12,6 +12,7 @@
 {% block contenido %}
     <main class="l-main">
     
+    {% if context.1 != 'Admin' %}
     <div class="container">
         <div class="row">
             <h4 class="section-title mt-lg-2 ">Tiendas en promoción</h4>
@@ -53,5 +54,11 @@
             </div>
         </div>
     </div>
+    {% else %}
+        <div style="display: flex; justify-content: center; margin-top:10%;">
+            <button style="font-color:#000!important;bakcground-color:#ffd3b6!important;border-radius: 15px;" ><a href="/users" style="text-decoration:none;color:#000000;">Gestionar usuarios</a></button>
+            <button style="font-color:#000!important;margin-left:90px;border-radius: 15px;" href="/owners"><a href="/owners" style="text-decoration:none;color:#000000">Gestionar los dueños de las tiendas</a></button>
+        </div>
+    {% endif %}
 </main>
 {% endblock %}
