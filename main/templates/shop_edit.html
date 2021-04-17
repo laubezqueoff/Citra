@@ -16,7 +16,7 @@
                 <form method="POST">{% csrf_token %}
                     <div class="mb-4">
                         <label for="name" class="form-label fw-bold">Nombre</label>
-                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca el nombre de la tienda" id="name" name="name" value='{{shop.name}}' required>
+                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca el nombre de la tienda" id="name" name="name" value='{{shop.name}}' maxlength="60" required>
                     </div>
                     <div class="mb-4">
                         <label for="schedule" class="form-label fw-bold">Horario de apertura</label>
@@ -24,11 +24,11 @@
                     </div>
                     <div class="mb-4">
                         <label for="description" class="form-label fw-bold">Descripción de la tienda</label>
-                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca la descripción de la tienda" id="description" name="description " value='{{shop.description}}' required>
+                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca la descripción de la tienda" id="description" name="description " value='{{shop.description}}' maxlength="120" required>
                     </div>
                     <div class="mb-4">
                         <label for="address" class="form-label fw-bold">Dirección</label>
-                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca la dirección de la tienda" id="address" name="address"  value='{{shop.address}}' required>
+                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca la dirección de la tienda" id="address" name="address"  value='{{shop.address}}' maxlength="60" required>
                     </div>
                     <div class="mb-4">
                         <label for="durationBooking" class="form-label fw-bold">Duración de la reserva</label>
