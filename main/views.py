@@ -573,25 +573,26 @@ def miTienda(person_id):
 def report_shop_form(request, id_shop):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
-    
+    shop = get_object_or_404(Shop, pk= id_shop)
+    reportReason = ReportReason.objects.all()
+
     if rol == "User":
         if request.method == 'GET':
             form = ReportForm()
-            return render(request, 'report.html', {'form':form, 'context':context})
+            return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
         if request.method == 'POST':  
 
-            shop = Shop.objects.get(id = id_shop)
             owner = Owner.objects.get(id = shop.owner)
-            id_reported_person = owner.person
+            id_reported_person = owner.person.id
 
             form = ReportForm(data=request.POST)
-            if form.is_valid():
-                title = form.cleaned_data['title']
-                description = form.cleaned_data['description']
-                Report.objects.create(title = title, description = description, person = Person.objects.get(id=id_reported_person))
-                return render(request, '../', {'context':context})
-            else:
-                return render(request, 'report.html', {'form':form, 'context':context})
+            # if form.is_valid():
+            title = form.cleaned_data['title']
+            description = form.cleaned_data['description']
+            Report.objects.create(title = title, description = description, person = Person.objects.get(id=id_reported_person))
+            return render(request, 'home.html', {'context':context})
+            # else:
+            #     return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
 
     else:  
         return render(request, 'prohibido.html', {'context':context})
@@ -599,25 +600,27 @@ def report_shop_form(request, id_shop):
 def report_user_form(request, id_booking):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
+    booking = get_object_or_404(Booking, pk= id_booking)
+    reportReason = ReportReason.objects.all()
 
     if rol == "Owner":
         if request.method == 'GET':
             form = ReportForm()
-            return render(request, 'report.html', {'form':form, 'context':context})
+            return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
 
         if request.method == 'POST': 
-            booking = Booking.objects.get(id = id_booking)
-            user = CustomUser.objects.get(id = booking.user)
-            id_reported_person = user.person
+            
+            user = CustomUser.objects.get(id = booking.user.id)
+            id_reported_person = user.person.id
 
             form = ReportForm(data=request.POST)
-            if form.is_valid():
-                title = form.cleaned_data['title']
-                description = form.cleaned_data['description']
-                Report.objects.create(title = title, description = description, person = Person.objects.get(id=id_reported_person))
-                return render(request, '../', {'context':context})
-            else:
-                return render(request, 'report.html', {'form':form, 'context':context})
+            # if form.is_valid():
+            title = form.cleaned_data['title']
+            description = form.cleaned_data['description']
+            Report.objects.create(title = title, description = description, person = Person.objects.get(id=id_reported_person))
+            return render(request, 'home.html', {'context':context})
+            # else:
+            #     return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
 
     else:
         return render(request, 'prohibido.html', {'context':context})
@@ -625,32 +628,33 @@ def report_user_form(request, id_booking):
 def report_from_chat_form(request, id_chat):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
-    
+    chat = get_object_or_404(Chat, pk= id_chat)
+    reportReason = ReportReason.objects.all()
+
     if request.method == 'GET':
         form = ReportForm()
-        return render(request, 'report.html', {'form':form, 'context':context})
+        return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
 
     if request.method == 'POST': 
-        chat = Chat.objects.get(id=id_chat)
 
         if rol == "User":
-            shop = Shop.objects.get(id = chat.shop)
-            owner = Owner.objects.get(id = shop.owner)
-            id_reported_person = owner.person
-        if rol == "Owner":
-            user = CustomUser.objects.get(id = chat.user)
-            id_reported_person = user.person
+            shop = Shop.objects.get(id = chat.shop.id)
+            owner = Owner.objects.get(id = shop.owner.id)
+            reported_person = owner.person
+        elif rol == "Owner":
+            user = CustomUser.objects.get(id = chat.user.id)
+            reported_person = user.person
         else:
             return render(request, 'prohibido.html', {'context':context})
 
         form = ReportForm(data=request.POST)
-        if form.is_valid():
-            title = form.cleaned_data['title']
-            description = form.cleaned_data['description']
-            Report.objects.create(title = title, description = description, person = Person.objects.get(id=id_reported_person))
-            return render(request, '../', {'context':context})
-        else:
-            return render(request, 'report.html', {'form':form, 'context':context})
+        # if form.is_valid():
+        title = form['title'].data
+        description = form['description'].data
+        Report.objects.create(title = title, description = description, person = reported_person)
+        return render(request, 'home.html', {'context':context})
+        # else:
+        #     return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
 
 def factor_confianza(id_user): ## 0: Datos insuficientes, 1: Poco fiable, 2: Medianamente fiable, 3: Cliente fiable
     res = 0

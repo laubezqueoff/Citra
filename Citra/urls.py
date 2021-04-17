@@ -38,7 +38,7 @@ urlpatterns = [
     path('shops/<id_shop>', views.shop_details, name="shop"),
     path('shop/chat_new/<id_shop>', views.get_chat_new, name='newChat'),
     path('chats/', views.get_chats_list, name='chats'),
-    path('shop/chat/<id_chat>', views.get_chat, name='chat'),
+    path('shop/chat/<id_chat>/', views.get_chat, name='chat'),
     path('shops/booking/', views.booking),
     path('error/', views.error),
     path('forbidden/', views.forbidden),
