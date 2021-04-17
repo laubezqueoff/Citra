@@ -303,7 +303,7 @@ def promotion_week_product(request, id_product):
         product = get_object_or_404(Product, pk=id_product)
         promotion = Promotion.objects.filter(product=product).exists()
         promotionweek = Promotion.objects.filter(endDate__gte = time).exists()
-        if (not(promotion) and str(product.shop.owner.person.id) == person_id):
+        if (not(promotion) and str(product.shop.owner.person.id) == person_id and request.method == 'POST'):
             promotionType = PromotionType.objects.get(id=0)  # semanal
             owner = Owner.objects.get(person=person_id)
             time = date.today()
@@ -314,7 +314,7 @@ def promotion_week_product(request, id_product):
             promocion = Promotion.objects.create(
                 owner=owner, shop=None, startDate=time, endDate=endtime, promotionType=promotionType, product=product)
             return redirect("home")
-        elif (promotion and str(product.shop.owner.person.id) == person_id and not promotionweek):
+        elif (promotion and str(product.shop.owner.person.id) == person_id and not promotionweek and request.method == 'POST'):
             time = date.today()
             endtime = (time + timedelta(days=7))
             person = Person.objects.get(id=person_id)
@@ -337,7 +337,7 @@ def promotion_month_product(request, id_product):
         promotion = Promotion.objects.filter(product=product).exists()
         time = date.today()
         promotionmonth = Promotion.objects.filter(endDate__gte = time).exists()
-        if (not(promotion) and str(product.shop.owner.person.id) == person_id):
+        if (not(promotion) and str(product.shop.owner.person.id) == person_id and request.method == 'POST'):
             promotionType = PromotionType.objects.get(id=1)  # mensual
             owner = Owner.objects.get(person=person_id)
             time = date.today()
@@ -348,7 +348,7 @@ def promotion_month_product(request, id_product):
             promocion = Promotion.objects.create(
                 owner=owner, shop=None, startDate=time, endDate=endtime, promotionType=promotionType, product=product)
             return redirect("home")
-        elif (promotion and str(product.shop.owner.person.id) == person_id and not promotionmonth):
+        elif (promotion and str(product.shop.owner.person.id) == person_id and not promotionmonth and request.method == 'POST'):
             time = date.today()
             endtime = (time + timedelta(days=30))
             person = Person.objects.get(id=person_id)
@@ -404,8 +404,7 @@ def promotion_week_shop(request, id_shop):
         shop = get_object_or_404(Shop, pk=id_shop)
         promotion = Promotion.objects.filter(shop=shop).exists()
         promotionweek = Promotion.objects.filter(endDate__gte = time).exists()
-        print(promotionweek)
-        if (not(promotion) and str(shop.owner.person.id) == person_id and sus):
+        if (not(promotion) and str(shop.owner.person.id) == person_id and sus and request.method == 'POST'):
             promotionType = PromotionType.objects.get(id=0)
             owner = Owner.objects.get(person=person_id)
             time = date.today()
@@ -416,7 +415,7 @@ def promotion_week_shop(request, id_shop):
             promocion = Promotion.objects.create(
                 owner=owner, shop=shop, startDate=time, endDate=endtime, promotionType=promotionType, product=None)
             return redirect("home")
-        elif (promotion and str(shop.owner.person.id) == person_id and sus):
+        elif (promotion and str(shop.owner.person.id) == person_id and sus and request.method == 'POST'):
             time = date.today()
             endtime = (time + timedelta(days=7))
             person = Person.objects.get(id=person_id)
@@ -441,7 +440,7 @@ def promotion_month_shop(request, id_shop):
         promotion = Promotion.objects.filter(shop=shop).exists()
         time = date.today()
         promotionmonth = Promotion.objects.filter(endDate__gte = time).exists()
-        if (not(promotion) and str(shop.owner.person.id) == person_id and sus):
+        if (not(promotion) and str(shop.owner.person.id) == person_id and sus and request.method == 'POST'):
             promotionType = PromotionType.objects.get(id=1)
             owner = Owner.objects.get(person=person_id)
             time = date.today()
@@ -453,7 +452,7 @@ def promotion_month_shop(request, id_shop):
             promocion = Promotion.objects.create(
                 owner=owner, shop=shop, startDate=time, endDate=endtime, promotionType=promotionType, product=None)
             return redirect("home")
-        elif (promotion and str(shop.owner.person.id) == person_id and not promotionmonth and sus):
+        elif (promotion and str(shop.owner.person.id) == person_id and not promotionmonth and sus and request.method == 'POST'):
             time = date.today()
             endtime = (time + timedelta(days=30))
             person = Person.objects.get(id=person_id)
@@ -476,7 +475,7 @@ def activate_shop(request, id_shop):
         subscription = Subscription.objects.filter(shop=shop).exists()
         time = date.today()
         activate = Subscription.objects.filter(endDate__gte = time).exists()
-        if (not(subscription) and str(shop.owner.person.id) == person_id):
+        if (not(subscription) and str(shop.owner.person.id) == person_id and request.method == 'POST'):
             subscriptionType = SubscriptionType.objects.get(id=0)
             owner = Owner.objects.get(person=person_id)
             time = date.today()
@@ -487,7 +486,7 @@ def activate_shop(request, id_shop):
             suscripcion = Subscription.objects.create(
                 subscriptionType=subscriptionType, startDate=time, endDate=endtime, owner=owner, shop=shop)
             return render(request, "home.html", {'suscripcion': suscripcion, 'context': context, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY, 'tienda': tienda})
-        elif (subscription and str(shop.owner.person.id) == person_id and not activate):
+        elif (subscription and str(shop.owner.person.id) == person_id and not activate and request.method == 'POST'):
             time = date.today()
             endtime = (time + timedelta(days=30))
             person = Person.objects.get(id=person_id)
