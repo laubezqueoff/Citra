@@ -10,6 +10,7 @@ from django.http import Http404
 import json
 from django.http import JsonResponse
 from datetime import timedelta
+from datetime import datetime
 import stripe
 from Citra import settings
 
@@ -298,10 +299,12 @@ def charge(amount: int, source: str) -> None:
 def promotion_week_product(request, id_product):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
-
+    tienda = miTienda(person_id)
     if (is_active):
+        time = date.today()
         product = get_object_or_404(Product, pk=id_product)
         promotion = Promotion.objects.filter(product=product).exists()
+        promotionweek = Promotion.objects.filter(endDate__gte = time).exists()
         if (not(promotion) and str(product.shop.owner.person.id) == person_id):
             promotionType = PromotionType.objects.get(id=0)  # semanal
             owner = Owner.objects.get(person=person_id)
@@ -312,10 +315,16 @@ def promotion_week_product(request, id_product):
             charge(amount=300, source=request.POST.get('stripeToken'))
             promocion = Promotion.objects.create(
                 owner=owner, shop=None, startDate=time, endDate=endtime, promotionType=promotionType, product=product)
-            tienda = miTienda(person_id)
+            return redirect("home")
+        elif (promotion and str(product.shop.owner.person.id) == person_id and not promotionweek):
+            time = date.today()
+            endtime = (time + timedelta(days=7))
+            person = Person.objects.get(id=person_id)
+            get_or_create_customer(email=person.email, source=None)
+            charge(amount=300, source=request.POST.get('stripeToken'))
+            promocion = Promotion.objects.filter(product = product).update(startDate=time, endDate=endtime)
             return redirect("home")
         else:
-
             return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
     else:
         return render(request, 'prohibido.html')
@@ -324,10 +333,12 @@ def promotion_week_product(request, id_product):
 def promotion_month_product(request, id_product):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
-    print(settings.STRIPE_PUBLISHABLE_KEY)
+    tienda = miTienda(person_id)
     if (is_active):
         product = get_object_or_404(Product, pk=id_product)
         promotion = Promotion.objects.filter(product=product).exists()
+        time = date.today()
+        promotionmonth = Promotion.objects.filter(endDate__gte = time).exists()
         if (not(promotion) and str(product.shop.owner.person.id) == person_id):
             promotionType = PromotionType.objects.get(id=1)  # mensual
             owner = Owner.objects.get(person=person_id)
@@ -338,10 +349,16 @@ def promotion_month_product(request, id_product):
             charge(amount=500, source=request.POST.get('stripeToken'))
             promocion = Promotion.objects.create(
                 owner=owner, shop=None, startDate=time, endDate=endtime, promotionType=promotionType, product=product)
-            tienda = miTienda(person_id)
+            return redirect("home")
+        elif (promotion and str(product.shop.owner.person.id) == person_id and not promotionmonth):
+            time = date.today()
+            endtime = (time + timedelta(days=30))
+            person = Person.objects.get(id=person_id)
+            get_or_create_customer(email=person.email, source=None)
+            charge(amount=500, source=request.POST.get('stripeToken'))
+            promocion = Promotion.objects.filter(product = product).update(startDate=time, endDate=endtime)
             return redirect("home")
         else:
-
             return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
     else:
         return render(request, 'prohibido.html')
@@ -381,11 +398,16 @@ def forumMessages_list(request, id_thread):
 def promotion_week_shop(request, id_shop):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
+    tienda = miTienda(person_id)
+    time = date.today()
+    sus = Subscription.objects.filter(endDate__gte = time).exists()
     if (is_active):
+        time = date.today()
         shop = get_object_or_404(Shop, pk=id_shop)
         promotion = Promotion.objects.filter(shop=shop).exists()
-
-        if (not(promotion) and str(shop.owner.person.id) == person_id):
+        promotionweek = Promotion.objects.filter(endDate__gte = time).exists()
+        print(promotionweek)
+        if (not(promotion) and str(shop.owner.person.id) == person_id and sus):
             promotionType = PromotionType.objects.get(id=0)
             owner = Owner.objects.get(person=person_id)
             time = date.today()
@@ -395,10 +417,16 @@ def promotion_week_shop(request, id_shop):
             charge(amount=500, source=request.POST.get('stripeToken'))
             promocion = Promotion.objects.create(
                 owner=owner, shop=shop, startDate=time, endDate=endtime, promotionType=promotionType, product=None)
-            tienda = miTienda(person_id)
+            return redirect("home")
+        elif (promotion and str(shop.owner.person.id) == person_id and sus):
+            time = date.today()
+            endtime = (time + timedelta(days=7))
+            person = Person.objects.get(id=person_id)
+            get_or_create_customer(email=person.email, source=None)
+            charge(amount=500, source=request.POST.get('stripeToken'))
+            promocion = Promotion.objects.filter(shop = shop).update(startDate=time, endDate=endtime)
             return redirect("home")
         else:
-            tienda = miTienda(person_id)
             return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
     else:
         return render(request, 'prohibido.html')
@@ -407,11 +435,15 @@ def promotion_week_shop(request, id_shop):
 def promotion_month_shop(request, id_shop):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
+    tienda = miTienda(person_id)
+    time = date.today()
+    sus = Subscription.objects.filter(endDate__gte = time).exists()
     if (is_active):
         shop = get_object_or_404(Shop, pk=id_shop)
         promotion = Promotion.objects.filter(shop=shop).exists()
-
-        if (not(promotion) and str(shop.owner.person.id) == person_id):
+        time = date.today()
+        promotionmonth = Promotion.objects.filter(endDate__gte = time).exists()
+        if (not(promotion) and str(shop.owner.person.id) == person_id and sus):
             promotionType = PromotionType.objects.get(id=1)
             owner = Owner.objects.get(person=person_id)
             time = date.today()
@@ -420,13 +452,18 @@ def promotion_month_shop(request, id_shop):
             print(promotionType)
             get_or_create_customer(email=person.email, source=None)
             charge(amount=1000, source=request.POST.get('stripeToken'))
-
             promocion = Promotion.objects.create(
                 owner=owner, shop=shop, startDate=time, endDate=endtime, promotionType=promotionType, product=None)
-            tienda = miTienda(person_id)
+            return redirect("home")
+        elif (promotion and str(shop.owner.person.id) == person_id and not promotionmonth and sus):
+            time = date.today()
+            endtime = (time + timedelta(days=30))
+            person = Person.objects.get(id=person_id)
+            get_or_create_customer(email=person.email, source=None)
+            charge(amount=1000, source=request.POST.get('stripeToken'))
+            promocion = Promotion.objects.filter(shop = shop).update(startDate=time, endDate=endtime)
             return redirect("home")
         else:
-
             return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
     else:
         return render(request, 'prohibido.html')
@@ -435,9 +472,12 @@ def promotion_month_shop(request, id_shop):
 def activate_shop(request, id_shop):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
+    tienda = miTienda(person_id)
     if (is_active):
         shop = get_object_or_404(Shop, pk=id_shop)
         subscription = Subscription.objects.filter(shop=shop).exists()
+        time = date.today()
+        activate = Subscription.objects.filter(endDate__gte = time).exists()
         if (not(subscription) and str(shop.owner.person.id) == person_id):
             subscriptionType = SubscriptionType.objects.get(id=0)
             owner = Owner.objects.get(person=person_id)
@@ -448,10 +488,17 @@ def activate_shop(request, id_shop):
             charge(amount=1000, source=request.POST.get('stripeToken'))
             suscripcion = Subscription.objects.create(
                 subscriptionType=subscriptionType, startDate=time, endDate=endtime, owner=owner, shop=shop)
-            tienda = miTienda(person_id)
             return render(request, "home.html", {'suscripcion': suscripcion, 'context': context, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY, 'tienda': tienda})
+        elif (subscription and str(shop.owner.person.id) == person_id and not activate):
+            time = date.today()
+            endtime = (time + timedelta(days=30))
+            person = Person.objects.get(id=person_id)
+            get_or_create_customer(email=person.email, source=None)
+            charge(amount=1000, source=request.POST.get('stripeToken'))
+            promocion = Subscription.objects.filter(shop = shop).update(startDate=time, endDate=endtime)
+            return redirect("home")
         else:
-            return redirect('/')
+            return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
     else:
         return render(request, 'prohibido.html')
 
@@ -518,8 +565,10 @@ def product_details(request, id_product):
     product = get_object_or_404(Product, pk=id_product)
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
-    promotionProduct = Promotion.objects.filter(product=product).exists()
+    today = date.today()
+    promotionProduct = Promotion.objects.filter(product=product, endDate__gte = today).exists()
     tienda = miTienda(person_id)
+
     if request.method == 'POST':
         form = ProductForm(request.POST)
         if form.is_valid():
@@ -557,20 +606,24 @@ def product_details(request, id_product):
 
 
 def list_shop(request):
+    today = date.today()
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     shops = Shop.objects.all()
+    shop_subscription = {}
+    for promo in shops:
+        a = Subscription.objects.filter(endDate__gte = today, shop = promo).exists()
+        shop_subscription[promo] = a
     tienda = miTienda(person_id)
-    return render(request, 'shops.html', {'shops': shops, 'context': context, 'tienda': tienda})
+    return render(request, 'shops.html', {'shop_subscription': shop_subscription, 'context': context, 'tienda': tienda})
 
 
 def shop_details(request, id_shop):
     shop = get_object_or_404(Shop, pk=id_shop)
     products = Product.objects.filter(shop=shop)
-    promotionShop = Promotion.objects.filter(shop=shop).exists()
-    # productsPromotion = {}
-    # for prod in products:
-    #     productsPromotion[prod] = not(Promotion.objects.filter(product=prod).exists())
+    today = date.today()
+    promotionShop = Promotion.objects.filter(shop=shop, endDate__gte = today).exists()
+    subscriptionShop = Subscription.objects.filter(shop=shop, endDate__gte = today).exists()
     try:
         person_id, rol, rol_id, is_active = get_context(request)
         context = [person_id, rol, rol_id, is_active]
@@ -579,8 +632,7 @@ def shop_details(request, id_shop):
         rol = 'User no registrado'
         context = [person_id, rol]
     tienda = miTienda(person_id)
-    return render(request, 'shop_detail.html', {'shop': shop, 'products': products, 'context': context, 'promotionShop': not(promotionShop), 'tienda': tienda, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY})
-
+    return render(request, 'shop_detail.html', {'shop': shop, 'products': products, 'context': context, 'promotionShop': not(promotionShop), 'subscriptionShop': subscriptionShop, 'tienda': tienda, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY})
 
 def get_chats_list(request):
     ''' Muestra una lista de todos los chats que el usuario activo, sea user u owner, tenga. \n
@@ -699,12 +751,23 @@ def get_chat_new(request, id_shop):
 
 
 def home(request):
-    promotions_shops = Promotion.objects.filter(product=None)
-    promotions_products = Promotion.objects.filter(shop=None)
+    today = date.today()
+    promotions_shops = Promotion.objects.filter(product=None, endDate__gte = today)
+    promotions_products = Promotion.objects.filter(shop=None, endDate__gte = today)
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     tienda = miTienda(person_id)
-    return render(request, 'home.html', {"context": context, 'promotions_shops': promotions_shops, 'promotions_products': promotions_products, 'tienda': tienda})
+    promotions_shops_subscription = {}
+    promotions_products_subscription = {}
+    for promo in promotions_shops:
+        sus = Subscription.objects.filter(endDate__gte = today, shop = promo.shop).exists()
+        promotions_shops_subscription[promo] = sus
+
+    for promo in promotions_products:
+        sus = Subscription.objects.filter(endDate__gte = today, shop = promo.product.shop).exists()
+        promotions_products_subscription[promo] = sus
+
+    return render(request, 'home.html', {"context": context, 'promotions_shops_subscription': promotions_shops_subscription, 'promotions_products_subscription': promotions_products_subscription, 'tienda': tienda})
 
 
 def booking(request):

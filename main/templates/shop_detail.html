@@ -71,51 +71,44 @@
             <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="{{shop.id}}/reviews"> Valoraciones </a></button>
             <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="{% url 'newChat' shop.pk %}"> Iniciar Chat </a></button>
 
-            {% endif %}
+          {% endif %}
           {% if context.1 == 'Owner' and shop.owner.person.id|stringformat:"i" == context.0 %}
             {% comment %} <button onclick="location.href='{% url 'promotion_week_shop' shop.id %}'">
               Promociona tu tienda (semanal)
             </button> {% endcomment %}
             <h4 class="section-title">Otras acciones</h4>
-            {% if promotionShop %}
-            <button type="button" class="btn btn-outline-warning" onclick="promocionarTiendaSemanal({{shop.id}})">
-              Promociona tu tienda (semanal)
-            </button>
-
-            <form id="pagaMens" action= "{% url 'promotion_week_shop' shop.id %}" method="POST">
-              {% csrf_token %} 
+          {% if subscriptionShop %}
+            {% if promotionShop and subscriptionShop %}
+              <form id="pagaMens" action= "{% url 'promotion_week_shop' shop.id %}" method="POST">
+                {% csrf_token %} 
+                
+                <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" id="separated3"
+                data-key="{{ stripe_key }}" data-description="Premium mensual" data-amount="500"
+                data-locale="es" data-currency="eur" data-label="Promocionar una semana 5€">
+                </script>
+              </form>
+              <br>
+              <form id="pagaMens" action= "{% url 'promotion_month_shop' shop.id %}" method="POST">
+                {% csrf_token %} 
               
-              <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" id="separated3"
-              data-key="{{ stripe_key }}" data-description="Premium mensual" data-amount="500"
-              data-locale="es" data-currency="eur" data-label="Promocionar una semana 5€">
-              </script>
-            </form>
-
-
-            <form id="pagaMens" action= "{% url 'promotion_month_shop' shop.id %}" method="POST">
-              {% csrf_token %} 
-              
-              <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" id="separated3"
-              data-key="{{ stripe_key }}" data-description="Premium mensual" data-amount="1000"
-              data-locale="es" data-currency="eur" data-label="Promocionar un mes 10€">
-              </script>
-            </form>
-
+                <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" id="separated3"
+                data-key="{{ stripe_key }}" data-description="Premium mensual" data-amount="1000"
+                data-locale="es" data-currency="eur" data-label="Promocionar un mes 10€">
+                </script>
+              </form>
+                <br>
+            {% endif %}  
+          {% else %}
             <form id="activateShop" action= "{% url 'activate_shop' shop.id %}" method="POST">
               {% csrf_token %} 
-              
               <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" id="separated3"
               data-key="{{ stripe_key }}" data-description="Darse de alta" data-amount="1000"
               data-locale="es" data-currency="eur" data-label="Darse de alta:10€">
               </script>
             </form>
+            <br>
+          {% endif %}
 
-
-              <br>
-            <button type="button" class="btn btn-outline-warning" onclick="promocionarTiendaMensual({{shop.id}})">
-              Promociona tu tienda (mensual)
-            </button>
-            {% endif %}
             <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="{% url 'product_create' shop.pk %}"> Añadir Productos </a></button>
           {% endif %}
         </div>
