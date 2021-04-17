@@ -65,9 +65,9 @@
                         <select name="select" class="form-control form-control-sm" placeholder="Tipo de tienda" id="type" name="type" required>
                             {% for ty in types %}
                                 {% if ty.name == product.productType.name %}
-                                    <option value="{{ty.name}}" selected="true">{{ty.name}}</option>
+                                    <option value="{{ty.id}}" selected="true">{{ty.name}}</option>
                                 {% else %}
-                                    <option value="{{ty.name}}">{{ty.name}}</option>
+                                    <option value="{{ty.id}}">{{ty.name}}</option>
                                 {% endif %}
                             {% endfor %}
                         </select>                    

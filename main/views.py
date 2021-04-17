@@ -64,7 +64,9 @@ def login(request):
 
 
 def registerShop(request):
-    if request.method == 'POST':  # Si es un POST redirijimos a la vista de index con el context actualizado
+    error_log=["",""]
+
+    if request.method == 'POST': #Si es un POST redirijimos a la vista de index con el context actualizado  
         try:
             # Parametros tomados del post
             username = request.POST['username']
@@ -82,7 +84,14 @@ def registerShop(request):
                        email=email, zipCode=zipCode, registerDate=registerDate, isBanned=isBanned)
             p.save()
 
-            p = Person.objects.get(username=username, password=password)
+            p = Person.objects.get(username=username,password=password)
+            #Assertions
+            error_log,is_wrong_user = assert_username_unique(username,error_log)
+            error_log,is_wrong_email = assert_email_unique(email,error_log)
+
+            if(is_wrong_user or is_wrong_email):
+                shopType = ShopType.objects.all()
+                return render(request, 'register_shop.html',{"error_log":error_log,"types":shopType})
 
             co = Owner(person=p)
             co.save()
@@ -108,10 +117,11 @@ def registerShop(request):
 
         except:
             print("------------------------------")
-            return render(request, 'login.html')
-
+            return render(request, 'register_shop.html')
+         
     else:
-        return render(request, 'register_shop.html')
+        shopType = ShopType.objects.all()
+        return render(request, 'register_shop.html',{"types":shopType})
 
 
 def register(request):
