@@ -13,7 +13,7 @@ Productos / Citra
 <form accept-charset="UTF-8" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
     <div class=" pt-lg-2 pb-5" style="margin-left:3rem; margin-right:3rem;">
         <h4 class="section-title">Nuevo Producto</h4>
-        <div class="row m-0" style:"margin-top:2rem; margin-bottom :2rem; ">
+        <div class="row m-0" style="margin-top:2rem; margin-bottom :2rem; ">
             <div class="col" style="margin-left:3rem; margin-right:3rem;">
             <label><b>Nombre:</b> </label>            
                 <div class="mb-4 border border-dark rounded-2">                    
@@ -38,11 +38,16 @@ Productos / Citra
             </div>
         </div>
         {{form.errors.price}}
-        <div class="row m-0" style:"margin-top:3rem; margin-bottom :3rem;">
+        <div class="row m-0" style="margin-top:3rem; margin-bottom :3rem;">
             <div class="col" style="margin-left:3rem; margin-right:3rem;">
                 <label><b>Imagen:</b> <label>
                     <input type="file" id="picture" name="picture" required>
                 <br>
+                {% if msg %}
+                <div class="pb-4 w-100 fw-bold align-self-center ">
+                    {{msg}}
+                </div>
+                {% endif%}
              </div>
             <div class="col" style="margin-left:3rem; margin-right:3rem;">
                 <label><b>Descripción:</b><label>

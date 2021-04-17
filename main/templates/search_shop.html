@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+<link rel="stylesheet" href="{% static 'css/style_shop_promotion.css' %}"/>
+<link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+<title> Citra / Búsqueda de tiendas </title>
+{% endblock %}
+
+{% block contenido %}
+<div class="container">
+      <div class="row">
+        <div class="col-3">
+        <h4 class="section-title">Categorías</h4>
+          <nav class="nav flex-column">
+            {% for st in shopType %}
+                <a id="{{st.id}}" class="nav-link" role="button" onclick="ordenar({{st.id}})">{{st.name}}</a>
+            {% endfor %}
+            <a class="nav-link" role="button" onclick="limpiarFiltro()">Limpiar filtro</a>
+          </nav>
+        </div>
+        <div class="col-9" id="tiendas">          
+          <h4 class="section-title"> Tiendas </h4>          
+            <div class="product__container bd-grid">
+              <div class="row ">
+                {% for shop in shops %}
+                    <div id="{{shop.shopType.id}}" class="card col-sm-2 mt-3 product">
+                        <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
+                        <a class="product__name" href="{% url 'shop' shop.pk %}"> {{shop.name}} </a>
+                        <p class="product__name"> {{shop.description}} </p>
+                    </div>
+                {% empty %}
+                <p>No se han encontrado tiendas que contengan {{shop_name}} nombre</p>
+                {% endfor %}
+            </div>
+            </div>
+        </div>
+      </div>
+  </div>
+
+<script>
+    function ordenar(id_shopType) {
+        var shops = document.getElementsByClassName('card');
+        for (let step = 0; step < shops.length; step++) {
+            if (shops[step].id != id_shopType.toString()) {
+                shops[step].style.display = "none";
+                document.getElementById(id_shopType).style.color = "red";
+            }
+        }
+    }
+    function limpiarFiltro() {
+        var shops = document.getElementsByClassName('card');
+        var shopsType = document.getElementsByClassName('nav-link');
+        for (let step = 0; step < shops.length; step++) {
+            shops[step].removeAttribute("style");
+        }
+        for (let step2 = 0; step2 < shopsType.length; step2++) {
+            shopsType[step2].removeAttribute("style");
+        }
+    }
+</script>
+{% endblock %}

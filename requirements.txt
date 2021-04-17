@@ -11,3 +11,5 @@ gunicorn
 Pillow
 whitenoise
 stripe
+boto3
+django_storages

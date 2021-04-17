@@ -5,6 +5,7 @@
 <html>
 <head>
 <link rel="shortcut icon" href="{% static 'images/favicon.ico' %}" />
+<link rel="shortcut icon" href="{% static 'css/style_header.css' %}" />
 <link href="https://fonts.googleapis.com/css2?family=Spartan:wght@300;600&display=swap" rel="stylesheet">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -16,7 +17,7 @@
 </style>
 <header>
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #ffd3b6;" >
-        <div class="container-fluid" style="">
+        
             <a class="navbar-brand" href="/"> 
                 <img src="{% static 'images/Citra.png' %}" style = "width: 95px; height = 95px; background-color: #ffd3b6; margin-left: 30px;">
 
@@ -36,13 +37,13 @@
                 {% comment %} <a class="nav-link" href="#">Buscar</a> {% endcomment %}
                 <a class="nav-link" href="{% url 'shops' %}">Listado Tiendas</a>
                 </li>
-                <li class="nav-item nav-link" style="margin-left: 25px; font-size:20px; font-weight: bold; text-align:center;">|</li>
+                
                 
                 {% if context.1 == 'User' %}
                 <li class="nav-item" style="margin-left: 25px; font-size:20px;" name="threads">
                     <a class="nav-link" href="/threads" name="threads">Foro</a>
                 </li>
-                <li class="nav-item nav-link" style="margin-left: 25px; font-size:20px; font-weight: bold; text-align:center;">|</li>
+                
 
                 {% endif %}
                 <li class="nav-item" style="margin-left: 25px; font-size:20px;">
@@ -50,11 +51,28 @@
                 </li>
                 {% endif %}
             </ul>
-            <ul class="navbar-nav">
+
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="text-align:center;">
+                <li class="nav-item" style="margin-left: 25px; font-size:20px;">
+                    <form method="post" action='/search_shop/' class="nav-link" >{% csrf_token %}
+                        <div class="p-2 bg-light rounded rounded-pill shadow-sm mb-0">
+                            <div class="input-group">
+                                <input type="search" aria-describedby="button-addon2" class="form-control border-0 bg-light" name="shop_name" id="shop_name" placeholder="Buscar...">
+                                <div class="input-group-append">
+                                    <button id="button-addon1" type="submit" class="btn btn-link text-warning"><i class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>   
+                </li>     
+            </ul>
+
+            <ul class="navbar-nav" style="padding: none;">
+                       
                 {% if context.3 %}
 
                 <div class="dropdown">
-                    <a class="btn btn-outline-dark dropdown-toggle me-3" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a class="btn btn-outline-dark dropdown-toggle me-3" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false" style="margin-top: .5rem;">
                         Perfil
                     </a>
 
@@ -76,13 +94,14 @@
                 </div>
                 {% else %}
                     <li class="nav-item" style="border: 2px solid rgba(0,0,0,.55); border-radius: 8px; margin-right: 30px;font-size:20px;">
-                        <a class="nav-link" href="/login" >Iniciar sesión</a>  
+                        <a class="nav-link" href="/login" >Iniciar sesión</a> 
+                    </li> 
                 {% endif %}
 
-                </li>
+                
             </ul>
-            </div>
-        </div>
+            
+        
     </nav>
 </header>
 </html>

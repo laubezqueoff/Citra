@@ -20,12 +20,14 @@
         <div class="row ms-3">                            
             <div class="product__container bd-grid">
                 <div class="row">        
-                {% for promotion in promotions_shops %}
+                {% for promotion, sus in promotions_shops_subscription.items %}
+                    {% if sus %}
                     <div class="card col-sm-2 mt-3 product">
                             <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
                             <a class="product__name" href="{% url 'shop' promotion.shop.pk %}"> {{promotion.shop.name}} </a>
                             <p> <b>{{promotion.shop.description}} </b></p>
                     </div>
+                    {% endif %}
                 {% empty %}                    
                 {% endfor %}
                 </div>
@@ -37,13 +39,15 @@
         <div class="row ms-3">                            
             <div class="product__container bd-grid">
                 <div class="row">        
-                {% for promotion_product in promotions_products %}
+                {% for promotion_product, sus  in promotions_products_subscription.items %}
+                    {% if sus %}
                     <div class="card col-sm-2 mt-3 product">
-                        <img src="{{promotion_product.product.picture}}" alt ="" class="product__img">
+                        <img src="{{promotion_product.product.picture.url}}" alt ="" class="product__img">
                         <a class="product__name" href="{% url 'shop' promotion_product.product.shop.pk %}"> {{promotion_product.product.shop.name}} </a>
                         <p class="product__name"> {{promotion_product.product.name}} </p>
                         <p> <b>{{promotion_product.product.description}} </b></p>
                     </div>
+                    {% endif %}
                 {% empty %}
                 {% endfor %}
                 </div>
