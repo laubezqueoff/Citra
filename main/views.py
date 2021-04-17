@@ -39,8 +39,19 @@ def login(request):
             person_id, rol, rol_id, is_active = get_context(request)
             context = [person_id, rol, rol_id, is_active]
 
-            promotions_shops = Promotion.objects.filter(product=None)
-            promotions_products = Promotion.objects.filter(shop=None)
+            today = date.today()
+            promotions_shops = Promotion.objects.filter(product=None, endDate__gte = today)
+            promotions_products = Promotion.objects.filter(shop=None, endDate__gte = today)
+
+            promotions_shops_subscription = {}
+            promotions_products_subscription = {}
+            for promo in promotions_shops:
+                sus = Subscription.objects.filter(endDate__gte = today, shop = promo.shop).exists()
+                promotions_shops_subscription[promo] = sus
+
+            for promo in promotions_products:
+                sus = Subscription.objects.filter(endDate__gte = today, shop = promo.product.shop).exists()
+                promotions_products_subscription[promo] = sus
 
             tienda = miTienda(person_id)
             person = get_object_or_404(Person, pk=person_id)
@@ -52,7 +63,7 @@ def login(request):
                 request.session['is_active']= False
                 
                 return render(request, 'login.html', {"msg": msg, 'tienda': ''})
-            return render(request, 'home.html', {"context": context, 'promotions_shops': promotions_shops, 'promotions_products': promotions_products, 'tienda': tienda})
+            return render(request, 'home.html', {"context": context, 'promotions_shops_subscription': promotions_shops_subscription, 'promotions_products_subscription': promotions_products_subscription, 'tienda': tienda})
         except:
             # Es importante pasar el context en todas las vistas.
             # Cambiar index.html por tu vista en tu método
@@ -76,6 +87,12 @@ def registerShop(request):
             zipCode = request.POST['zipCode']
             email = request.POST['email']
 
+            error_log,is_wrong_user = assert_username_unique(username,error_log)
+            error_log,is_wrong_email = assert_email_unique(email,error_log)
+
+            if(is_wrong_user or is_wrong_email):
+                shopType = ShopType.objects.all()
+                return render(request, 'register_shop.html',{"error_log":error_log,"types":shopType})
             # Parámetros autogenerados
             registerDate = date.today()
             isBanned = False
@@ -86,18 +103,13 @@ def registerShop(request):
 
             p = Person.objects.get(username=username,password=password)
             #Assertions
-            error_log,is_wrong_user = assert_username_unique(username,error_log)
-            error_log,is_wrong_email = assert_email_unique(email,error_log)
-
-            if(is_wrong_user or is_wrong_email):
-                shopType = ShopType.objects.all()
-                return render(request, 'register_shop.html',{"error_log":error_log,"types":shopType})
+            
 
             co = Owner(person=p)
             co.save()
 
             shopName = request.POST['shopName']
-            shopType = request.POST['shopType']
+            shopType = request.POST['select']
             schedule = request.POST['schedule']
             description = request.POST['description']
             picture = request.FILES.get('picture')
@@ -117,7 +129,7 @@ def registerShop(request):
 
         except:
             print("------------------------------")
-            return render(request, 'register_shop.html')
+            return render(request, 'register_shop.html',{"error":error})
          
     else:
         shopType = ShopType.objects.all()
@@ -227,10 +239,21 @@ def logout(request):
         except Exception as e:
             print(e)
 
-        promotions_shops = Promotion.objects.filter(product=None)
-        promotions_products = Promotion.objects.filter(shop=None)
+        today = date.today()
+        promotions_shops = Promotion.objects.filter(product=None, endDate__gte = today)
+        promotions_products = Promotion.objects.filter(shop=None, endDate__gte = today)
 
-        return render(request, 'home.html', {'promotions_shops': promotions_shops, 'promotions_products': promotions_products})
+        promotions_shops_subscription = {}
+        promotions_products_subscription = {}
+        for promo in promotions_shops:
+            sus = Subscription.objects.filter(endDate__gte = today, shop = promo.shop).exists()
+            promotions_shops_subscription[promo] = sus
+
+        for promo in promotions_products:
+            sus = Subscription.objects.filter(endDate__gte = today, shop = promo.product.shop).exists()
+            promotions_products_subscription[promo] = sus
+
+        return render(request, 'home.html', {'promotions_shops_subscription': promotions_shops_subscription, 'promotions_products_subscription': promotions_products_subscription})
 
 
 def whoIsWho(person):
@@ -359,9 +382,10 @@ def promotion_week_product(request, id_product):
     if (is_active):
         time = date.today()
         product = get_object_or_404(Product, pk=id_product)
+        sus = Subscription.objects.filter(endDate__gte = time,shop=product.shop).exists()
         promotion = Promotion.objects.filter(product=product).exists()
-        promotionweek = Promotion.objects.filter(endDate__gte = time).exists()
-        if (not(promotion) and str(product.shop.owner.person.id) == person_id and request.method == 'POST'):
+        promotionweek = Promotion.objects.filter(endDate__gte = time,product=product).exists()
+        if (not(promotion) and str(product.shop.owner.person.id) == person_id and sus and request.method == 'POST'):
             promotionType = PromotionType.objects.get(id=0)  # semanal
             owner = Owner.objects.get(person=person_id)
             time = date.today()
@@ -372,7 +396,7 @@ def promotion_week_product(request, id_product):
             promocion = Promotion.objects.create(
                 owner=owner, shop=None, startDate=time, endDate=endtime, promotionType=promotionType, product=product)
             return redirect("home")
-        elif (promotion and str(product.shop.owner.person.id) == person_id and not promotionweek and request.method == 'POST'):
+        elif (promotion and str(product.shop.owner.person.id) == person_id and sus and not promotionweek and request.method == 'POST'):
             time = date.today()
             endtime = (time + timedelta(days=7))
             person = Person.objects.get(id=person_id)
@@ -394,8 +418,9 @@ def promotion_month_product(request, id_product):
         product = get_object_or_404(Product, pk=id_product)
         promotion = Promotion.objects.filter(product=product).exists()
         time = date.today()
-        promotionmonth = Promotion.objects.filter(endDate__gte = time).exists()
-        if (not(promotion) and str(product.shop.owner.person.id) == person_id and request.method == 'POST'):
+        sus = Subscription.objects.filter(endDate__gte = time,shop=product.shop).exists()
+        promotionmonth = Promotion.objects.filter(endDate__gte = time,product=product).exists()
+        if (not(promotion) and str(product.shop.owner.person.id) == person_id and sus and request.method == 'POST'):
             promotionType = PromotionType.objects.get(id=1)  # mensual
             owner = Owner.objects.get(person=person_id)
             time = date.today()
@@ -406,7 +431,7 @@ def promotion_month_product(request, id_product):
             promocion = Promotion.objects.create(
                 owner=owner, shop=None, startDate=time, endDate=endtime, promotionType=promotionType, product=product)
             return redirect("home")
-        elif (promotion and str(product.shop.owner.person.id) == person_id and not promotionmonth and request.method == 'POST'):
+        elif (promotion and str(product.shop.owner.person.id) == person_id and sus and not promotionmonth and request.method == 'POST'):
             time = date.today()
             endtime = (time + timedelta(days=30))
             person = Person.objects.get(id=person_id)
@@ -456,12 +481,12 @@ def promotion_week_shop(request, id_shop):
     context = [person_id, rol, rol_id, is_active]
     tienda = miTienda(person_id)
     time = date.today()
-    sus = Subscription.objects.filter(endDate__gte = time).exists()
     if (is_active):
         time = date.today()
         shop = get_object_or_404(Shop, pk=id_shop)
+        sus = Subscription.objects.filter(endDate__gte = time,shop=shop).exists()
         promotion = Promotion.objects.filter(shop=shop).exists()
-        promotionweek = Promotion.objects.filter(endDate__gte = time).exists()
+        promotionweek = Promotion.objects.filter(endDate__gte = time,shop=shop).exists()
         if (not(promotion) and str(shop.owner.person.id) == person_id and sus and request.method == 'POST'):
             promotionType = PromotionType.objects.get(id=0)
             owner = Owner.objects.get(person=person_id)
@@ -473,7 +498,7 @@ def promotion_week_shop(request, id_shop):
             promocion = Promotion.objects.create(
                 owner=owner, shop=shop, startDate=time, endDate=endtime, promotionType=promotionType, product=None)
             return redirect("home")
-        elif (promotion and str(shop.owner.person.id) == person_id and sus and request.method == 'POST'):
+        elif (promotion and str(product.shop.owner.person.id) == person_id and sus and not promotionweek and request.method == 'POST'):
             time = date.today()
             endtime = (time + timedelta(days=7))
             person = Person.objects.get(id=person_id)
@@ -492,19 +517,18 @@ def promotion_month_shop(request, id_shop):
     context = [person_id, rol, rol_id, is_active]
     tienda = miTienda(person_id)
     time = date.today()
-    sus = Subscription.objects.filter(endDate__gte = time).exists()
     if (is_active):
         shop = get_object_or_404(Shop, pk=id_shop)
+        sus = Subscription.objects.filter(endDate__gte = time,shop=shop).exists()
         promotion = Promotion.objects.filter(shop=shop).exists()
         time = date.today()
-        promotionmonth = Promotion.objects.filter(endDate__gte = time).exists()
+        promotionmonth = Promotion.objects.filter(endDate__gte = time, shop=shop).exists()
         if (not(promotion) and str(shop.owner.person.id) == person_id and sus and request.method == 'POST'):
             promotionType = PromotionType.objects.get(id=1)
             owner = Owner.objects.get(person=person_id)
             time = date.today()
             endtime = (time + timedelta(days=30))
             person = Person.objects.get(id=person_id)
-            print(promotionType)
             get_or_create_customer(email=person.email, source=None)
             charge(amount=1000, source=request.POST.get('stripeToken'))
             promocion = Promotion.objects.create(
@@ -543,7 +567,7 @@ def activate_shop(request, id_shop):
             charge(amount=1000, source=request.POST.get('stripeToken'))
             suscripcion = Subscription.objects.create(
                 subscriptionType=subscriptionType, startDate=time, endDate=endtime, owner=owner, shop=shop)
-            return render(request, "home.html", {'suscripcion': suscripcion, 'context': context, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY, 'tienda': tienda})
+            return redirect("home")
         elif (subscription and str(shop.owner.person.id) == person_id and not activate and request.method == 'POST'):
             time = date.today()
             endtime = (time + timedelta(days=30))
@@ -632,18 +656,18 @@ def product_details(request, id_product):
             product.description = form.cleaned_data['description']
             product.productType = ProductType.objects.get(
                 name=request.POST['select'])
-            if request.FILES.get('picture').size > 5000000:
-                msg = 'El tamaño máximo de la imagen no puede superar 5 MB'
-                types = ProductType.objects.all()
-                productType = []
-                for ty in types:
-                    productType.append(ty)
-                return render(request, 'products.html', {'form': form, 'product': product, 'types': productType, "context": context, "promotionProduct": not(promotionProduct), 'tienda': tienda, 'msg': msg})
-            else:
-                if request.FILES.get('picture') != None:
+            if request.FILES.get('picture') != None:
+                if request.FILES.get('picture').size > 5000000:
+                    msg = 'El tamaño máximo de la imagen no puede superar 5 MB'
+                    types = ProductType.objects.all()
+                    productType = []
+                    for ty in types:
+                        productType.append(ty)
+                    return render(request, 'products.html', {'form': form, 'product': product, 'types': productType, "context": context, "promotionProduct": not(promotionProduct), 'tienda': tienda, 'msg': msg})
+                else:
                     product.picture = request.FILES.get('picture')
-                product.save()
-                return redirect('/shops/'+str(product.shop.id))
+            product.save()
+            return redirect('/shops/'+str(product.shop.id))
         else:
             types = ProductType.objects.all()
             productType = []
@@ -656,8 +680,8 @@ def product_details(request, id_product):
     productType = []
     for ty in types:
         productType.append(ty)
-    print(product.picture)
-    return render(request, 'products.html', {'stripe_key': settings.STRIPE_PUBLISHABLE_KEY, 'form': form, 'product': product, 'types': productType, "context": context, "promotionProduct": not(promotionProduct), 'tienda': tienda})
+    sus = Subscription.objects.filter(endDate__gte = today,shop=product.shop).exists()
+    return render(request, 'products.html', {'stripe_key': settings.STRIPE_PUBLISHABLE_KEY, 'form': form, 'product': product, 'types': productType, "context": context, "promotionProduct": not(promotionProduct), 'tienda': tienda, 'sus': sus})
 
 
 def list_shop(request):
@@ -812,18 +836,27 @@ def search_shop(request):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     tienda = miTienda(person_id)
+    today = date.today()
     if request.method == 'POST':
         form = NameShopForm(data=request.POST)
         if form.is_valid():
             shop_name = form.cleaned_data['shop_name']
             shops = Shop.objects.filter(name__contains=shop_name)
             shopType = ShopType.objects.all()
-            return render(request, 'search_shop.html', {'context': context, 'tienda': tienda, 'shops': shops, 'shopType': shopType, "shop_name": shop_name})
+            shop_subscription = {}
+            for promo in shops:
+                a = Subscription.objects.filter(endDate__gte = today, shop = promo).exists()
+                shop_subscription[promo] = a
+            return render(request, 'search_shop.html', {'context': context, 'tienda': tienda, 'shop_subscription': shop_subscription, 'shopType': shopType, "shop_name": shop_name})
 
     form = NameShopForm()
-    promotions_shops = Promotion.objects.filter(product=None)
-    promotions_products = Promotion.objects.filter(shop=None)
-    return render(request, 'home.html', {"context": context, 'promotions_shops': promotions_shops, 'promotions_products': promotions_products, 'tienda': tienda, 'form': form})
+    shops = Shop.objects.all()
+    shopType = ShopType.objects.all()
+    shop_subscription = {}
+    for promo in shops:
+        a = Subscription.objects.filter(endDate__gte = today, shop = promo).exists()
+        shop_subscription[promo] = a
+    return render(request, 'search_shop.html', {'context': context, 'tienda': tienda, 'shop_subscription': shop_subscription, 'shopType': shopType, "shop_name": ''})
 
 def home(request):
     today = date.today()

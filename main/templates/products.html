@@ -24,7 +24,8 @@ Productos / Citra
                 <div class="px-lg-5 py-lg-4 p-4 w-100 align-self-center ">
                     <div class="d-flex justify-content-around mb-4">
                         <h1 class=" fw-bold me-auto">Producto</h1>
-                        {% if context.1 == 'Owner' and promotionProduct and product.shop.owner.person.id|stringformat:"i" == context.0 %}
+                        {% if sus %}
+                        {% if context.1 == 'Owner' and promotionProduct and product.shop.owner.person.id|stringformat:"i" == context.0 and sus %}
 
                           <form id="pagaMens" action= "{% url 'promotion_week_product' product.id %}" method="POST">
                             {% csrf_token %} 
@@ -44,6 +45,7 @@ Productos / Citra
                             </script>
                           </form>
                         
+                        {% endif %}
                         {% endif %}
                     </div>
                     <form accept-charset="UTF-8" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
@@ -84,7 +86,7 @@ Productos / Citra
                             </div>
                             <div class="d-flex justify-content-around fondo-blur">
                                 <button type="submit" class="btn btn-outline-dark  color-botones-products flex-grow-1 me-2 fw-bold ">Guardar cambios</button>
-                                <button type="submit" class="btn btn-outline-dark flex-grow-1 ms-2 me-2 fw-bold">Cancelar</button>
+                                <button href="/" class="btn btn-outline-dark flex-grow-1 ms-2 me-2 fw-bold">Cancelar</button>
                                 <button onclick="eliminarProducto({{product.id}})" class="btn btn-outline-dark flex-grow-3 ms-2 fw-bold">Borrar</button>
                             </div>
                         {% else %}
