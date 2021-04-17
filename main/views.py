@@ -120,7 +120,7 @@ def register(request):
         GET     -> Lleva al formulario de login
     '''
     #msg_success = "Bienvenido a la aplicación"
-    msg_error = "El nombre y la contraseña no coinciden"
+    error_log=["",""]
 
     if request.method == 'POST':  # Si es un POST redirijimos a la vista de index con el context actualizado
         try:
@@ -136,9 +136,16 @@ def register(request):
             registerDate = date.today()
             isBanned = False
 
-            p = Person(username=username, password=password, name=name, phoneNumber=phoneNumber,
-                       email=email, zipCode=zipCode, registerDate=registerDate, isBanned=isBanned)
-            p.save()
+                #Assertions
+                error_log,is_wrong_user = assert_username_unique(username,error_log)
+                error_log,is_wrong_email = assert_email_unique(email,error_log)
+
+                if(is_wrong_user or is_wrong_email):
+                    print(error_log)     
+                    return render(request, 'register_user.html',{"error_log":error_log})
+
+                p = Person(username=username, password=password, name=name, phoneNumber=phoneNumber, email=email, zipCode=zipCode, registerDate=registerDate, isBanned=isBanned)
+                p.save()
 
             p = Person.objects.get(username=username, password=password)
 
@@ -147,18 +154,51 @@ def register(request):
 
             rol_and_id = whoIsWho(p)
 
-            update_context(request, p.id, rol_and_id[0], rol_and_id[1], True)
-            person_id, rol, rol_id, is_active = get_context(request)
-            context = [person_id, rol, rol_id, is_active]
-
-            return render(request, 'home.html', {"context": context})
+                update_context(request,p.id,rol_and_id[0],rol_and_id[1],True)
+                person_id,rol,rol_id,is_active = get_context(request)
+                context = [person_id,rol,rol_id,is_active]
+                
+                return render(request, 'home.html', {"context" : context})
 
         except:
-            msg = msg_error
-            return render(request, 'login.html', {"msg": msg})
-
-    else:  # Si es un GET redirijimos a la vista de login
+            return render(request, 'register_user.html')
+         
+    else: #Si es un GET redirijimos a la vista de login
         return render(request, 'register_user.html')
+
+def assert_email_unique(email,error_log):
+
+    p = Person.objects.filter(email=email).exists()  
+    print(p)
+    is_wrong = p
+
+    if p:
+        error_msg = "Este email ya se encuentra en uso, introduce uno nuevo."
+        error_log[0] = error_msg
+    else:
+        error_msg = ""
+        error_log[0] = error_msg
+
+    return error_log,is_wrong
+ 
+
+def assert_username_unique(username,error_log):
+    
+    p = Person.objects.filter(username=username).exists()  
+
+    is_wrong = p
+
+    if p:
+        error_msg = "Este username ya se encuentra en uso, introduce uno nuevo."
+        error_log[1] = error_msg
+    else:
+        error_msg = ""
+        error_log[1] = error_msg
+
+    return error_log,is_wrong
+ 
+
+
 
 
 def logout(request):
