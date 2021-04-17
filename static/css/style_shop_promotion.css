@@ -246,9 +246,10 @@ img{
     word-wrap: break-word;
     background-color: #fff;
     background-clip: border-box;
-    border: 1px solid rgba(0,0,0,.125);
+    border: 1px solid rgba(220, 237, 193, 1);
     border-radius: .25rem;
-    margin-left: 5rem;
+    margin-left: 3rem;
+    margin-right: 3rem;
 }
 
 
