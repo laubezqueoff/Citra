@@ -17,7 +17,7 @@
 </style>
 <header>
     <nav class="navbar navbar-expand-lg navbar-light" style="background-color: #ffd3b6;" >
-        <div class="container-fluid" style="">
+        
             <a class="navbar-brand" href="/"> 
                 <img src="{% static 'images/Citra.png' %}" style = "width: 95px; height = 95px; background-color: #ffd3b6; margin-left: 30px;">
 
@@ -25,34 +25,43 @@
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent" style="align:center; position:static;">
-            <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="margin:0 auto; text-align:center;padding-left: 10rem">
-                <li class="nav-item" style="margin: auto; font-size:20px;">
-                    <a class="nav-link active" aria-current="page" href="/">Inicio</a>
-                    <input type="hidden" id="context"  name="context" value="{{context}}">
-                </li>
-
+            
+            <ul class="navbar-nav me-4 mb-2 mb-lg-0" style="text-align:center;padding-left: .5rem">
                
-                <li class="nav-item" style="margin-left: 25px; font-size:20px; text-align:center;"> 
+                <li class="nav-item" style="margin-left: 25px; font-size:20px;"> 
                 <a class="nav-link" href="{% url 'shops' %}">Listado Tiendas</a>
                 </li>
                 
                 
                 {% if context.1 == 'User' %}
-                <li class="nav-item" style="margin-left: 25px; font-size:20px; text-align:center;" name="threads">
+                <li class="nav-item" style="margin-left: 25px; font-size:20px;" name="threads">
                     <a class="nav-link" href="/threads" name="threads">Foro</a>
                 </li>
                 
 
                 {% endif %}
-                <li class="nav-item" style="margin-left: 25px; font-size:20px; text-align:center;">
+                <li class="nav-item" style="margin-left: 25px; font-size:20px;">
                 <a class="nav-link" href="{% url 'about' %}" >Sobre nosotros</a>
                 </li>
             </ul>
+
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0" style="text-align:center;">
+                <li class="nav-item" style="margin-left: 25px; font-size:20px;">
+                    <form method="post" action='/search_shop/' class="nav-link" >{% csrf_token %}
+                        <div class="p-2 bg-light rounded rounded-pill shadow-sm mb-0">
+                            <div class="input-group">
+                                <input type="search" aria-describedby="button-addon2" class="form-control border-0 bg-light" name="shop_name" id="shop_name" placeholder="Buscar...">
+                                <div class="input-group-append">
+                                    <button id="button-addon1" type="submit" class="btn btn-link text-warning"><i class="fa fa-search"></i></button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>   
+                </li>     
+            </ul>
+
             <ul class="navbar-nav" style="padding: none;">
-                <form method="post" action='/search_shop/' class="nav-link" >{% csrf_token %}
-                    <input class="form-control d-inline" type="text" name="shop_name" id="shop_name" placeholder="Buscar..." />
-                </form>
+                       
                 {% if context.3 %}
 
                 <div class="dropdown">
@@ -77,13 +86,14 @@
                 </div>
                 {% else %}
                     <li class="nav-item" style="border: 2px solid rgba(0,0,0,.55); border-radius: 8px; margin-right: 30px;font-size:20px;">
-                        <a class="nav-link" href="/login" >Iniciar sesión</a>  
+                        <a class="nav-link" href="/login" >Iniciar sesión</a> 
+                    </li> 
                 {% endif %}
 
-                </li>
+                
             </ul>
-            </div>
-        </div>
+            
+        
     </nav>
 </header>
 </html>
