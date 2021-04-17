@@ -16,13 +16,15 @@
             <h4 class="section-title">Tiendas</h4>
         </div>
         <div class="product__container bd-grid">                            
-            <div class="row ">
-                {% for shop in shops %}
+            <div class="row ">        
+                {% for shop, a in shop_subscription.items %}
+                    {% if a %}
                     <div class="card col-sm-2 mt-3 product">
                         <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
                         <a class="product__name" href="{% url 'shop' shop.pk %}"> {{shop.name}} </a>
                         <p class="product__name"> {{shop.description}} </p>
                     </div>
+                    {% endif %}
                 {% empty %}
                 {% endfor %}
             </div>
@@ -30,5 +32,4 @@
     </div>
 </main>
 </body>
-</html>
 {% endblock %}

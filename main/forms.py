@@ -8,11 +8,19 @@ from main.models import Shop
 class MessageForm(forms.Form):
     text = forms.CharField(label='Mensaje')
 
+class NameShopForm(forms.Form):
+    shop_name = forms.CharField(label='Nombre')
 
 class ReviewForm(forms.Form):
     rating = forms.IntegerField(label='Puntuación')
     title = forms.CharField(label='Título')
     description = forms.CharField()
+
+class UserSearchForm(forms.Form):
+    username = forms.CharField(label='Username', required= True)
+class UserBannedForm(forms.Form):
+    isBanned = forms.BooleanField(label='Esta Banneado', required=False)
+
 
 class ProductForm(forms.Form):
     name = forms.CharField(label="Nombre")
@@ -37,3 +45,4 @@ class FormShop(forms.Form):
     description = forms.CharField(label="Descripción")
     address = forms.CharField(label="Direción")
     durationBooking = forms.IntegerField(label="Duración")
+

@@ -16,15 +16,15 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path
-from main import populate, views
+from main import views
 from django.conf.urls.static import static
 from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('populate/', populate.populate),
     path("", views.home, name="home"),
     path("home/", views.home, name="home"),
+    path("search_shop/", views.search_shop, name="search_shop"),
     path("threads/", views.threads_list, name="threads"),
     path('threads/<id_thread>', views.forumMessages_list),
     path("login/", views.login, name="login"),
@@ -54,11 +54,18 @@ urlpatterns = [
     path('shops/<id_shop>/reviews/new/', views.review_form, name='review'),
     path('shop/bookings/',views.list_booking_owner,name="list_booking_owner"),
     path('user/bookings/',views.list_booking_user,name="list_booking_user"),
+    path('owners/',views.get_owners,name="list_owners"),
+    path('users/',views.get_users,name="list_users"),
+    path('owners/<id_user>',views.get_owner,name="list_owners"),
+    path('users/<id_user>',views.get_user,name="list_users"),
     path('about/',views.about,name="about"),
     path('register/',views.register,name="register"),
     path('registerShop/',views.registerShop,name="registerShop"),
     path('shops/<id_shop>/edit', views.updateShop, name='update_shop'),
 
-] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = 'main.views.error_404'
