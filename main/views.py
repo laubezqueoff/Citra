@@ -770,7 +770,7 @@ def get_chat(request, id_chat):
         elif str(rol) == 'Owner':
             if not(int(chat.shop.owner.id) == int(person_id)):
                 print(False)
-                return render(request, 'prohibido.html', {"context": context, 'tienda': tienda, 'shop': chat.shop}, status=403)
+                return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
         else:
             return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
 
@@ -787,7 +787,7 @@ def get_chat(request, id_chat):
                 return redirect('/shop/chat/'+str(chat.id))
         chat_message = ChatMessage.objects.filter(chat=chat)
         form = MessageForm()
-        return render(request, 'chat.html', {"context": context, "messages": chat_message, 'form': form, 'tienda': tienda})
+        return render(request, 'chat.html', {"context": context, "messages": chat_message, 'form': form, 'tienda': tienda, 'shop': chat.shop, 'user': chat.user})
     else:
         return render(request, 'prohibido.html', status=403)
 
