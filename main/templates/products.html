@@ -51,7 +51,7 @@ Productos / Citra
                         {% comment %} {{form.errors}} {% endcomment %}
                         <div class=" pt-lg-2 pb-5">
                             <div class="mb-4 border border-dark rounded-2">
-                                <input type="text" class="form-control " placeholder="Introduce el nombre del producto" id="name" name="name" value="{{product.name}}" required>
+                                <input type="text" class="form-control " placeholder="Introduce el nombre del producto" id="name" name="name" value="{{product.name}}" maxlength="60" required>
                             </div>
 
                                 <div class="mb-4 border border-dark rounded-2">
@@ -72,7 +72,7 @@ Productos / Citra
                                 {{form.errors.price}}
 
                                 <div class="mb-4 border border-dark rounded-2">
-                                    <input type="text" class="form-control" placeholder="Descripción del producto" id="description" name="description" value="{{product.description}}">
+                                    <input type="text" class="form-control" placeholder="Descripción del producto" id="description" name="description" value="{{product.description}}" maxlength="120">
                                 </div>
                                     <label> Cambiar Imagen </label>
                                     <input type="file" id="picture" name="picture">
