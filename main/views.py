@@ -271,26 +271,26 @@ def get_context(request):
     return person_id, rol, rol_id, is_active
 
 
-# def get_or_create_customer(email: str, source: str) -> stripe.Customer:
-#     stripe.api_key = settings.STRIPE_SECRET_KEY
-#     connected_customers = stripe.Customer.list()
-#     for customer in connected_customers:
-#         if customer.email == email:
-#             return customer
-#     return stripe.Customer.create(
-#         email=email,
-#         source=source
-#     )
+def get_or_create_customer(email: str, source: str) -> stripe.Customer:
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    connected_customers = stripe.Customer.list()
+    for customer in connected_customers:
+        if customer.email == email:
+            return customer
+    return stripe.Customer.create(
+        email=email,
+        source=source
+    )
 
 
-# def is_customer(email: str) -> bool:
-#     stripe.api_key = settings.STRIPE_SECRET_KEY
-#     connected_customers = stripe.Customer.list()
-#     for customer in connected_customers:
-#         if customer.email == email:
-#             return True
+def is_customer(email: str) -> bool:
+    stripe.api_key = settings.STRIPE_SECRET_KEY
+    connected_customers = stripe.Customer.list()
+    for customer in connected_customers:
+        if customer.email == email:
+            return True
 
-#     return False
+    return False
 
 # Amount x100 = centimos
 
