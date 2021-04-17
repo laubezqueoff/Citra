@@ -24,6 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path("", views.home, name="home"),
     path("home/", views.home, name="home"),
+    path("search_shop/", views.search_shop, name="search_shop"),
     path("threads/", views.threads_list, name="threads"),
     path('threads/<id_thread>', views.forumMessages_list),
     path("login/", views.login, name="login"),

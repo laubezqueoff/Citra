@@ -3,9 +3,7 @@ import requests
 from datetime import date, datetime
 from django.shortcuts import render, redirect, get_object_or_404
 import urllib.request
-
-from main.forms import MessageForm, ReviewForm, UserSearchForm, UserBannedForm, ProductForm, FormShop
-
+from main.forms import MessageForm, ReviewForm, UserSearchForm, UserBannedForm, ProductForm, FormShop, NameShopForm
 from django.http import Http404
 import json
 from django.http import JsonResponse
@@ -624,6 +622,9 @@ def shop_details(request, id_shop):
     today = date.today()
     promotionShop = Promotion.objects.filter(shop=shop, endDate__gte = today).exists()
     subscriptionShop = Subscription.objects.filter(shop=shop, endDate__gte = today).exists()
+    productType = []
+    for prod in products:
+        productType.append(prod.productType)
     try:
         person_id, rol, rol_id, is_active = get_context(request)
         context = [person_id, rol, rol_id, is_active]
@@ -632,7 +633,8 @@ def shop_details(request, id_shop):
         rol = 'User no registrado'
         context = [person_id, rol]
     tienda = miTienda(person_id)
-    return render(request, 'shop_detail.html', {'shop': shop, 'products': products, 'context': context, 'promotionShop': not(promotionShop), 'subscriptionShop': subscriptionShop, 'tienda': tienda, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY})
+    return render(request, 'shop_detail.html', {'shop': shop, 'productType': set(productType), 'subscriptionShop': subscriptionShop, 'products': products, 'context': context, 'promotionShop': not(promotionShop), 'tienda': tienda, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY})
+
 
 def get_chats_list(request):
     ''' Muestra una lista de todos los chats que el usuario activo, sea user u owner, tenga. \n
@@ -749,6 +751,22 @@ def get_chat_new(request, id_shop):
     form = MessageForm()
     return render(request, 'chat.html', {"context": context, "messages": chat_message, 'form': form, 'shop_id': id_shop, 'tienda': tienda})
 
+def search_shop(request):
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    tienda = miTienda(person_id)
+    if request.method == 'POST':
+        form = NameShopForm(data=request.POST)
+        if form.is_valid():
+            shop_name = form.cleaned_data['shop_name']
+            shops = Shop.objects.filter(name__contains=shop_name)
+            shopType = ShopType.objects.all()
+            return render(request, 'search_shop.html', {'context': context, 'tienda': tienda, 'shops': shops, 'shopType': shopType, "shop_name": shop_name})
+
+    form = NameShopForm()
+    promotions_shops = Promotion.objects.filter(product=None)
+    promotions_products = Promotion.objects.filter(shop=None)
+    return render(request, 'home.html', {"context": context, 'promotions_shops': promotions_shops, 'promotions_products': promotions_products, 'tienda': tienda, 'form': form})
 
 def home(request):
     today = date.today()
