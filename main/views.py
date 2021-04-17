@@ -146,16 +146,16 @@ def register(request):
             registerDate = date.today()
             isBanned = False
 
-                #Assertions
-                error_log,is_wrong_user = assert_username_unique(username,error_log)
-                error_log,is_wrong_email = assert_email_unique(email,error_log)
+            #Assertions
+            error_log,is_wrong_user = assert_username_unique(username,error_log)
+            error_log,is_wrong_email = assert_email_unique(email,error_log)
 
-                if(is_wrong_user or is_wrong_email):
-                    print(error_log)     
-                    return render(request, 'register_user.html',{"error_log":error_log})
+            if(is_wrong_user or is_wrong_email):
+                print(error_log)     
+                return render(request, 'register_user.html',{"error_log":error_log})
 
-                p = Person(username=username, password=password, name=name, phoneNumber=phoneNumber, email=email, zipCode=zipCode, registerDate=registerDate, isBanned=isBanned)
-                p.save()
+            p = Person(username=username, password=password, name=name, phoneNumber=phoneNumber, email=email, zipCode=zipCode, registerDate=registerDate, isBanned=isBanned)
+            p.save()
 
             p = Person.objects.get(username=username, password=password)
 
@@ -164,11 +164,11 @@ def register(request):
 
             rol_and_id = whoIsWho(p)
 
-                update_context(request,p.id,rol_and_id[0],rol_and_id[1],True)
-                person_id,rol,rol_id,is_active = get_context(request)
-                context = [person_id,rol,rol_id,is_active]
-                
-                return render(request, 'home.html', {"context" : context})
+            update_context(request,p.id,rol_and_id[0],rol_and_id[1],True)
+            person_id,rol,rol_id,is_active = get_context(request)
+            context = [person_id,rol,rol_id,is_active]
+            
+            return render(request, 'home.html', {"context" : context})
 
         except:
             return render(request, 'register_user.html')
