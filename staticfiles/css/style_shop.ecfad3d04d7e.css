@@ -42,6 +42,7 @@
         --big-font-size: 1.5rem;
         --bigger-font-size: 2rem;
         --biggest-font-size: 3rem;
+        --h2-font-size: 1.25rem;
         --normal-font-size: 1rem;
         --smaller-font-size: .875rem;
 
@@ -87,6 +88,10 @@ img{
     display: block;
 }
 
+
+
+
+
 /* buttons */
 .button{
     display: inline-block;
@@ -120,6 +125,10 @@ img{
 }
 
 /* class css  */
+
+.section{
+    padding: 5rem 0 2rem;
+}
 
 .section-title{
     position: relative;
@@ -165,6 +174,9 @@ img{
 
 }
 
+.tablacss{
+    color: red;
+}
 
 .product{
     position: relative;
@@ -175,11 +187,10 @@ img{
     background-color: var(--dark-color-lighten);
     border-radius: .5rem;
     transition: .3s;
+    margin-top:2rem;
     height: 300px;
     width: 200px;
     float: left;
-    margin-left: 2rem;
-    margin-right: 2rem;
 
 }
 
@@ -236,21 +247,29 @@ img{
     grid-template-columns: repeat(auto-fit, minmax(100px,2fr));
     
 }
-
-.card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    max-width: 200px;
-    word-wrap: break-word;
-    background-color: #fff;
-    background-clip: border-box;
-    border: 1px solid rgba(220, 237, 193, 1);
-    border-radius: .25rem;
-    margin-left: 3rem;
-    margin-right: 3rem;
+.column{
+    width: 50%;
+    float: left;
 }
 
+.row::after {
+    content: "";
+    clear: both;
+    display: table;
+  }
+  
+  [class*="col-"] {
+    float: left;
+    padding: 15px;
+  }
+  
+
+  .col-6 {width: 100%;}
+  .col-7 {width: 100%;}
+
+  .responsive {
+    width: 100%;
+    height: auto;
+  }
 
 }
