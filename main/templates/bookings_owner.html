@@ -12,11 +12,10 @@
         <div class="row">                            
             <div class="product__container bd-grid">
                 {% for book,factor in factoresConfianza.items %}
-                <div class="col">
-                    <article class="product">
-                        <img src="{{book.product.picture.url}}" alt ="" class="product__img">
-                        <span class="product__name"> Tienda: {{book.product.name}} </span>
-                        <span class="product__price"> Nombre Producto: {{book.product.price}} </span>
+                <div class="card col-sm-3 mt-3 mb-3 product">
+                        <img src="{{book.product.picture.url}}" alt ="" class="card-img-top">
+                        <h4 class="card-title" style="text-align:center;">Tienda: {{book.product.shop.name}}</h4>
+                        <p class="product__name" style="text-align: center;" > Nombre Producto: <b>{{book.product.name}} </b> </p>
                         <span class="product__price"> Cantidad Reservada: {{book.quantity}} </span>
                          <span class="product__price"> Nombre del usuario: {{book.user.person.name}} 
                             <img style = "width:40px;heigth:40px;" src="
@@ -33,8 +32,6 @@
                         </span>
                         <button onclick="aceptar({{book.id}})">Aceptar</button>
                         <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="{{book.id}}/report"> Reportar </a></button>
-
-                    </article>
                 </div>
                 {% empty %}
                 {% endfor %}
