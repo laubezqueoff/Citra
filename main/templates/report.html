@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block cabecera %}<link rel="stylesheet" href="{% static 'css/style_review.css' %}"/>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.1/js/bootstrap.min.js"></script>
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<title>Valoraciones / Citra</title>
+{% endblock %}
+{% block contenido %}
+<div class="container">
+	<div class="row" style="margin-top:40px;">
+		<div class="col-md-6">
+            <div class="well well-sm">        
+                <div class="row" id="post-review-box" style="">
+                    <div class="col-md-12">
+                        <form accept-charset="UTF-8" action="" method="post">{% csrf_token %}
+                            <label style = 'font-size:15px;'>Seleccione el motivo:</label>
+                                <select name="title" id="title" style = 'font-size:15px;'>
+                                {% for report in reportReason %}
+                                    <option value="{{report.name}}">{{report.name}}</option>
+                                {% endfor %}
+                                </select>
+                            <textarea style = 'font-size:15px;' class="form-control animated" cols="50" id="description" name="description" placeholder="Deja tu comentario aquí..." rows="5"></textarea>
+                            <div class="text-right">
+                                <div class="stars starrr" data-rating="0"></div>
+                                <a style="text-decoration: none; color:#FFFF"href="../"><button class="btn btn-success btn-lg" type="submit">Reportar</button></a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div> 
+		</div>
+	</div>
+</div>
+{% endblock %}

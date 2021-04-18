@@ -1,9 +1,9 @@
-from main.models import Person, CustomUser, CustomAdmin, Owner, ShopType, ProductType, Shop, Product, SubscriptionType, PromotionType, Subscription, Promotion, Booking, Review, Chat, ChatMessage, Thread, ForumMessage
+from main.models import Person, CustomUser, CustomAdmin, Owner, ShopType, ProductType, Shop, Product, SubscriptionType, PromotionType, Subscription, Promotion, Booking, Review, Chat, ChatMessage, Thread, ForumMessage, ReportReason, Report
 import requests
 from datetime import date, datetime
 from django.shortcuts import render, redirect, get_object_or_404
 import urllib.request
-from main.forms import MessageForm, ReviewForm, UserSearchForm, UserBannedForm, ProductForm, FormShop, NameShopForm
+from main.forms import MessageForm, ReviewForm, UserSearchForm, UserBannedForm, ProductForm, FormShop, NameShopForm, ReportForm
 from django.http import Http404
 import json
 from django.http import JsonResponse
@@ -899,7 +899,6 @@ def booking(request):
         }
         return JsonResponse(data)
 
-
 def list_booking_user(request):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
@@ -922,11 +921,11 @@ def list_booking_owner(request):
     if (is_active):
         owner = Owner.objects.get(id=person_id)
         bookings = Booking.objects.filter(isAccepted=False)
-        reservas = []
+        factoresConfianza = {}
         for book in bookings:
             if book.product.shop.owner.id == owner.id:
-                reservas.append(book)
-        return render(request, 'bookings_owner.html', {'bookings': reservas, 'context': context, 'tienda': tienda})
+                factoresConfianza[book] = factor_confianza(book.user.id)
+        return render(request, 'bookings_owner.html', {'context': context, 'tienda': tienda, 'factoresConfianza': factoresConfianza})
     else:
         return render(request, 'prohibido.html')
 
@@ -950,7 +949,6 @@ def chat_list(request):
 
 def forbidden(request):
     return render(request, 'prohibido.html')
-
 
 def booking(request):
     person_id, rol, rol_id, is_active = get_context(request)
@@ -1060,6 +1058,107 @@ def miTienda(person_id):
         shop = ''
 
     return shop
+
+def report_shop_form(request, id_shop):
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    shop = get_object_or_404(Shop, pk= id_shop)
+    reportReason = ReportReason.objects.all()
+
+    if rol == "User":
+        if request.method == 'GET':
+            form = ReportForm()
+            return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
+        if request.method == 'POST':  
+
+            owner = Owner.objects.get(id = shop.owner)
+            id_reported_person = owner.person.id
+
+            form = ReportForm(data=request.POST)
+            # if form.is_valid():
+            title = form['title'].data
+            description = form['description'].data
+            Report.objects.create(title = title, description = description, person = Person.objects.get(id=id_reported_person))
+            return redirect('/shops/'+str(shop.id))
+            # else:
+            #     return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
+
+    else:  
+        return render(request, 'prohibido.html', {'context':context})
+
+def report_user_form(request, id_booking):
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    booking = get_object_or_404(Booking, pk= id_booking)
+    tienda = miTienda(person_id)
+    reportReason = ReportReason.objects.all()
+
+    if rol == "Owner":
+        if request.method == 'GET':
+            form = ReportForm()
+            return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason, 'tienda':tienda})
+
+        if request.method == 'POST': 
+            
+            user = CustomUser.objects.get(id = booking.user.id)
+            id_reported_person = user.person.id
+
+            form = ReportForm(data=request.POST)
+            # if form.is_valid():
+            title = form['title'].data
+            description = form['description'].data
+            Report.objects.create(title = title, description = description, person = Person.objects.get(id=id_reported_person))
+            return redirect('/shop/bookings/')
+            # else:
+            #     return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
+
+    else:
+        return render(request, 'prohibido.html', {'context':context, 'tienda':tienda})
+
+def report_from_chat_form(request, id_chat):
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    chat = get_object_or_404(Chat, pk= id_chat)
+    reportReason = ReportReason.objects.all()
+    tienda = miTienda(person_id)
+    if request.method == 'GET':
+        form = ReportForm()
+        return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason, 'tienda':tienda})
+
+    if request.method == 'POST': 
+
+        if rol == "User":
+            shop = Shop.objects.get(id = chat.shop.id)
+            owner = Owner.objects.get(id = shop.owner.id)
+            reported_person = owner.person
+        elif rol == "Owner":
+            user = CustomUser.objects.get(id = chat.user.id)
+            reported_person = user.person
+        else:
+            return render(request, 'prohibido.html', {'context':context, 'tienda':tienda})
+
+        form = ReportForm(data=request.POST)
+        # if form.is_valid():
+        title = form['title'].data
+        description = form['description'].data
+        Report.objects.create(title = title, description = description, person = reported_person)
+        return redirect('/shop/chat/' + str(chat.id))
+        # else:
+        #     return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
+
+def factor_confianza(id_user): ## 0: Datos insuficientes, 1: Poco fiable, 2: Medianamente fiable, 3: Cliente fiable
+    res = 0
+    user = CustomUser.objects.get(id = id_user)
+    npedidos = Booking.objects.filter(user = user, isAccepted = True).count()
+    if(npedidos>4):
+        nreportes = Report.objects.filter(person = Person.objects.get(id = user.person.id)).count()
+        if (nreportes==0):
+            res = 3
+        elif(nreportes<5):
+            res = 2
+        else:
+            res = 1
+    return res
 
 def get_owners(request):
     ''' Muestra un listado con todos los owners que hay registrados.\n

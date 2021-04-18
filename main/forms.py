@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from django import forms
 from django.contrib.auth.forms import UserCreationForm   
-from main.models import Person, CustomUser, CustomAdmin, Owner, ShopType, ProductType, Shop, Product, SubscriptionType, PromotionType, Subscription, Promotion, Booking, Review, Chat, ChatMessage, Thread, ForumMessage
+from main.models import ReportReason, Person, CustomUser, CustomAdmin, Owner, ShopType, ProductType, Shop, Product, SubscriptionType, PromotionType, Subscription, Promotion, Booking, Review, Chat, ChatMessage, Thread, ForumMessage
 from django.core.exceptions import ValidationError
 from main.models import Shop
 
@@ -14,7 +14,12 @@ class NameShopForm(forms.Form):
 class ReviewForm(forms.Form):
     rating = forms.IntegerField(label='Puntuación')
     title = forms.CharField(label='Título')
-    description = forms.CharField()
+    description = forms.CharField(label='Descripción')
+
+class ReportForm(forms.Form):
+    lista=[(r.name) for r in ReportReason.objects.all()]
+    title = forms.ChoiceField(label="Título", choices=lista)
+    description = forms.CharField(label='Descripción')
 
 class UserSearchForm(forms.Form):
     username = forms.CharField(label='Username', required= True)
@@ -45,4 +50,3 @@ class FormShop(forms.Form):
     description = forms.CharField(label="Descripción")
     address = forms.CharField(label="Direción")
     durationBooking = forms.IntegerField(label="Duración")
-
