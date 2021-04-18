@@ -65,6 +65,7 @@ urlpatterns = [
     path('register/',views.register,name="register"),
     path('registerShop/',views.registerShop,name="registerShop"),
     path('shops/<id_shop>/edit', views.updateShop, name='update_shop'),
+    path('updateUser/',views.updateUser,name="updateUser"),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

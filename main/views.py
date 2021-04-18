@@ -163,7 +163,6 @@ def register(request):
             error_log,is_wrong_email = assert_email_unique(email,error_log)
 
             if(is_wrong_user or is_wrong_email):
-                print(error_log)     
                 return render(request, 'register_user.html',{"error_log":error_log})
 
             p = Person(username=username, password=password, name=name, phoneNumber=phoneNumber, email=email, zipCode=zipCode, registerDate=registerDate, isBanned=isBanned)
@@ -180,13 +179,59 @@ def register(request):
             person_id,rol,rol_id,is_active = get_context(request)
             context = [person_id,rol,rol_id,is_active]
             
-            return render(request, 'home.html', {"context" : context})
+            return redirect('/home')
 
         except:
             return render(request, 'register_user.html')
          
     else: #Si es un GET redirijimos a la vista de login
         return render(request, 'register_user.html')
+
+def updateUser(request):
+
+    error_log=["",""]
+
+    if request.method == 'POST': #Si es un POST redirijimos a la vista de index con el context actualizado
+        try:
+            #Parametros tomados del post
+                #username        =   request.POST['username']             
+                password        =   request.POST['password']            
+                name            =   request.POST['name']                
+                phoneNumber     =   request.POST['phoneNumber'] 
+                zipCode         =   request.POST['zipCode']              
+                #email           =   request.POST['email']   
+
+
+                person_id,rol,rol_id,is_active = get_context(request)
+
+                p = Person.objects.get(id=person_id)
+
+                #vamoaver(p,email,username)
+
+                p.password=password
+                p.name=name
+                p.phoneNumber=int(phoneNumber)
+                p.zipCode=int(zipCode)
+                p.save()
+
+                context = [person_id,rol,rol_id,is_active]
+
+                return redirect('/home')
+
+        except:
+            person_id, rol, rol_id, is_active = get_context(request)
+            context = [person_id,rol,rol_id,is_active]
+            p = Person.objects.get(id=person_id)
+            return render(request, 'home.html', {"context" : context,"person":p,"editMode":True})
+         
+    else: #Si es un GET redirijimos a la vista de login
+
+        person_id, rol, rol_id, is_active = get_context(request)
+        context = [person_id,rol,rol_id,is_active]
+        p = Person.objects.get(id=person_id)
+        tienda = miTienda(person_id)
+        
+        return render(request, 'register_user.html',{"context" : context,"person":p,"editMode":True, 'tienda': tienda})
 
 def assert_email_unique(email,error_log):
 

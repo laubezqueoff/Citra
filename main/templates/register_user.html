@@ -6,6 +6,47 @@
 {% block contenido %}
 
 <container class="container-fluid">
+{%if editMode%}
+<form method="POST">{% csrf_token %}
+
+    <div class="row justify-content-center m-0">
+        <div class="col-10">
+            <div class="m-5">
+                <h1 class="mb-4 fw-bold">Datos del usuario</h1>
+                <form method="POST"  action="/updateUser/">{% csrf_token %}
+                    <div class="mb-4">
+                        <label for="name" class="form-label fw-bold">Nombre</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca su Nombre" id="name" name="name" maxlength="40" value={{person.name}} required>                    
+                    </div>
+                    <div class="mb-4">
+                        <label for="phoneNumber" class="form-label fw-bold">Número de teléfono</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca un Número de 9 dígitos" id="phoneNumber" name="phoneNumber" value={{person.phoneNumber}} pattern="[0-9]{9}" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="zipCode" class="form-label fw-bold">Código postal</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca un código postal de 5 dígitos" id="zipCode" name="zipCode" value={{person.zipCode}} pattern="[0-9]{5}" required>
+                    </div>
+              
+                    <div class="mb-4">
+                        <label for="exampleInputPassword1" class="form-label fw-bold">Contraseña</label>
+                        <input type="password" class="form-control mb-2 form-control-sm" placeholder="Introduce la contraseña" id="password" name="password" value={{person.password}} maxlength="20" required>
+                    </div>
+
+                    <div class="row m-0">
+                        <div class="d-flex justify-content-center mt-3">
+                            <button type="submit" class="btn btn-dark fw-bold w-50">Guardar cambios</button>
+                        </div>
+                    </div>
+                    
+           
+            </div>
+        </div>
+    </div>
+
+</form>
+
+
+{%else%}
     <form method="POST">{% csrf_token %}
 
     <div class="row justify-content-center m-0">
@@ -60,7 +101,7 @@
     </div>
 
 </form>
-
+{% endif%}
 </container>
 
 {% endblock %}
