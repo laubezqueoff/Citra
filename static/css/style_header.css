@@ -1,0 +1,40 @@
+.btn-primary.custom-btn {
+	background-color: rgb(236, 148, 97);
+	border-color: rgba(39, 35, 35, 0.959);
+}
+
+.nav-link{
+    padding:0%;
+}
+
+
+.has-search .form-control {
+    padding-left: 2.375rem;
+}
+
+.has-search .form-control-feedback {
+    position: absolute;
+    z-index: 2;
+    display: block;
+    width: 2.375rem;
+    height: 2.375rem;
+    line-height: 2.375rem;
+    text-align: center;
+    pointer-events: none;
+    color: #aaa;
+}
+
+.form-control:focus {
+    box-shadow: none;
+  }
+  
+.form-control-underlined {
+    border-width: 0;
+    border-bottom-width: 1px;
+    border-radius: 0;
+    padding-left: 0;
+}
+
+.ul{
+    width:33%;
+}

@@ -44,7 +44,7 @@
                 <form method="POST">{% csrf_token %}
                     <div class="mb-4">
                         <label for="exampleInputEmail1" class="form-label fw-bold">Usuario</label>
-                        <input type="text" class="form-control " placeholder="Introduce el Email" id="username" name="username">
+                        <input type="text" class="form-control " placeholder="Introduce el nombre de usuario" id="username" name="username">
                     </div>
                     
                     <div class="mb-4">
@@ -58,10 +58,12 @@
                 </form>
             </div>
             <div class="text-center px-lg-5 pt-lg-4 pb-lg-1 p-4 w-100 mt-auto">
-                <p class="d-inline-block mb-0">¿Todavía no tienes cuenta? </p><a href="#" class="fw-bold text-decoration-none"> Crea una ahora </a>
+                <p class="d-inline-block mb-0">¿Todavía no tienes cuenta? </p><a href="/register" class="fw-bold text-decoration-none"> Crea una ahora </a>
+                <input type="hidden" value="User" id="rol" name="rol">
             </div>
             <div class="text-center px-lg-5 pt-lg-4 pb-lg-3 p-4 w-100 mt-auto">
-                <p class="d-inline-block mb-0">¿Te gustaría mostrar tus productos?</p><a href="#" class="fw-bold text-decoration-none"> Crea una tienda </a>
+                <p class="d-inline-block mb-0">¿Te gustaría mostrar tus productos?</p><a href="/registerShop" class="fw-bold text-decoration-none"> Crea una tienda </a>
+                <input type="hidden" value="Owner" id="rol" name="rol">
             </div>
         </div>
 

@@ -14,7 +14,7 @@
                 {% for book,factor in factoresConfianza.items %}
                 <div class="col">
                     <article class="product">
-                        <img src="{% static 'images/manzana.jpg' %}" alt ="" class="product__img">
+                        <img src="{{book.product.picture.url}}" alt ="" class="product__img">
                         <span class="product__name"> Tienda: {{book.product.name}} </span>
                         <span class="product__price"> Nombre Producto: {{book.product.price}} </span>
                         <span class="product__price"> Cantidad Reservada: {{book.quantity}} </span>

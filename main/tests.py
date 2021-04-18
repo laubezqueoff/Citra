@@ -13,7 +13,8 @@ class TestMethods(unittest.TestCase):
         
         credentials = {"username": 'USER-0', "password": 'PASS-0'}
         
-        url = "http://127.0.0.1:8000/login/"
+        url = "http://127.0.0.1:9000/login/"
+        # url = "https://citra-ispp.herokuapp.com/login/"
         
         c = Client()
         r = c.post(url, credentials)
@@ -27,7 +28,8 @@ class TestMethods(unittest.TestCase):
         
         credentials = {"username": 'USER-0', "password": 'PASS-0'}
         
-        url = "http://127.0.0.1:8000/login/"
+        url = "http://127.0.0.1:9000/login/"
+        # url = "https://citra-ispp.herokuapp.com/login/"
         
         c = Client()
         r = c.post(url, credentials)
