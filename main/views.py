@@ -1071,7 +1071,7 @@ def report_shop_form(request, id_shop):
             return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
         if request.method == 'POST':  
 
-            owner = Owner.objects.get(id = shop.owner)
+            owner = Owner.objects.get(id = shop.owner.id)
             id_reported_person = owner.person.id
 
             form = ReportForm(data=request.POST)
