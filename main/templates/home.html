@@ -23,7 +23,7 @@
                 {% for promotion, sus in promotions_shops_subscription.items %}
                     {% if sus %}
                     <div class="card col-sm-3 mt-3 mb-3 product">
-                            <img src="{{promotion.shop.picture.url}}" class="img-fluid" style="max-height:150px;max-width:150px; align-self:center;">
+                            <img src="{{promotion.shop.picture.url}}" class="img-fluid mt-3" style="max-height:150px;max-width:150px; align-self:center;">
                             <h4 class="card-title" style="text-align:center;">{{promotion.shop.name}}</h4>   
                             <p style="text-align: center;"><b>{{promotion.shop.description}}</b></p>
                             <a href="{% url 'shop' promotion.shop.pk %}" class="btn btn-outline-dark">Entrar</a>
