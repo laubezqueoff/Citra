@@ -43,7 +43,7 @@
                 {% for promotion_product, sus  in promotions_products_subscription.items %}
                     {% if sus %}
                     <div class="card col-sm-2 mt-3 product">
-                        <img src="{{promotion_product.product.picture.url}}" class="img-fluid" style=" max-height:100px;max-width:150px; align-self:center;">
+                        <img src="{{promotion_product.product.picture.url}}" class="img-fluid mt-3" style=" max-height:100px;max-width:150px; align-self:center;">
                         <p class="product__name" style="text-align: center;" > <b>{{promotion_product.product.name}} </b> </p>
                         <p style="text-align: center;"> {{promotion_product.product.description}} </p>
                         <a class="btn btn-outline-dark" style="text-align: center;" href="{% url 'shop' promotion_product.product.shop.pk %}"> {{promotion_product.product.shop.name}} </a>

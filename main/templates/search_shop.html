@@ -26,7 +26,7 @@
                 {% for shop, a in shop_subscription.items %}
                     {% if a %}
                     <div id="{{shop.shopType.id}}" class="card col-sm-3 mt-3 mb-3 product">
-                        <img src="{{prod.picture.url}}" alt ="" class="product__img">
+                        <img src="{{prod.picture.url}}"  class="img-fluid mt-3" style="max-height:150px;max-width:150px; align-self:center;">
                         <h4 class="card-title" style="text-align:center;">{{shop.name}}</h4>
                         <p> <b> {{shop.description}} </b></p>
                         <a href="{% url 'shop' shop.pk %}" class="btn btn-outline-dark">Entrar</a>
