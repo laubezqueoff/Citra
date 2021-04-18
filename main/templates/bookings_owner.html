@@ -19,15 +19,15 @@
                         <span class="product__price"> Nombre Producto: {{book.product.price}} </span>
                         <span class="product__price"> Cantidad Reservada: {{book.quantity}} </span>
                          <span class="product__price"> Nombre del usuario: {{book.user.person.name}} 
-                            <img style = "size:20px;" src="
+                            <img style = "width:40px;heigth:40px;" src="
                                 {% if factor == 0 %}
                                     {% static 'images/pregunta.png' %}
                                 {% elif factor == 1 %}
-                                    {% static 'images/min.png' %}
+                                    {% static 'images/max.png' %}
                                 {% elif factor == 2 %}
                                     {% static 'images/intermedio.png' %}
                                 {% elif factor == 3 %}
-                                    {% static 'images/max.png' %}
+                                    {% static 'images/min.png' %}
                                 {% endif %}">
                             </img>
                         </span>

@@ -587,10 +587,10 @@ def report_shop_form(request, id_shop):
 
             form = ReportForm(data=request.POST)
             # if form.is_valid():
-            title = form.cleaned_data['title']
-            description = form.cleaned_data['description']
+            title = form['title'].data
+            description = form['description'].data
             Report.objects.create(title = title, description = description, person = Person.objects.get(id=id_reported_person))
-            return render(request, 'home.html', {'context':context})
+            return redirect('/shops/'+str(shop.id))
             # else:
             #     return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
 
@@ -601,12 +601,13 @@ def report_user_form(request, id_booking):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     booking = get_object_or_404(Booking, pk= id_booking)
+    tienda = miTienda(person_id)
     reportReason = ReportReason.objects.all()
 
     if rol == "Owner":
         if request.method == 'GET':
             form = ReportForm()
-            return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
+            return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason, 'tienda':tienda})
 
         if request.method == 'POST': 
             
@@ -615,25 +616,25 @@ def report_user_form(request, id_booking):
 
             form = ReportForm(data=request.POST)
             # if form.is_valid():
-            title = form.cleaned_data['title']
-            description = form.cleaned_data['description']
+            title = form['title'].data
+            description = form['description'].data
             Report.objects.create(title = title, description = description, person = Person.objects.get(id=id_reported_person))
-            return render(request, 'home.html', {'context':context})
+            return redirect('/shop/bookings/')
             # else:
             #     return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
 
     else:
-        return render(request, 'prohibido.html', {'context':context})
+        return render(request, 'prohibido.html', {'context':context, 'tienda':tienda})
 
 def report_from_chat_form(request, id_chat):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     chat = get_object_or_404(Chat, pk= id_chat)
     reportReason = ReportReason.objects.all()
-
+    tienda = miTienda(person_id)
     if request.method == 'GET':
         form = ReportForm()
-        return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
+        return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason, 'tienda':tienda})
 
     if request.method == 'POST': 
 
@@ -645,14 +646,14 @@ def report_from_chat_form(request, id_chat):
             user = CustomUser.objects.get(id = chat.user.id)
             reported_person = user.person
         else:
-            return render(request, 'prohibido.html', {'context':context})
+            return render(request, 'prohibido.html', {'context':context, 'tienda':tienda})
 
         form = ReportForm(data=request.POST)
         # if form.is_valid():
         title = form['title'].data
         description = form['description'].data
         Report.objects.create(title = title, description = description, person = reported_person)
-        return render(request, 'home.html', {'context':context})
+        return redirect('/shop/chat/' + str(chat.id))
         # else:
         #     return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
 
