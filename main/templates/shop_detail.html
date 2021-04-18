@@ -28,7 +28,7 @@
             <div class="product__container bd-grid">
               <div class="row">
                 {% for prod in products %}
-                  <div class="card col-sm-2 mt-3 product" id="{{prod.productType.id}}">
+                  <div class="card col-sm-4 mt-3 product" id="{{prod.productType.id}}">
                       <img src="{{prod.picture.url}}" class="img-fluid mt-3" style=" max-height:100px;max-width:150px; align-self:center;">
                       <a id = "nombre{{prod.id}}" class="product__name" href="{% url 'products' prod.pk %}">{{prod.name}}</a>
                       <p id = "precio{{prod.id}}">{{prod.price}}</p>
