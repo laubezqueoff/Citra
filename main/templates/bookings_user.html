@@ -10,19 +10,17 @@
             <h4 class="section-title mt-lg-2 ">Mis reservas</h4>
         </div>
         <div class="row ms-3">                            
-            <div class="product__container bd-grid">
-                <div class="row">
-                    {% for book, quantity in bookingsQuantity.items %}
-                    <div class="card col-sm-3 mt-3 mb-3 product">
-                        <img src="{{book.product.picture.url}}"  class="img-fluid mt-3" style="max-height:150px;max-width:150px; align-self:center;">
-                        <h4 class="card-title" style="text-align:center;">Tienda: {{book.product.shop.name}}</h4>
-                        <p class="product__name" style="text-align: center;" > Nombre Producto: <b>{{book.product.name}} </b> </p>
-                        <span class="product__price">Precio: {{quantity}} € </span>
-                        <span class="product__price">Cantidad Reservada: {{book.quantity}} </span>
-                    </div>
-                    {% empty %}
-                    {% endfor %}
+            <div class="row">
+                {% for book, quantity in bookingsQuantity.items %}
+                <div class="card col-sm-3 mt-3 mb-3 product">
+                    <img src="{{book.product.picture.url}}"  class="img-fluid mt-3" style="max-height:150px;max-width:150px; align-self:center;">
+                    <h4 class="card-title" style="text-align:center;">Tienda: {{book.product.shop.name}}</h4>
+                    <p class="product__name" style="text-align: center;" > Nombre Producto: <b>{{book.product.name}} </b> </p>
+                    <span class="product__price">Precio: {{quantity}} € </span>
+                    <span class="product__price">Cantidad Reservada: {{book.quantity}} </span>
                 </div>
+                {% empty %}
+                {% endfor %}
             </div>
         </div>
     </div>
