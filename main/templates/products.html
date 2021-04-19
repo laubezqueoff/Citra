@@ -87,7 +87,7 @@ Productos / Citra
                             <div class="d-flex justify-content-around fondo-blur">
                                 <button type="submit" class="btn btn-outline-dark  color-botones-products flex-grow-1 me-2 fw-bold ">Guardar cambios</button>
                                 <button href="/" class="btn btn-outline-dark flex-grow-1 ms-2 me-2 fw-bold">Cancelar</button>
-                                <button onclick="eliminarProducto({{product.id}})" class="btn btn-outline-dark flex-grow-3 ms-2 fw-bold">Borrar</button>
+                                <a type="button" onclick="eliminarProducto({{product.id}})" class="btn btn-outline-dark flex-grow-3 ms-2 fw-bold">Borrar</a>
                             </div>
                         {% else %}
                         <div class=" pt-lg-2 pb-5">

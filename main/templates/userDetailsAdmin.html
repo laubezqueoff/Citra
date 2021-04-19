@@ -29,10 +29,32 @@
                 </form>
                 {% endif %}
                     <button type='submit' class="btn btn-outline-warning" style="" onclick="history.back()" class="btn"> Volver </button>
-
                 </div>
             </div>
         </div>
     </div>
 </div>
+<table class="table table-striped ">
+  <thead>
+    <tr>
+      <th scope="col">Reportes</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+  {% for report in reports %}
+    <tr>
+      <th scope="row"></th>
+      <td>{{report.title}}</td>
+      <td>{{report.description}}</td>
+    </tr> 
+  {% empty %}
+  <tr>
+    <th scope="row"></th>
+    <td>No tiene reportes</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
 {% endblock %}

@@ -118,7 +118,7 @@ def registerShop(request):
 
             co = Owner.objects.get(person=p)
             shopType = ShopType.objects.get(id=int(shopType))
-            shop = Shop.objects.create(name=name, shopType=shopType, schedule=schedule, description=description,
+            shop = Shop.objects.create(name=shopName, shopType=shopType, schedule=schedule, description=description,
                                        picture=picture, address=address, owner=co, durationBooking=durationBooking)
 
             update_context(request, p.id, "Owner", co.id, True)
@@ -670,7 +670,6 @@ def product_delete(request, id_product):
     product = get_object_or_404(Product, pk=request.POST.get('id_product'))
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
-    shop_id = product.shop.id
     if (is_active and rol == "Owner" and str(product.shop.owner.person.id) == person_id):
         product.delete()
         data = {
@@ -770,18 +769,17 @@ def get_chats_list(request):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     tienda = miTienda(person_id)
-    print(context)
     chats = []
 
     if rol == 'User':
 
         chats = Chat.objects.filter(
-            user=get_object_or_404(CustomUser, pk=person_id))
+            user=get_object_or_404(CustomUser, pk=rol_id))
 
     elif rol == 'Owner':
 
         shops = Shop.objects.filter(
-            owner=get_object_or_404(Owner, pk=person_id))
+            owner=get_object_or_404(Owner, pk=rol_id))
         i = 0
         for s in shops:
             if i == 0:
@@ -793,7 +791,6 @@ def get_chats_list(request):
     else:
         return render(request, 'error.html', {"context": context, 'tienda': tienda}, status=403)
 
-    print(chats)
     return render(request, "chatList.html", {"context": context, "chats": chats, 'tienda': tienda}, status=200)
 
 
@@ -810,11 +807,9 @@ def get_chat(request, id_chat):
         # TODO: if para comprobar que el usuario forma parte de ese chat
         if str(rol) == 'User':
             if not (int(chat.user.id) == int(person_id)):
-                print(True)
                 return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
         elif str(rol) == 'Owner':
             if not(int(chat.shop.owner.id) == int(person_id)):
-                print(False)
                 return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
         else:
             return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
@@ -846,16 +841,14 @@ def get_chat_new(request, id_shop):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     tienda = miTienda(person_id)
-    print(rol)
     if rol == 'Admin' or rol == 'Owner':
         return render(request, 'error.html', {"context": context, 'tienda': tienda}, status=403)
     shop = get_object_or_404(Shop, pk=id_shop)
-    user = get_object_or_404(CustomUser, pk=person_id)
+    user = get_object_or_404(CustomUser, pk=rol_id)
     try:
         chat = Chat.objects.filter(shop=shop, user=user)[0]
     except:
         chat = None
-    print(chat)
     if chat != None:
         return redirect('/shop/chat/'+str(chat.id))
     if request.method == 'POST':
@@ -864,8 +857,6 @@ def get_chat_new(request, id_shop):
             text = form.cleaned_data['text']
             newChat = Chat.objects.create(shop=shop, user=user)
             newChat.save()
-            print('new chat')
-            print(newChat.pk)
             isSentByUser = False
             if rol == 'User':
                 isSentByUser = True
@@ -890,8 +881,10 @@ def search_shop(request):
             shopType = ShopType.objects.all()
             shop_subscription = {}
             for promo in shops:
-                a = Subscription.objects.filter(endDate__gte = today, shop = promo).exists()
-                shop_subscription[promo] = a
+                person = Person.objects.get(id=promo.owner.person.id)
+                if not person.isBanned:
+                    a = Subscription.objects.filter(endDate__gte = today, shop = promo).exists()
+                    shop_subscription[promo] = b
             return render(request, 'search_shop.html', {'context': context, 'tienda': tienda, 'shop_subscription': shop_subscription, 'shopType': shopType, "shop_name": shop_name})
 
     form = NameShopForm()
@@ -899,8 +892,10 @@ def search_shop(request):
     shopType = ShopType.objects.all()
     shop_subscription = {}
     for promo in shops:
-        a = Subscription.objects.filter(endDate__gte = today, shop = promo).exists()
-        shop_subscription[promo] = a
+        person = Person.objects.get(id=promo.owner.person.id)
+        if not person.isBanned:
+            a = Subscription.objects.filter(endDate__gte = today, shop = promo).exists()
+            shop_subscription[promo] = a
     return render(request, 'search_shop.html', {'context': context, 'tienda': tienda, 'shop_subscription': shop_subscription, 'shopType': shopType, "shop_name": ''})
 
 def home(request):
@@ -913,43 +908,25 @@ def home(request):
     promotions_shops_subscription = {}
     promotions_products_subscription = {}
     for promo in promotions_shops:
-        sus = Subscription.objects.filter(endDate__gte = today, shop = promo.shop).exists()
-        promotions_shops_subscription[promo] = sus
+        person = Person.objects.get(id=promo.shop.owner.person.id)
+        if not person.isBanned:
+            sus = Subscription.objects.filter(endDate__gte = today, shop = promo.shop).exists()
+            promotions_shops_subscription[promo] = sus
 
     for promo in promotions_products:
-        sus = Subscription.objects.filter(endDate__gte = today, shop = promo.product.shop).exists()
-        promotions_products_subscription[promo] = sus
+        person = Person.objects.get(id=promo.product.shop.owner.person.id)
+        if not person.isBanned:
+            sus = Subscription.objects.filter(endDate__gte = today, shop = promo.product.shop).exists()
+            promotions_products_subscription[promo] = sus
 
     return render(request, 'home.html', {"context": context, 'promotions_shops_subscription': promotions_shops_subscription, 'promotions_products_subscription': promotions_products_subscription, 'tienda': tienda})
-
-
-def booking(request):
-    person_id, rol, rol_id, is_active = get_context(request)
-    context = [person_id, rol, rol_id, is_active]
-    if (is_active):
-        user = CustomUser.objects.get(id=person_id)
-        for reserva in json.loads(request.POST.get('key_1_string')):
-            product = Product.objects.get(id=reserva['id'])
-
-            Booking.objects.create(startDate=date.today(), endDate=date.today(
-            ), product=product, title='Prueba', quantity=reserva['cantidad'], isAccepted=False, user=user)
-
-        data = {
-            'url': "user/bookings/"
-        }
-        return JsonResponse(data)
-    else:
-        data = {
-            'url': "/prohibido/"
-        }
-        return JsonResponse(data)
 
 def list_booking_user(request):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     tienda = miTienda(person_id)
     if (is_active):
-        user = CustomUser.objects.get(id=person_id)
+        user = CustomUser.objects.get(id=rol_id)
         bookings = Booking.objects.filter(user=user).filter(isAccepted=False)
         bookingsQuantity = {}
         for book in bookings:
@@ -964,7 +941,7 @@ def list_booking_owner(request):
     context = [person_id, rol, rol_id, is_active]
     tienda = miTienda(person_id)
     if (is_active):
-        owner = Owner.objects.get(id=person_id)
+        owner = Owner.objects.get(id=rol_id)
         bookings = Booking.objects.filter(isAccepted=False)
         factoresConfianza = {}
         for book in bookings:
@@ -1000,18 +977,16 @@ def booking(request):
     context = [person_id, rol, rol_id, is_active]
 
     if (is_active):
-        user = CustomUser.objects.get(id=person_id)
+        print(context)
+        user = CustomUser.objects.get(id=rol_id)
         for reserva in json.loads(request.POST.get('key_1_string')):
             product = Product.objects.get(id=reserva['id'])
             shop = product.shop.durationBooking
             now = datetime.now()
-            print(now + timedelta(minutes=shop))
-            finishBooking = now + timedelta(minutes=shop)
-            print(finishBooking)
+            finishBooking = now + timedelta(hours=shop)
             b = Booking.objects.create(startDate=now, endDate=finishBooking, product=product,
                                        title='Prueba', quantity=reserva['cantidad'], isAccepted=False, user=user)
             b.save()
-            print(type(b.endDate))
 
         data = {
             'url': "/user/bookings/"
@@ -1290,20 +1265,18 @@ def get_user(request ,id_user):
     if (is_active):
         if str(rol) == 'Admin':
             user = get_object_or_404(CustomUser,pk=id_user)
-            # user = CustomUser.objects.filter(id=id_user)
             if request.method == 'POST': 
                 form = UserBannedForm(data=request.POST)
                 if form.is_valid():
                     isBanned = form.cleaned_data['isBanned'] #Debe pasarse el valor original de isBanned negado
-                    print(isBanned)
                     person = user.person
                     person.isBanned = isBanned
                     person.save()
-                    print(user.person.isBanned)
                     return render(request, 'userDetailsAdmin.html', {"context" : context, "user" : user, 'form': form, 'tienda': tienda})
             else:
                 form = UserBannedForm()
-                return render(request, 'userDetailsAdmin.html', {"context" : context, "user" : user, 'form': form, 'tienda': tienda})
+                reports = Report.objects.filter(person=user.person)
+                return render(request, 'userDetailsAdmin.html', {"context" : context, "user" : user, 'form': form, 'tienda': tienda, 'reports': reports})
         else:
             return render(request,'prohibido.html',{"context" : context, 'tienda': tienda},status=403)
     else:
@@ -1332,8 +1305,9 @@ def get_owner(request ,id_user):
                     return render(request, 'ownerDetailsAdmin.html', {"context" : context, "owner" : owner, 'form': form, 'tienda': tienda})
             else:
                 form = UserBannedForm()
-                
-                return render(request, 'ownerDetailsAdmin.html', {"context" : context, "owner" : owner, 'form': form, 'tienda': tienda})
+                form = UserBannedForm()
+                reports = Report.objects.filter(person=owner.person)
+                return render(request, 'ownerDetailsAdmin.html', {"context" : context, "owner" : owner, 'form': form, 'tienda': tienda, 'reports': reports})
         else:
             return render(request,'prohibido.html',{"context" : context, 'tienda': tienda},status=403)
     else:
@@ -1354,7 +1328,6 @@ def updateShop(request, id_shop):
                 shop.description = form.cleaned_data['description']
                 shop.address = form.cleaned_data['address']
                 shop.durationBooking = form.cleaned_data['durationBooking']
-            else:
                 if request.FILES.get('picture') != None:
                     if request.FILES.get('picture').size > 5000000:
                         msg = 'El tamaño máximo de la imagen no puede superar 5 MB'
