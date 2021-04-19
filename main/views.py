@@ -1195,12 +1195,14 @@ def get_owners(request):
                     username = form.cleaned_data['username']
                     person_list= Person.objects.filter(username__icontains=username)
                     i=0
-                    for p in person_list:
-                        owners = Owner.objects.filter(person=p)
-                        if(i>0):
-                            owners = owners | Owner.objects.filter(person=p)
-                        i=+1
-                        print(owners)
+                    if len(person_list) > 0:
+                        for p in person_list:
+                            owners = Owner.objects.filter(person=p)
+                            if(i>0):
+                                owners = owners | Owner.objects.filter(person=p)
+                            i=+1
+                    else:
+                        users = []
                     return render(request, 'ownerListAdmin.html', {"context" : context, "owners" : owners, 'form': form, 'tienda': tienda})
                 else:
                     form = UserSearchForm()
@@ -1233,11 +1235,15 @@ def get_users(request):
                     username = form.cleaned_data['username']
                     person_list= Person.objects.filter(username__icontains=username)
                     i=0
-                    for p in person_list:
-                        users = CustomUser.objects.filter(person=p)
-                        if(i>0):
-                            users = users | CustomUser.objects.filter(person=p)
-                        i=+1
+                    if len(person_list) > 0:
+                        for p in person_list:
+                            users = CustomUser.objects.filter(person=p)
+                            if(i>0):
+                                users = users | CustomUser.objects.filter(person=p)
+                            i=+1
+                    else:
+                        users = []
+
 
                     return render(request, 'userListAdmin.html', {"context" : context, "users" : users, 'form': form, 'tienda': tienda})
                 else:

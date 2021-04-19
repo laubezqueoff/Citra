@@ -30,6 +30,8 @@
                         <h4>{{row.person.name}}</h4>
                         <p>{{row.person.email}}</p>
 		            </div>
+				{% empty %}
+					<p>No hay usuarios con ese nombre</p>
 				{% endfor %}
 		        </div>
 	        </div>
