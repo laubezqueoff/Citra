@@ -1207,17 +1207,15 @@ def get_owners(request):
                                 owners = owners | Owner.objects.filter(person=p)
                             i=+1
                     else:
-                        users = []
+                        owners = []
                     return render(request, 'ownerListAdmin.html', {"context" : context, "owners" : owners, 'form': form, 'tienda': tienda})
                 else:
                     form = UserSearchForm()
                     owners = Owner.objects.all()
-                    print(owners)
                     return render(request, 'ownerListAdmin.html', {"context" : context, "owners" : owners, 'form': form, 'tienda': tienda})
             else:
                 form = UserSearchForm()
                 owners = Owner.objects.all()
-                print(owners)
                 return render(request, 'ownerListAdmin.html', {"context" : context, "owners" : owners, 'form': form, 'tienda': tienda})
         else:
             return render(request,'prohibido.html',{"context" : context, 'tienda': tienda},status=403)
@@ -1305,7 +1303,6 @@ def get_owner(request ,id_user):
     if (is_active):
         if str(rol) == 'Admin':
             owner = get_object_or_404(Owner,pk=id_user)
-            # user = CustomUser.objects.filter(id=id_user)
             if request.method == 'POST': 
                 form = UserBannedForm(data=request.POST)
                 if form.is_valid():
@@ -1316,7 +1313,6 @@ def get_owner(request ,id_user):
                     reports = Report.objects.filter(person=owner.person)
                     return render(request, 'ownerDetailsAdmin.html', {"context" : context, "owner" : owner, 'form': form, 'tienda': tienda, 'reports': reports})
             else:
-                form = UserBannedForm()
                 form = UserBannedForm()
                 reports = Report.objects.filter(person=owner.person)
                 return render(request, 'ownerDetailsAdmin.html', {"context" : context, "owner" : owner, 'form': form, 'tienda': tienda, 'reports': reports})
