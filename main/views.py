@@ -70,7 +70,13 @@ def login(request):
             return render(request, 'login.html', {"msg": msg, 'tienda': ''})
 
     else:  # Si es un GET redirijimos a la vista de login
-        return render(request, 'login.html', {'tienda': ''})
+        person_id, rol, rol_id, is_active = get_context(request)
+        context = [person_id, rol, rol_id, is_active]
+        tienda = miTienda(person_id)
+        if is_active:
+            return redirect('/home')
+        else:
+            return render(request, 'login.html', {'tienda': ''})
 
 
 def registerShop(request):
@@ -805,10 +811,10 @@ def get_chat(request, id_chat):
         chat = get_object_or_404(Chat, pk=id_chat)
         # TODO: if para comprobar que el usuario forma parte de ese chat
         if str(rol) == 'User':
-            if not (int(chat.user.id) == int(person_id)):
+            if not (int(chat.user.id) == int(rol_id)):
                 return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
         elif str(rol) == 'Owner':
-            if not(int(chat.shop.owner.id) == int(person_id)):
+            if not(int(chat.shop.owner.id) == int(rol_id)):
                 return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
         else:
             return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
@@ -841,7 +847,7 @@ def get_chat_new(request, id_shop):
     context = [person_id, rol, rol_id, is_active]
     tienda = miTienda(person_id)
     if rol == 'Admin' or rol == 'Owner':
-        return render(request, 'error.html', {"context": context, 'tienda': tienda}, status=403)
+        return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
     shop = get_object_or_404(Shop, pk=id_shop)
     user = get_object_or_404(CustomUser, pk=rol_id)
     try:
@@ -976,7 +982,6 @@ def booking(request):
     context = [person_id, rol, rol_id, is_active]
 
     if (is_active):
-        print(context)
         user = CustomUser.objects.get(id=rol_id)
         for reserva in json.loads(request.POST.get('key_1_string')):
             product = Product.objects.get(id=reserva['id'])

@@ -36,10 +36,10 @@ Foro / Citra
     <div class="container">
         <div class="input-group">
             <form method='POST' class="input-group">{% csrf_token %}
-                <input type="text" class="form-control form-control-lg"  placeholder="Añade un comentario" name="text" id="text" />
+                <input type="text" class="form-control form-control-lg"  placeholder="Añade un comentario" name="text" id="text" required/>
                 <input type='submit' class="btn btn-outline-dark" style="float:left;background-color: #ffd3b6;">
             </form>
-                <button type='submit' onclick="history.back()" class="btn"> Volver </button>  
+                <a role="button" class="btn btn-outline-warning" style="" href="/threads" class="btn"> Volver </a>  
         </div>
     </div>
 </div>

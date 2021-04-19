@@ -50,7 +50,7 @@
             <p>Dirección: {{shop.address}}</p>
 
           {% if context.1 == 'Owner' and shop.owner.person.id|stringformat:"i" == context.0 %}
-            <a class="nav-link" href="{{shop.id}}/edit" name="Editar tienda">Editar tienda</a>
+            <a class="nav-link" href="edit" name="Editar tienda">Editar tienda</a>
           {% endif %}
 
          {% if context.1 == 'User' %}
@@ -174,7 +174,7 @@ function reserva() {
         csrfmiddlewaretoken: '{{ csrf_token }}',
     }
     $.ajax({
-        url: 'booking/',
+        url: '/shop/create_booking/',
         data: data,
         type: 'POST',
         success: function (data) {
