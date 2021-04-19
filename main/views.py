@@ -883,7 +883,7 @@ def search_shop(request):
                 person = Person.objects.get(id=promo.owner.person.id)
                 if not person.isBanned:
                     a = Subscription.objects.filter(endDate__gte = today, shop = promo).exists()
-                    shop_subscription[promo] = b
+                    shop_subscription[promo] = a
             return render(request, 'search_shop.html', {'context': context, 'tienda': tienda, 'shop_subscription': shop_subscription, 'shopType': shopType, "shop_name": shop_name})
 
     form = NameShopForm()
