@@ -1272,7 +1272,8 @@ def get_user(request ,id_user):
                     person = user.person
                     person.isBanned = isBanned
                     person.save()
-                    return render(request, 'userDetailsAdmin.html', {"context" : context, "user" : user, 'form': form, 'tienda': tienda})
+                    reports = Report.objects.filter(person=user.person)
+                    return render(request, 'userDetailsAdmin.html', {"context" : context, "user" : user, 'form': form, 'tienda': tienda, 'reports': reports})
             else:
                 form = UserBannedForm()
                 reports = Report.objects.filter(person=user.person)
@@ -1302,7 +1303,8 @@ def get_owner(request ,id_user):
                     person = owner.person
                     person.isBanned = isBanned
                     person.save()
-                    return render(request, 'ownerDetailsAdmin.html', {"context" : context, "owner" : owner, 'form': form, 'tienda': tienda})
+                    reports = Report.objects.filter(person=owner.person)
+                    return render(request, 'ownerDetailsAdmin.html', {"context" : context, "owner" : owner, 'form': form, 'tienda': tienda, 'reports': reports})
             else:
                 form = UserBannedForm()
                 form = UserBannedForm()
