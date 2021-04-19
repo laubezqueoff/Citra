@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from django import forms
 from django.contrib.auth.forms import UserCreationForm   
-from main.models import ReportReason, Person, CustomUser, CustomAdmin, Owner, ShopType, ProductType, Shop, Product, SubscriptionType, PromotionType, Subscription, Promotion, Booking, Review, Chat, ChatMessage, Thread, ForumMessage
+from main.models import ReportReason, CustomUser, CustomAdmin, Owner, ShopType, ProductType, Shop, Product, SubscriptionType, PromotionType, Subscription, Promotion, Booking, Review, Chat, ChatMessage, Thread, ForumMessage
 from django.core.exceptions import ValidationError
 from main.models import Shop
 

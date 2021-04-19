@@ -12,30 +12,30 @@ Requires core.js and SelectBox.js.
                 // Don't initialize on empty forms.
                 return;
             }
-            const from_box = document.getElementById(field_id);
-            from_box.id += '_from'; // change its ID
-            from_box.className = 'filtered';
+            const fromBox = document.getElementById(field_id);
+            fromBox.id += '_from'; // change its ID
+            fromBox.className = 'filtered';
 
-            for (const p of from_box.parentNode.getElementsByTagName('p')) {
+            for (const p of fromBox.parentNode.getElementsByTagName('p')) {
                 if (p.classList.contains("info")) {
                     // Remove <p class="info">, because it just gets in the way.
-                    from_box.parentNode.removeChild(p);
+                    fromBox.parentNode.removeChild(p);
                 } else if (p.classList.contains("help")) {
                     // Move help text up to the top so it isn't below the select
                     // boxes or wrapped off on the side to the right of the add
                     // button:
-                    from_box.parentNode.insertBefore(p, from_box.parentNode.firstChild);
+                    fromBox.parentNode.insertBefore(p, fromBox.parentNode.firstChild);
                 }
             }
 
             // <div class="selector"> or <div class="selector stacked">
-            const selector_div = quickElement('div', from_box.parentNode);
+            const selector_div = quickElement('div', fromBox.parentNode);
             selector_div.className = is_stacked ? 'selector stacked' : 'selector';
 
             // <div class="selector-available">
             const selector_available = quickElement('div', selector_div);
             selector_available.className = 'selector-available';
-            const title_available = quickElement('h2', selector_available, interpolate(gettext('Available %s') + ' ', [field_name]));
+            const title_available = quickElement("h2", selector_available, interpolate(gettext("Available %s") + ' ', [field_name]));
             quickElement(
                 'span', title_available, '',
                 'class', 'help help-tooltip help-icon',
@@ -65,7 +65,7 @@ Requires core.js and SelectBox.js.
             const filter_input = quickElement('input', filter_p, '', 'type', 'text', 'placeholder', gettext("Filter"));
             filter_input.id = field_id + '_input';
 
-            selector_available.appendChild(from_box);
+            selector_available.appendChild(fromBox);
             const choose_all = quickElement('a', selector_available, gettext('Choose all'), 'title', interpolate(gettext('Click to choose all %s at once.'), [field_name]), 'href', '#', 'id', field_id + '_add_all_link');
             choose_all.className = 'selector-chooseall';
 
@@ -94,12 +94,12 @@ Requires core.js and SelectBox.js.
                 )
             );
 
-            const to_box = quickElement('select', selector_chosen, '', 'id', field_id + '_to', 'multiple', '', 'size', from_box.size, 'name', from_box.name);
+            const to_box = quickElement('select', selector_chosen, '', 'id', field_id + '_to', 'multiple', '', 'size', fromBox.size, 'name', fromBox.name);
             to_box.className = 'filtered';
             const clear_all = quickElement('a', selector_chosen, gettext('Remove all'), 'title', interpolate(gettext('Click to remove all chosen %s at once.'), [field_name]), 'href', '#', 'id', field_id + '_remove_all_link');
             clear_all.className = 'selector-clearall';
 
-            from_box.name = from_box.name + '_old';
+            fromBox.name = fromBox.name + '_old';
 
             // Set up the JavaScript event handlers for the select box filter interface
             const move_selection = function(e, elem, move_func, from, to) {
@@ -145,19 +145,19 @@ Requires core.js and SelectBox.js.
                     SelectFilter.refresh_icons(field_id);
                 }
             });
-            from_box.closest('form').addEventListener('submit', function() {
+            fromBox.closest('form').addEventListener('submit', function() {
                 SelectBox.select_all(field_id + '_to');
             });
             SelectBox.init(field_id + '_from');
             SelectBox.init(field_id + '_to');
-            // Move selected from_box options to to_box
+            // Move selected fromBox options to to_box
             SelectBox.move(field_id + '_from', field_id + '_to');
 
             if (!is_stacked) {
                 // In horizontal mode, give the same height to the two boxes.
-                const j_from_box = document.getElementById(field_id + '_from');
+                const j_fromBox = document.getElementById(field_id + '_from');
                 const j_to_box = document.getElementById(field_id + '_to');
-                let height = filter_p.offsetHeight + j_from_box.offsetHeight;
+                let height = filter_p.offsetHeight + j_fromBox.offsetHeight;
 
                 const j_to_box_style = window.getComputedStyle(j_to_box);
                 if (j_to_box_style.getPropertyValue('box-sizing') === 'border-box') {

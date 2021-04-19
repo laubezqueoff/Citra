@@ -2,19 +2,18 @@ from main.models import Person, CustomUser, CustomAdmin, Owner, ShopType, Produc
 import requests
 from datetime import date, datetime
 from django.shortcuts import render, redirect, get_object_or_404
-import urllib.request
 from main.forms import MessageForm, ReviewForm, UserSearchForm, UserBannedForm, ProductForm, FormShop, NameShopForm, ReportForm
 from django.http import Http404
 import json
 from django.http import JsonResponse
 from datetime import timedelta
-from datetime import datetime
 import stripe
 from Citra import settings
 
 
 def login(request):
-    ''' Logea una persona en la aplicación.\n
+    ''' 
+    Logea una persona en la aplicación.\n
         POST    -> Lleva la inicio con el contexto actualizado \n
         GET     -> Lleva al formulario de login
     '''

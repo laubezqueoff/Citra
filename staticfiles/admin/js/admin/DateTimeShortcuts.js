@@ -19,7 +19,7 @@
         },
         dismissClockFunc: [],
         dismissCalendarFunc: [],
-        calendarDivName1: 'calendarbox', // name of calendar <div> that gets toggled
+        calendarDivName1: "calendarbox", // name of calendar <div> that gets toggled
         calendarDivName2: 'calendarin', // name of <div> that contains calendar
         calendarLinkName: 'calendarlink', // name of the link that is used to toggle
         clockDivName: 'clockbox', // name of clock <div> that gets toggled

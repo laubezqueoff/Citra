@@ -7,7 +7,7 @@
     $.fn.actions = function(opts) {
         const options = $.extend({}, $.fn.actions.defaults, opts);
         const actionCheckboxes = $(this);
-        let list_editable_changed = false;
+        let listEditableChanged = false;
         const showQuestion = function() {
                 $(options.acrossClears).hide();
                 $(options.acrossQuestions).show();
@@ -111,10 +111,10 @@
             updateCounter();
         });
         $('form#changelist-form table#result_list tr').on('change', 'td:gt(0) :input', function() {
-            list_editable_changed = true;
+            listEditableChanged = true;
         });
         $('form#changelist-form button[name="index"]').on('click', function(event) {
-            if (list_editable_changed) {
+            if (listEditableChanged) {
                 return confirm(gettext("You have unsaved changes on individual editable fields. If you run an action, your unsaved changes will be lost."));
             }
         });
@@ -126,7 +126,7 @@
                 }
             });
             if (action_changed) {
-                if (list_editable_changed) {
+                if (listEditableChanged) {
                     return confirm(gettext("You have selected an action, but you haven’t saved your changes to individual fields yet. Please click OK to save. You’ll need to re-run the action."));
                 } else {
                     return confirm(gettext("You have selected an action, and you haven’t made any changes on individual fields. You’re probably looking for the Go button rather than the Save button."));
