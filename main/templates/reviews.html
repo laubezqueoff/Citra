@@ -4,8 +4,10 @@
 <title>Valoraciones / Citra</title>
 {% endblock %}
 {% block contenido %}
+{% if context.1 == 'User' %}
 <div class="" style="margin-left: 45%!important; margin-top: 20px!important"><button class="justify-content-center button-light"><a style="text-decoration: none;" class="button-light" href="new"> Añade un comentario </a></button></div>
-    {% for row in reviews %}
+{% endif %}
+{% for row in reviews %}
 <div class="container mt-5" style="margin-top:2px!important;">
     <div class="d-flex justify-content-center row">
         <div class="col-md-6">
@@ -25,5 +27,6 @@
     </div>
 </div>
     {% endfor %}
+    <button style="font-size:13px;"  class="btn"><a style="text-decoration: none; color:#00000" href="../"> Volver </a></button>
 
 {% endblock %}

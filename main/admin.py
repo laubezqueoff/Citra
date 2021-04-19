@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib import admin
-from main.models import Person, CustomUser, CustomAdmin, Owner, ShopType, ProductType, Shop, Product, SubscriptionType, PromotionType, Subscription, Promotion, Booking, Review, Chat, ChatMessage, Thread, ForumMessage
+from main.models import Person, CustomUser, CustomAdmin, Owner, ShopType, ProductType, Shop, Product, SubscriptionType, PromotionType, Subscription, Promotion, Booking, Review, Chat, ChatMessage, Thread, ForumMessage, ReportReason, Report
 
 # Register your models here.
 admin.site.register(Person)
@@ -21,3 +21,5 @@ admin.site.register(Chat)
 admin.site.register(ChatMessage)
 admin.site.register(Thread)
 admin.site.register(ForumMessage)
+admin.site.register(ReportReason)
+admin.site.register(Report)

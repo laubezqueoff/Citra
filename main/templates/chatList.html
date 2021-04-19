@@ -34,7 +34,11 @@
       <td><a href= "{% url 'chat' row.id %}">Accede al chat</a></td>
     </tr>
     {% endif %}
-
+  {% empty %}
+  <tr>
+    <th scope="row"></th>
+    <td>No hay chats</td>
+  </tr>
   {% endfor %}
   </tbody>
 </table>

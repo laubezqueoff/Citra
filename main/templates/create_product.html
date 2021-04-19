@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+<head>{% block cabecera %} <link rel="stylesheet" href="{% static 'css/style_create_product.css' %}"/>
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'> 
+{% endblock %}</head>
+
+
+{% block title %}
+Productos / Citra
+{% endblock %}
+
+{% block contenido %}
+
+<container>
+    <form accept-charset="UTF-8" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
+
+    <div class="row justify-content-center m-0">
+        <div class="col-10">
+            <div class="m-5">
+                <h4 class="section-title">Nuevo Producto</h4>
+
+                <form method="POST">{% csrf_token %}
+                    <div class="mb-4">
+                        <label for="name" class="form-label fw-bold">Nombre</label>
+                        <input type="text" class="form-control form-control-sm" placeholder="Introduce el nombre del producto" id="name" name="name" maxlength="20" required>
+                    </div>
+                    <div class="mb-4">
+                        <label for="type" class="form-label fw-bold">Tipo</label>
+                        <select name="select" class="form-control form-control-sm" placeholder="Tipo de producto" id="type" name="type" required>
+                            {% for ty in types %}
+                                <option value="{{ty.name}}">{{ty.name}}</option>
+                            {% endfor %}
+                        </select>                    
+                    </div>
+                    <div class="mb-4">
+                        <label for="price" class="form-label fw-bold">Precio</label>
+                        <input type="number" step="0.01" class="form-control form-control-sm" placeholder="Precio del producto" id="price" name="price" required>
+                        {{form.errors.price}}               
+                    </div>
+                    <div class="mb-4">
+                        <label for="description" class="form-label fw-bold">Descripción</label>
+                        <input type="textarea" class="form-control form-control-sm" placeholder="Introduce la descripción del producto" id="description" name="description" maxlength="60">
+                    </div>
+                    <div class="mb-4">
+                        <label for="picture" class="form-label fw-bold">Imagen</label>
+                        <input type="file" id="picture" name="picture" required>
+                    </div>                  
+
+                    <div class="row m-0">
+                        <div class="d-flex justify-content-center mt-3">
+                            <button type="submit" class="btn btn-dark fw-bold flex-grow-1 me-2">Crear producto</button>
+                            <input type="button" class="btn btn-dark fw-bold flex-grow-1 ms-2" value="Cancelar" onclick="history.back()">
+                        </div>
+                    </div>
+                    
+           
+            </div>
+        </div>
+    </div>
+
+</form>
+
+</container>
+
+
+
+{% endblock %}

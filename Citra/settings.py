@@ -41,6 +41,11 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = '=%5ay3n(@vm@7r2ir(mi%z_*12yhax016lw%cgl$b2(i*cm^-u'
 
+# Stripe
+STRIPE_PUBLISHABLE_KEY = 'pk_test_51IdHLbB265Zw8I8VkASK9fZ5idoiRu6ZKRBGUoPo6zokV8JkV6edmc6moMOIbLUOqFer3mqGVAkT3QnVr0Inadp100lrOVLH63'
+STRIPE_SECRET_KEY = 'sk_test_51IdHLbB265Zw8I8VZU47YfE0zuKsXbq5C7fLmjggQ2CIYKIUV0KhgDAFgCPQ8TkUwUeBTLeqhSgN5IEkj5CZWa2x00lP5s4VIo'
+STRIPE_REQUEST_URI = 'http://localhost:8000/oauth/callback'
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
@@ -58,6 +63,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'main.apps.MainConfig',
+    'storages'
 ]
 
 MIDDLEWARE = [
@@ -98,6 +104,7 @@ WSGI_APPLICATION = 'Citra.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
+        # 'NAME': str(BASE_DIR / "db.sqlite3"),
         'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
@@ -141,9 +148,9 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
-MEDIA_URL = '/media/'
+# MEDIA_URL = '/media/'
 
-MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 STATIC_ROOT = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'staticfiles')
 
@@ -189,3 +196,20 @@ LOGGING = {
 }
 
 DEBUG_PROPAGATE_EXCEPTIONS = True
+
+TEMPLATE_DIRS = (
+    os.path.join(os.path.dirname(os.path.dirname(__file__)),
+                 'static', 'templates'),
+)
+
+AWS_S3_REGION_NAME = os.environ.get('AWS_S3_REGION_NAME', '')
+AWS_ACCESS_KEY_ID = os.environ.get('AWS_ACCESS_KEY_ID', '')
+AWS_SECRET_ACCESS_KEY = os.environ.get('AWS_SECRET_ACCESS_KEY', '')
+AWS_STORAGE_BUCKET_NAME = os.environ.get('AWS_STORAGE_BUCKET_NAME', '')
+
+AWS_S3_FILE_OVERWRITE = False
+AWS_DEFAULT_ACL = None
+
+DEFAULT_FILE_STORAGE = 'main.backends.MediaStorageBackend'
+
+AWS_S3_ADDRESSING_STYLE = "virtual"
