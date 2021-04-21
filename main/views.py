@@ -808,15 +808,25 @@ def get_chat(request, id_chat):
     context = [person_id, rol, rol_id, is_active]
     tienda = miTienda(person_id)
     if (is_active):
-        chat = get_object_or_404(Chat, pk=id_chat)
+        try:
+            chat = get_object_or_404(Chat, pk=id_chat)
+        except:
+            print('no Existe el chat')
+            return render(request, 'error.html', {"context": context, 'tienda': tienda}, status=404)
         # TODO: if para comprobar que el usuario forma parte de ese chat
         if str(rol) == 'User':
             if not (int(chat.user.id) == int(rol_id)):
+                print('Es user que no pertenece al chat')
+
                 return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
         elif str(rol) == 'Owner':
             if not(int(chat.shop.owner.id) == int(rol_id)):
+                print('Es owner que no pertenece al chat')
+
                 return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
         else:
+            print('Es admin que no pertenece al chat')
+
             return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
 
         if request.method == 'POST':
@@ -834,6 +844,7 @@ def get_chat(request, id_chat):
         form = MessageForm()
         return render(request, 'chat.html', {"context": context, "messages": chat_message, 'form': form, 'tienda': tienda, 'shop': chat.shop, 'user': chat.user})
     else:
+        print('No está logeado')
         return render(request, 'prohibido.html', status=403)
 
 
@@ -847,6 +858,7 @@ def get_chat_new(request, id_shop):
     context = [person_id, rol, rol_id, is_active]
     tienda = miTienda(person_id)
     if rol == 'Admin' or rol == 'Owner':
+        print('Es admin o Owner')
         return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
     shop = get_object_or_404(Shop, pk=id_shop)
     user = get_object_or_404(CustomUser, pk=rol_id)
