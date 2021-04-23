@@ -102,3 +102,16 @@ class TestMethods(unittest.TestCase):
         response = self.client.get(reverse('chat', args=(12345,)), follow=True)    # for second object
         self.assertEqual(response.status_code, 404)
 
+    def test_new_product_get(self):
+        #Probamos que se puede acceder a un chat con una tienda con la que todavia no ha hablado
+        print('test_new_product_get')
+
+        credentials = {'username': 'micum', 'password': 'Contraseña-3'}
+        
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+
+        response = self.client.get(reverse('product_create', args=(4,)), follow=True)    # for second object
+        self.assertEqual(response.status_code, 200)
+

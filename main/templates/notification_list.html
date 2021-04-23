@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}
+Listado de notificaciones
+{% endblock %}
+
+{% block contenido %}
+<table class="table table-striped ">
+  <thead>
+    <tr>
+      <th scope="col">Notificaciones</th>
+    </tr>
+  </thead>
+  <tbody>
+
+
+  {% for notification in notifications %}
+    <tr>
+      <th scope="row"></th>
+      <td>{{notification.title}}</td>
+      <td>{{notification.description}}</td>
+    </tr> 
+  {% empty %}
+  <tr>
+    <th scope="row"></th>
+    <td>No tiene notificaciones</td>
+  </tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

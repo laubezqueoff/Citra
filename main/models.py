@@ -143,3 +143,10 @@ class ForumMessage(models.Model):
     date = models.DateField()
     thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+
+## MODELO DE NOTIFICACIONES ########################################################
+
+class Notification(models.Model):
+    title = models.CharField(max_length=40)
+    description = models.TextField(max_length=60)
+    person = models.ForeignKey(Person, on_delete=models.CASCADE)
