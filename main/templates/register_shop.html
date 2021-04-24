@@ -91,11 +91,11 @@
                     </div>                  
                     <div class="mb-4">
                         <label for="durationBooking" class="form-label fw-bold">Duración de la reserva en horas</label>
-                        <input type="number" class="form-control mb-2 form-control-sm " placeholder="Introduce la duración en la que la reserva estará disponible" id="durationBooking" name="durationBooking" required>
+                        <input type="number" class="form-control mb-2 form-control-sm " placeholder="Introduce la duración en la que la reserva estará disponible" min="1" max="23" id="durationBooking" name="durationBooking" required>
                     </div>
                     <div class="mb-4">
                         <label for="picture" class="form-label fw-bold me-5">Imagen de la tienda</label>
-                        <input type="file" id="picture" name="picture" required>
+                        <input type="file" id="picture" accept="image/*" name="picture" required>
                     </div> 
 
            

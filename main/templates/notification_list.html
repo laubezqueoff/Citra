@@ -1,33 +1,44 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
-{% block title %}
-Listado de notificaciones
+{% block cabecera %}<link rel="stylesheet" href="{% static 'css/style_notifications.css' %}"/>
+<title>Notificaciones / Citra</title>
 {% endblock %}
 
+
 {% block contenido %}
-<table class="table table-striped ">
-  <thead>
-    <tr>
-      <th scope="col">Notificaciones</th>
-    </tr>
-  </thead>
-  <tbody>
+<container class="container-fluid">
+
+  <div class="row m-0">
+      <h4 class="section-title mt-lg-2 d-flex justify-content-center">Mis notificaciones</h4>
+    {% for notification in  notifications %}
+    <div class="container mt-5" style="margin-top:2px!important;">
+        <div class="d-flex justify-content-center row">
+            <div class="col-10">
+                <div class="bg-white comment-section">
+
+                    <div class="mt-2 p-2">
+                        <span class="fw-bold">{{notification.title}}</span>
+                        <p class="comment-content mt-1 ms-2">{{notification.description}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <div class="row m-0">
+    <div class="d-flex justify-content-center mt-3">
+      <div class="col-10">
+        <input type="button" class="btn btn-dark fw-bold flex-grow-1" value="Volver" onclick="history.back()">
+      </div>
+    </div>
+  </div>
+</container>
 
 
-  {% for notification in notifications %}
-    <tr>
-      <th scope="row"></th>
-      <td>{{notification.title}}</td>
-      <td>{{notification.description}}</td>
-    </tr> 
-  {% empty %}
-  <tr>
-    <th scope="row"></th>
-    <td>No tiene notificaciones</td>
-  </tr>
-  {% endfor %}
-  </tbody>
-</table>
+
+
+
 {% endblock %}
