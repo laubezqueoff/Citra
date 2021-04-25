@@ -632,6 +632,75 @@ def activate_shop(request, id_shop):
         return render(request, 'prohibido.html')
 
 
+
+def activate_shop_three_months(request, id_shop):
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    tienda = miTienda(person_id)
+    if (is_active):
+        shop = get_object_or_404(Shop, pk=id_shop)
+        subscription = Subscription.objects.filter(shop=shop).exists()
+        time = date.today()
+        activate = Subscription.objects.filter(endDate__gte = time).exists()
+        if (not(subscription) and str(shop.owner.person.id) == person_id and request.method == 'POST'):
+            subscriptionType = SubscriptionType.objects.get(id=0)
+            owner = Owner.objects.get(person=person_id)
+            time = date.today()
+            endtime = (time + timedelta(days=90))
+            person = Person.objects.get(id=person_id)
+            get_or_create_customer(email=person.email, source=None)
+            charge(amount=1000, source=request.POST.get('stripeToken'))
+            suscripcion = Subscription.objects.create(
+                subscriptionType=subscriptionType, startDate=time, endDate=endtime, owner=owner, shop=shop)
+            return redirect("home")
+        elif (subscription and str(shop.owner.person.id) == person_id and not activate and request.method == 'POST'):
+            time = date.today()
+            endtime = (time + timedelta(days=30))
+            person = Person.objects.get(id=person_id)
+            get_or_create_customer(email=person.email, source=None)
+            charge(amount=1000, source=request.POST.get('stripeToken'))
+            promocion = Subscription.objects.filter(shop = shop).update(startDate=time, endDate=endtime)
+            return redirect("home")
+        else:
+            return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
+    else:
+        return render(request, 'prohibido.html')
+
+def activate_shop_one_year(request, id_shop):
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    tienda = miTienda(person_id)
+    if (is_active):
+        shop = get_object_or_404(Shop, pk=id_shop)
+        subscription = Subscription.objects.filter(shop=shop).exists()
+        time = date.today()
+        activate = Subscription.objects.filter(endDate__gte = time).exists()
+        if (not(subscription) and str(shop.owner.person.id) == person_id and request.method == 'POST'):
+            subscriptionType = SubscriptionType.objects.get(id=0)
+            owner = Owner.objects.get(person=person_id)
+            time = date.today()
+            endtime = (time + timedelta(days=365))
+            person = Person.objects.get(id=person_id)
+            get_or_create_customer(email=person.email, source=None)
+            charge(amount=1000, source=request.POST.get('stripeToken'))
+            suscripcion = Subscription.objects.create(
+                subscriptionType=subscriptionType, startDate=time, endDate=endtime, owner=owner, shop=shop)
+            return redirect("home")
+        elif (subscription and str(shop.owner.person.id) == person_id and not activate and request.method == 'POST'):
+            time = date.today()
+            endtime = (time + timedelta(days=30))
+            person = Person.objects.get(id=person_id)
+            get_or_create_customer(email=person.email, source=None)
+            charge(amount=1000, source=request.POST.get('stripeToken'))
+            promocion = Subscription.objects.filter(shop = shop).update(startDate=time, endDate=endtime)
+            return redirect("home")
+        else:
+            return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
+    else:
+        return render(request, 'prohibido.html')
+
+
+
 def product_create(request, id_shop):
     shop = get_object_or_404(Shop, pk=id_shop)
     person_id, rol, rol_id, is_active = get_context(request)
