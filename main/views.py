@@ -2,7 +2,7 @@ from main.models import Person, CustomUser, CustomAdmin, Owner, ShopType, Produc
 import requests
 from datetime import date, datetime
 from django.shortcuts import render, redirect, get_object_or_404
-from main.forms import MessageForm, ReviewForm, UserSearchForm, UserBannedForm, ProductForm, FormShop, NameShopForm, ReportForm
+from main.forms import MessageForm, ReviewForm, UserSearchForm, CustomUserUpdateForm, LoginForm, ShopForm, CustomUserForm,UserBannedForm, ProductForm, FormShop, NameShopForm, ReportForm
 from django.http import Http404
 import json
 from django.http import JsonResponse
@@ -21,54 +21,56 @@ def login(request):
     msg_error = "El nombre y la contraseña no coinciden"
     msg_error_is_banned= "El usuario esta suspendido"
     if request.method == 'POST':  # Si es un POST redirijimos a la vista de index con el context actualizado
-        try:
-            # Sacamos el valor de la propiedad 'name' del formulario
-            username = request.POST['username']
-            # Sacamos el valor de la propiedad 'password' del formulario
-            password = request.POST['password']
+        form = LoginForm(data=request.POST)
+        if form.is_valid():
+            try:
+                # Sacamos el valor de la propiedad 'name' del formulario
+                username = form.cleaned_data['username']
+                # Sacamos el valor de la propiedad 'password' del formulario
+                password = form.cleaned_data['password']
+                # Buscamos el usuario por su contraseña y nombre
+                person = Person.objects.get(username=username, password=password)
+                rol_and_id = whoIsWho(person)
 
-            # Buscamos el usuario por su contraseña y nombre
-            person = Person.objects.get(username=username, password=password)
-            rol_and_id = whoIsWho(person)
+                update_context(request, person.id,
+                            rol_and_id[0], rol_and_id[1], True)
+                # msg = msg_success
 
-            update_context(request, person.id,
-                           rol_and_id[0], rol_and_id[1], True)
-            # msg = msg_success
+                person_id, rol, rol_id, is_active = get_context(request)
+                context = [person_id, rol, rol_id, is_active]
 
-            person_id, rol, rol_id, is_active = get_context(request)
-            context = [person_id, rol, rol_id, is_active]
+                today = date.today()
+                promotions_shops = Promotion.objects.filter(product=None, endDate__gte = today)
+                promotions_products = Promotion.objects.filter(shop=None, endDate__gte = today)
 
-            today = date.today()
-            promotions_shops = Promotion.objects.filter(product=None, endDate__gte = today)
-            promotions_products = Promotion.objects.filter(shop=None, endDate__gte = today)
+                promotions_shops_subscription = {}
+                promotions_products_subscription = {}
+                for promo in promotions_shops:
+                    sus = Subscription.objects.filter(endDate__gte = today, shop = promo.shop).exists()
+                    promotions_shops_subscription[promo] = sus
 
-            promotions_shops_subscription = {}
-            promotions_products_subscription = {}
-            for promo in promotions_shops:
-                sus = Subscription.objects.filter(endDate__gte = today, shop = promo.shop).exists()
-                promotions_shops_subscription[promo] = sus
+                for promo in promotions_products:
+                    sus = Subscription.objects.filter(endDate__gte = today, shop = promo.product.shop).exists()
+                    promotions_products_subscription[promo] = sus
 
-            for promo in promotions_products:
-                sus = Subscription.objects.filter(endDate__gte = today, shop = promo.product.shop).exists()
-                promotions_products_subscription[promo] = sus
-
-            tienda = miTienda(person_id)
-            person = get_object_or_404(Person, pk=person_id)
-            if person.isBanned:
-                msg = msg_error_is_banned
-                request.session['person_id']= '0'
-                request.session['rol']= 'Usuario no registrado'
-                request.session['rol_id']= '0'
-                request.session['is_active']= False
-                
-                return render(request, 'login.html', {"msg": msg, 'tienda': ''})
-            return render(request, 'home.html', {"context": context, 'promotions_shops_subscription': promotions_shops_subscription, 'promotions_products_subscription': promotions_products_subscription, 'tienda': tienda})
-        except:
-            # Es importante pasar el context en todas las vistas.
-            # Cambiar index.html por tu vista en tu método
-            msg = msg_error
-            return render(request, 'login.html', {"msg": msg, 'tienda': ''})
-
+                tienda = miTienda(person_id)
+                person = get_object_or_404(Person, pk=person_id)
+                if person.isBanned:
+                    msg = msg_error_is_banned
+                    request.session['person_id']= '0'
+                    request.session['rol']= 'Usuario no registrado'
+                    request.session['rol_id']= '0'
+                    request.session['is_active']= False
+                    
+                    return render(request, 'login.html', {"msg": msg, 'tienda': ''})
+                return render(request, 'home.html', {"context": context, 'promotions_shops_subscription': promotions_shops_subscription, 'promotions_products_subscription': promotions_products_subscription, 'tienda': tienda})
+            except:
+                # Es importante pasar el context en todas las vistas.
+                # Cambiar index.html por tu vista en tu método
+                msg = msg_error
+                return render(request, 'login.html', {"msg": msg, 'tienda': '','form':form})
+        else:
+                return render(request, 'login.html',{'form': form})
     else:  # Si es un GET redirijimos a la vista de login
         person_id, rol, rol_id, is_active = get_context(request)
         context = [person_id, rol, rol_id, is_active]
@@ -76,69 +78,73 @@ def login(request):
         if is_active:
             return redirect('/home')
         else:
-            return render(request, 'login.html', {'tienda': ''})
-
+            form = LoginForm()
+            return render(request, 'login.html', {'tienda': '', 'form':form})
 
 def registerShop(request):
     error_log=["",""]
+    shopType = ShopType.objects.all()
 
     if request.method == 'POST': #Si es un POST redirijimos a la vista de index con el context actualizado  
-        try:
-            # Parametros tomados del post
-            username = request.POST['username']
-            password = request.POST['password']
-            name = request.POST['name']
-            phoneNumber = request.POST['phoneNumber']
-            zipCode = request.POST['zipCode']
-            email = request.POST['email']
+        form = ShopForm(data=request.POST)
+        if form.is_valid():
+            try:
+                # Parametros tomados del post
+                username = form.cleaned_data['username']
+                password = form.cleaned_data['password']
+                name = form.cleaned_data['name']
+                phoneNumber = form.cleaned_data['phoneNumber']
+                zipCode = form.cleaned_data['zipCode']
+                email = form.cleaned_data['email']
 
-            error_log,is_wrong_user = assert_username_unique(username,error_log)
-            error_log,is_wrong_email = assert_email_unique(email,error_log)
+                error_log,is_wrong_user = assert_username_unique(username,error_log)
+                error_log,is_wrong_email = assert_email_unique(email,error_log)
 
-            if(is_wrong_user or is_wrong_email):
-                shopType = ShopType.objects.all()
-                return render(request, 'register_shop.html',{"error_log":error_log,"types":shopType})
-            # Parámetros autogenerados
-            registerDate = date.today()
-            isBanned = False
+                if(is_wrong_user or is_wrong_email):
+                    shopType = ShopType.objects.all()
+                    return render(request, 'register_shop.html',{"error_log":error_log,"types":shopType})
+                # ParÃ¡metros autogenerados
+                registerDate = date.today()
+                isBanned = False
 
-            p = Person(username=username, password=password, name=name, phoneNumber=phoneNumber,
-                       email=email, zipCode=zipCode, registerDate=registerDate, isBanned=isBanned)
-            p.save()
+                p = Person(username=username, password=password, name=name, phoneNumber=phoneNumber,
+                        email=email, zipCode=zipCode, registerDate=registerDate, isBanned=isBanned)
+                p.save()
 
-            p = Person.objects.get(username=username,password=password)
-            #Assertions
-            
+                p = Person.objects.get(username=username,password=password)
+                #Assertions
+                
 
-            co = Owner(person=p)
-            co.save()
+                co = Owner(person=p)
+                co.save()
 
-            shopName = request.POST['shopName']
-            shopType = request.POST['select']
-            schedule = request.POST['schedule']
-            description = request.POST['description']
-            picture = request.FILES.get('picture')
-            address = request.POST['address']
-            durationBooking = request.POST['durationBooking']
+                shopName = form.cleaned_data['shopName']
+                shopType = form.cleaned_data['select']
+                schedule = form.cleaned_data['schedule']
+                description = form.cleaned_data['description']
+                picture = request.FILES.get('picture')
+                address = form.cleaned_data['address']
+                durationBooking = form.cleaned_data['durationBooking']
+                print(shopName,shopType,schedule,description,address,durationBooking)
+                co = Owner.objects.get(person=p)
+                shopType = ShopType.objects.get(id=int(shopType))
+                shop = Shop.objects.create(name=shopName, shopType=shopType, schedule=schedule, description=description,
+                                        picture=picture, address=address, owner=co, durationBooking=durationBooking)
 
-            co = Owner.objects.get(person=p)
-            shopType = ShopType.objects.get(id=int(shopType))
-            shop = Shop.objects.create(name=shopName, shopType=shopType, schedule=schedule, description=description,
-                                       picture=picture, address=address, owner=co, durationBooking=durationBooking)
+                update_context(request, p.id, "Owner", co.id, True)
+                person_id, rol, rol_id, is_active = get_context(request)
+                context = [person_id, rol, rol_id, is_active]
+                print('llegó')
+                return redirect('/home/')
 
-            update_context(request, p.id, "Owner", co.id, True)
-            person_id, rol, rol_id, is_active = get_context(request)
-            context = [person_id, rol, rol_id, is_active]
-
-            return redirect('/home/')
-
-        except:
-            print("------------------------------")
-            return render(request, 'register_shop.html',{"error":error})
-         
+            except:
+                print("------------------------------")
+                return render(request, 'register_shop.html',{"error":error,'form': form, "types":shopType})
+        else:
+            return render(request, 'register_shop.html',{'form': form, "types":shopType})
     else:
-        shopType = ShopType.objects.all()
-        return render(request, 'register_shop.html',{"types":shopType})
+        form = ShopForm()
+        return render(request, 'register_shop.html',{'form': form, "types":shopType})
 
 
 def register(request):
@@ -150,45 +156,48 @@ def register(request):
     error_log=["",""]
 
     if request.method == 'POST':  # Si es un POST redirijimos a la vista de index con el context actualizado
-        try:
-            # Parametros tomados del post
-            username = request.POST['username']
-            password = request.POST['password']
-            name = request.POST['name']
-            phoneNumber = request.POST['phoneNumber']
-            zipCode = request.POST['zipCode']
-            email = request.POST['email']
+        form = CustomUserForm(data=request.POST)
+        if form.is_valid():
+            try:
+                # Parametros tomados del post
+                username = form.cleaned_data['username']
+                password = form.cleaned_data['password']
+                name = form.cleaned_data['name']
+                phoneNumber = form.cleaned_data['phoneNumber']
+                zipCode = form.cleaned_data['zipCode']
+                email = form.cleaned_data['email']
 
-            # Parámetros autogenerados
-            registerDate = date.today()
-            isBanned = False
+                # Parámetros autogenerados
+                registerDate = date.today()
+                isBanned = False
 
-            #Assertions
-            error_log,is_wrong_user = assert_username_unique(username,error_log)
-            error_log,is_wrong_email = assert_email_unique(email,error_log)
+                #Assertions
+                error_log,is_wrong_user = assert_username_unique(username,error_log)
+                error_log,is_wrong_email = assert_email_unique(email,error_log)
 
-            if(is_wrong_user or is_wrong_email):
-                return render(request, 'register_user.html',{"error_log":error_log})
+                if(is_wrong_user or is_wrong_email):
+                    return render(request, 'register_user.html',{"error_log":error_log})
 
-            p = Person(username=username, password=password, name=name, phoneNumber=phoneNumber, email=email, zipCode=zipCode, registerDate=registerDate, isBanned=isBanned)
-            p.save()
+                p = Person(username=username, password=password, name=name, phoneNumber=phoneNumber, email=email, zipCode=zipCode, registerDate=registerDate, isBanned=isBanned)
+                p.save()
 
-            p = Person.objects.get(username=username, password=password)
+                p = Person.objects.get(username=username, password=password)
 
-            cu = CustomUser(person=p)
-            cu.save()
+                cu = CustomUser(person=p)
+                cu.save()
 
-            rol_and_id = whoIsWho(p)
+                rol_and_id = whoIsWho(p)
 
-            update_context(request,p.id,rol_and_id[0],rol_and_id[1],True)
-            person_id,rol,rol_id,is_active = get_context(request)
-            context = [person_id,rol,rol_id,is_active]
-            
-            return redirect('/home')
+                update_context(request,p.id,rol_and_id[0],rol_and_id[1],True)
+                person_id,rol,rol_id,is_active = get_context(request)
+                context = [person_id,rol,rol_id,is_active]
+                
+                return redirect('/home')
 
-        except:
-            return render(request, 'register_user.html')
-         
+            except:
+                return render(request, 'register_user.html',{'form': form})
+        else:
+            return render(request, 'register_user.html',{'form': form})
     else: #Si es un GET redirijimos a la vista de login
         return render(request, 'register_user.html')
 
@@ -197,46 +206,54 @@ def updateUser(request):
     error_log=["",""]
 
     if request.method == 'POST': #Si es un POST redirijimos a la vista de index con el context actualizado
-        try:
-            #Parametros tomados del post
-                #username        =   request.POST['username']             
-                password        =   request.POST['password']            
-                name            =   request.POST['name']                
-                phoneNumber     =   request.POST['phoneNumber'] 
-                zipCode         =   request.POST['zipCode']              
-                #email           =   request.POST['email']   
+        form = CustomUserUpdateForm(data=request.POST)
+        if form.is_valid():
+            try:
+                #Parametros tomados del post
+                    #username        =   request.POST['username']             
+                    password        =   form.cleaned_data['password']            
+                    name            =   form.cleaned_data['name']                
+                    phoneNumber     =   form.cleaned_data['phoneNumber'] 
+                    zipCode         =   form.cleaned_data['zipCode']              
+                    #email           =   request.POST['email']   
 
 
-                person_id,rol,rol_id,is_active = get_context(request)
+                    person_id,rol,rol_id,is_active = get_context(request)
 
-                p = Person.objects.get(id=person_id)
+                    p = Person.objects.get(id=person_id)
 
-                #vamoaver(p,email,username)
+                    #vamoaver(p,email,username)
 
-                p.password=password
-                p.name=name
-                p.phoneNumber=int(phoneNumber)
-                p.zipCode=int(zipCode)
-                p.save()
+                    p.password=password
+                    p.name=name
+                    p.phoneNumber=int(phoneNumber)
+                    p.zipCode=int(zipCode)
+                    p.save()
 
+                    context = [person_id,rol,rol_id,is_active]
+
+                    return redirect('/home')
+
+            except:
+                person_id, rol, rol_id, is_active = get_context(request)
                 context = [person_id,rol,rol_id,is_active]
-
-                return redirect('/home')
-
-        except:
+                p = Person.objects.get(id=person_id)
+                return render(request, 'home.html', {"context" : context,"person":p,"editMode":True})
+        else:
             person_id, rol, rol_id, is_active = get_context(request)
             context = [person_id,rol,rol_id,is_active]
             p = Person.objects.get(id=person_id)
-            return render(request, 'home.html', {"context" : context,"person":p,"editMode":True})
-         
+            tienda = miTienda(person_id)
+            return render(request, 'register_user.html',{"context" : context,"person":p,'form': form,"editMode":True, 'tienda': tienda})
     else: #Si es un GET redirijimos a la vista de login
 
         person_id, rol, rol_id, is_active = get_context(request)
         context = [person_id,rol,rol_id,is_active]
         p = Person.objects.get(id=person_id)
         tienda = miTienda(person_id)
+        form = CustomUserUpdateForm()
         
-        return render(request, 'register_user.html',{"context" : context,"person":p,"editMode":True, 'tienda': tienda})
+        return render(request, 'register_user.html',{'form': form, "context" : context,"person":p,"editMode":True, 'tienda': tienda})
 
 def assert_email_unique(email,error_log):
 
@@ -511,17 +528,23 @@ def forumMessages_list(request, id_thread):
     context = [person_id, rol, rol_id, is_active]
     thread = get_object_or_404(Thread, pk=id_thread)
     tienda = miTienda(person_id)
-    if rol == "User":
-        if request.method == 'POST':
-            text = request.POST['text']
-            ForumMessage.objects.create(text=text, date=date.today(
-            ), thread=thread, user=CustomUser.objects.get(id=rol_id))
-
+    if rol == "User":        
         threadName = thread.name
         forumMessages = []
         for m in thread.forummessage_set.all():
             forumMessages.append(m)
-        return render(request, 'thread.html', {'forumMessages': forumMessages, 'threadName': threadName, 'context': context, 'tienda': tienda})
+        if request.method == 'POST':
+            form = MessageForm(data=request.POST)
+            if form.is_valid():
+                text = form.cleaned_data['text']
+                ForumMessage.objects.create(text=text, date=date.today(
+                ), thread=thread, user=CustomUser.objects.get(id=rol_id))
+                return redirect("/threads/"+id_thread)
+            else:
+                return render(request, 'thread.html', {'form':form, 'forumMessages': forumMessages, 'threadName': threadName, 'context': context, 'tienda': tienda})
+        else:
+            form= MessageForm()
+            return render(request, 'thread.html', {'form':form, 'forumMessages': forumMessages, 'threadName': threadName, 'context': context, 'tienda': tienda})
     else:
         return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
 
@@ -777,11 +800,12 @@ def get_chats_list(request):
     chats = []
 
     if rol == 'User':
-
+        print('Chats de usuario logeado con otras tiendas')
         chats = Chat.objects.filter(
             user=get_object_or_404(CustomUser, pk=rol_id))
 
     elif rol == 'Owner':
+        print('Chats de owner logeado con usuarios')
 
         shops = Shop.objects.filter(
             owner=get_object_or_404(Owner, pk=rol_id))
@@ -794,7 +818,8 @@ def get_chats_list(request):
 
             i += 1
     else:
-        return render(request, 'error.html', {"context": context, 'tienda': tienda}, status=403)
+        print('Es admin o no está logeado, por lo tanto no tiene acceso a chats')
+        return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
 
     return render(request, "chatList.html", {"context": context, "chats": chats, 'tienda': tienda}, status=200)
 
@@ -811,7 +836,7 @@ def get_chat(request, id_chat):
         try:
             chat = get_object_or_404(Chat, pk=id_chat)
         except:
-            print('no Existe el chat')
+            print('No existe el chat')
             return render(request, 'error.html', {"context": context, 'tienda': tienda}, status=404)
         # TODO: if para comprobar que el usuario forma parte de ese chat
         if str(rol) == 'User':
@@ -825,7 +850,7 @@ def get_chat(request, id_chat):
 
                 return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
         else:
-            print('Es admin que no pertenece al chat')
+            print('Es admin, no tiene acceso al chat')
 
             return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
 
@@ -840,6 +865,9 @@ def get_chat(request, id_chat):
                 ChatMessage.objects.create(
                     text=text, chat=chat, date=date.today(), isSentByUser=isSentByUser).save()
                 return redirect('/shop/chat/'+str(chat.id))
+            else:
+                chat_message = ChatMessage.objects.filter(chat=chat)
+                return render(request, 'chat.html', {"context": context, "messages": chat_message, 'form': form, 'tienda': tienda, 'shop': chat.shop, 'user': chat.user})
         chat_message = ChatMessage.objects.filter(chat=chat)
         form = MessageForm()
         return render(request, 'chat.html', {"context": context, "messages": chat_message, 'form': form, 'tienda': tienda, 'shop': chat.shop, 'user': chat.user})
@@ -860,7 +888,14 @@ def get_chat_new(request, id_shop):
     if rol == 'Admin' or rol == 'Owner':
         print('Es admin o Owner')
         return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
-    shop = get_object_or_404(Shop, pk=id_shop)
+    if rol != 'User':
+        print('No está logeado')
+        return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
+    try:
+        shop = get_object_or_404(Shop, pk=id_shop)
+    except:
+        print('No existe la tienda')
+        return render(request, 'error.html', {"context": context, 'tienda': tienda}, status=404)
     user = get_object_or_404(CustomUser, pk=rol_id)
     try:
         chat = Chat.objects.filter(shop=shop, user=user)[0]
@@ -880,6 +915,9 @@ def get_chat_new(request, id_shop):
             ChatMessage.objects.create(
                 text=text, chat=newChat, date=date.today(), isSentByUser=isSentByUser).save()
             return redirect('/shop/chat/'+str(newChat.pk))
+        else:
+            chat_message = []
+            return render(request, 'chat.html', {"context": context, "messages": chat_message, 'form': form, 'shop_id': id_shop, 'tienda': tienda})
 
     chat_message = []
     form = MessageForm()
@@ -1111,13 +1149,13 @@ def report_shop_form(request, id_shop):
             id_reported_person = owner.person.id
 
             form = ReportForm(data=request.POST)
-            # if form.is_valid():
-            title = form['title'].data
-            description = form['description'].data
-            Report.objects.create(title = title, description = description, person = Person.objects.get(id=id_reported_person))
-            return redirect('/shops/'+str(shop.id))
-            # else:
-            #     return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
+            if form.is_valid():
+                title = form['title'].data
+                description = form['description'].data
+                Report.objects.create(title = title, description = description, person = Person.objects.get(id=id_reported_person))
+                return redirect('/shops/'+str(shop.id))
+            else:
+                return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
 
     else:  
         return render(request, 'prohibido.html', {'context':context})
@@ -1140,13 +1178,13 @@ def report_user_form(request, id_booking):
             id_reported_person = user.person.id
 
             form = ReportForm(data=request.POST)
-            # if form.is_valid():
-            title = form['title'].data
-            description = form['description'].data
-            Report.objects.create(title = title, description = description, person = Person.objects.get(id=id_reported_person))
-            return redirect('/shop/bookings/')
-            # else:
-            #     return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
+            if form.is_valid():
+                title = form['title'].data
+                description = form['description'].data
+                Report.objects.create(title = title, description = description, person = Person.objects.get(id=id_reported_person))
+                return redirect('/shop/bookings/')
+            else:
+                return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
 
     else:
         return render(request, 'prohibido.html', {'context':context, 'tienda':tienda})
@@ -1174,13 +1212,13 @@ def report_from_chat_form(request, id_chat):
             return render(request, 'prohibido.html', {'context':context, 'tienda':tienda})
 
         form = ReportForm(data=request.POST)
-        # if form.is_valid():
-        title = form['title'].data
-        description = form['description'].data
-        Report.objects.create(title = title, description = description, person = reported_person)
-        return redirect('/shop/chat/' + str(chat.id))
-        # else:
-        #     return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
+        if form.is_valid():
+            title = form['title'].data
+            description = form['description'].data
+            Report.objects.create(title = title, description = description, person = reported_person)
+            return redirect('/shop/chat/' + str(chat.id))
+        else:
+            return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
 
 def factor_confianza(id_user): ## 0: Datos insuficientes, 1: Poco fiable, 2: Medianamente fiable, 3: Cliente fiable
     res = 0
@@ -1220,18 +1258,24 @@ def get_owners(request):
                             i=+1
                     else:
                         owners = []
+
+                    print('Método post exitoso, get_owners')
                     return render(request, 'ownerListAdmin.html', {"context" : context, "owners" : owners, 'form': form, 'tienda': tienda})
                 else:
+                    print('Error en el formulario')
                     form = UserSearchForm()
                     owners = Owner.objects.all()
                     return render(request, 'ownerListAdmin.html', {"context" : context, "owners" : owners, 'form': form, 'tienda': tienda})
             else:
+                print('Método get exitoso, get_owners')
                 form = UserSearchForm()
                 owners = Owner.objects.all()
                 return render(request, 'ownerListAdmin.html', {"context" : context, "owners" : owners, 'form': form, 'tienda': tienda})
         else:
+            print('No está logueado como Admin')
             return render(request,'prohibido.html',{"context" : context, 'tienda': tienda},status=403)
     else:
+        print('No está logueado')
         return render(request,'prohibido.html',status=403)
 
 def get_users(request):
@@ -1259,19 +1303,22 @@ def get_users(request):
                     else:
                         users = []
 
-
+                    print('Método post exitoso, get_users')
                     return render(request, 'userListAdmin.html', {"context" : context, "users" : users, 'form': form, 'tienda': tienda})
                 else:
-                    form = UserSearchForm()
+                    print('Error en el formulario')
                     users = CustomUser.objects.all()
                     return render(request, 'userListAdmin.html', {"context" : context, "users" : users, 'form': form, 'tienda': tienda})
             else:
+                print('Método get exitoso, get_users')
                 form = UserSearchForm()
                 users = CustomUser.objects.all()
                 return render(request, 'userListAdmin.html', {"context" : context, "users" : users, 'form': form, 'tienda': tienda})
         else:
+            print('No está logueado como Admin')
             return render(request,'prohibido.html',{"context" : context, 'tienda': tienda},status=403)
     else:
+        print('No está logueado')
         return render(request,'prohibido.html',status=403)
 
 def get_user(request ,id_user):
@@ -1284,7 +1331,11 @@ def get_user(request ,id_user):
     tienda = miTienda(person_id)
     if (is_active):
         if str(rol) == 'Admin':
-            user = get_object_or_404(CustomUser,pk=id_user)
+            try:
+                user = get_object_or_404(CustomUser,pk=id_user)
+            except:
+                print('No existe el user')
+                return render(request, 'error.html', {"context": context, 'tienda': tienda}, status=404)
             if request.method == 'POST': 
                 form = UserBannedForm(data=request.POST)
                 if form.is_valid():
@@ -1293,14 +1344,18 @@ def get_user(request ,id_user):
                     person.isBanned = isBanned
                     person.save()
                     reports = Report.objects.filter(person=user.person)
+                    print('Método post exitoso, get_user')
                     return render(request, 'userDetailsAdmin.html', {"context" : context, "user" : user, 'form': form, 'tienda': tienda, 'reports': reports})
             else:
+                print('Método get exitoso, get_user')
                 form = UserBannedForm()
                 reports = Report.objects.filter(person=user.person)
                 return render(request, 'userDetailsAdmin.html', {"context" : context, "user" : user, 'form': form, 'tienda': tienda, 'reports': reports})
         else:
+            print('No esta logueado como Admin')
             return render(request,'prohibido.html',{"context" : context, 'tienda': tienda},status=403)
     else:
+        print('No esta logueado')
         return render(request,'prohibido.html',status=403)
 
 
@@ -1314,7 +1369,11 @@ def get_owner(request ,id_user):
     tienda = miTienda(person_id)
     if (is_active):
         if str(rol) == 'Admin':
-            owner = get_object_or_404(Owner,pk=id_user)
+            try:
+                owner = get_object_or_404(Owner,pk=id_user)
+            except:
+                print('No existe el owner')
+                return render(request, 'error.html', {"context": context, 'tienda': tienda}, status=404)
             if request.method == 'POST': 
                 form = UserBannedForm(data=request.POST)
                 if form.is_valid():
@@ -1323,14 +1382,18 @@ def get_owner(request ,id_user):
                     person.isBanned = isBanned
                     person.save()
                     reports = Report.objects.filter(person=owner.person)
+                    print('Método post exitoso, get_owner')
                     return render(request, 'ownerDetailsAdmin.html', {"context" : context, "owner" : owner, 'form': form, 'tienda': tienda, 'reports': reports})
             else:
+                print('Método get exitoso, get_owner')
                 form = UserBannedForm()
                 reports = Report.objects.filter(person=owner.person)
                 return render(request, 'ownerDetailsAdmin.html', {"context" : context, "owner" : owner, 'form': form, 'tienda': tienda, 'reports': reports})
         else:
+            print('No esta logueado como Admin')
             return render(request,'prohibido.html',{"context" : context, 'tienda': tienda},status=403)
     else:
+        print('No esta logueado')
         return render(request,'prohibido.html',status=403)
 
 def updateShop(request, id_shop):
@@ -1356,6 +1419,8 @@ def updateShop(request, id_shop):
                         shop.picture = request.FILES.get('picture')
                 shop.save()
                 return redirect('/shops/'+str(shop.id))
+            else:
+                return render(request, 'shop_edit.html', {'tienda': tienda, 'context': context, 'form': form, 'shop': shop})
 
         form = FormShop()
 
