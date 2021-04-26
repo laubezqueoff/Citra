@@ -674,8 +674,8 @@ def product_create(request, id_shop):
                         productType.append(ty)
                     return render(request, 'create_product.html', {'form': form, 'types': productType, "context": context, 'tienda': tienda, 'msg': msg})
                 else:
-                    product = Product.objects.create(name=request.POST['name'], price=price, description=request.POST['description'], productType=ProductType.objects.get(
-                        name=request.POST['select']), picture=picture, shop=shop)
+                    product = Product.objects.create(name=form.cleaned_data['name'], price=price, description=form.cleaned_data['description'], productType=ProductType.objects.get(
+                        id=form.cleaned_data['select']), picture=picture, shop=shop)
                     return redirect('/shops/'+str(shop.id))
             else:
                 types = ProductType.objects.all()
@@ -727,7 +727,7 @@ def product_details(request, id_product):
             product.price = form.cleaned_data['price']
             product.description = form.cleaned_data['description']
             product.productType = ProductType.objects.get(
-                name=request.POST['select'])
+                id=form.cleaned_data['select'])
             if request.FILES.get('picture') != None:
                 if request.FILES.get('picture').size > 5000000:
                     msg = 'El tamaño máximo de la imagen no puede superar 5 MB'

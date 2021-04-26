@@ -39,41 +39,6 @@ class ShopForm(forms.Form):
         error_messages={'required': 'Introduce una dirección, por favor', 'max_length':'La dirección no debe tener más de 60 caracteres'})
     durationBooking = forms.IntegerField(label='Duración de las reservas',min_value=1,required=True, max_value=23,
         error_messages={'required': 'Introduce una duración para las reservas, por favor','min_value':'La duración para las reservas no puede ser menor que 1','max_value':'La duración de las reservas no puede ser mayor que 23'})
-    # def username_val(self):
-    #     username = self.cleaned_data.get('username')
-    #     if len(username) > 20:
-    #         raise ValidationError('El username no debe tener más de 20 caracteres')
-    #     if not username:
-    #         raise ValidationError('Inserte un nombre de usuario')
-    #     return username
-    # def password_val(self):
-    #     password = self.cleaned_data.get('password')
-    #     if len(password) > 20:
-    #         raise ValidationError('La contraseña no debe tener más de 20 caracteres')
-    #     if not password:
-    #         raise ValidationError('Inserte una contraseña')
-    #     return password
-    # def name_val(self):
-    #     name = self.cleaned_data.get('name')
-    #     if len(name) > 40:
-    #         raise ValidationError('El nombre no debe tener más de 40 caracteres')
-    #     if not name:
-    #         raise ValidationError('Inserte un nombre')
-    #     return name
-    # def phoneNumber_val(self):
-    #     phoneNumber = self.cleaned_data.get('phoneNumber')
-    #     if phoneNumber > 999999999 or phoneNumber < 100000000:
-    #         raise ValidationError('El número de teléfono debe estar entre 100000000 y 999999999')
-    #     if not phoneNumber:
-    #         raise ValidationError('Inserte un número de teléfono')
-    #     return phoneNumber
-    # def zipCode_val(self):
-    #     zipCode = self.cleaned_data.get('zipCode')
-    #     if zipCode > 41093 or zipCode < 41000:
-    #         raise ValidationError('El código postal no debe tener más de 40 caracteres')
-    #     if not zipCode:
-    #         raise ValidationError('Inserte un código postal')
-    #     return zipCode
 
 
 class CustomUserForm(forms.Form):
@@ -130,12 +95,16 @@ class UserBannedForm(forms.Form):
 
 
 class ProductForm(forms.Form):
+    lista=[(r.id,r.name) for r in ProductType.objects.all()]
     name = forms.CharField(label="Nombre",max_length=60,required=True,
         error_messages={'required': 'Inserte un nombre al producto','max_length':'El nombre no debe tener más de 60 caracteres'})
     description = forms.CharField(label="Descripción",max_length=120,required=True,
         error_messages={'required': 'Introduce una descripción, por favor','max_length':'La descripción no debe tener más de 120 caracteres'})
     price = forms.FloatField(label="Precio",required=True,
         error_messages={'required': 'Introduce un precio, por favor'})
+    select = forms.ChoiceField(label="Tipo de producto", choices=lista, required=True,
+        error_messages={'required': 'Introduce el tipo de producto, por favor', 'invalid_choice':'Debe escoger una opción válida como tipo de producto'})
+    
     def clean_name(self):
         name = self.cleaned_data.get('name')
         if not name:

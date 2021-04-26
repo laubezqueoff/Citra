@@ -54,18 +54,20 @@ Productos / Citra
                         <div class=" pt-lg-2 pb-5">
                             <div class="mb-4 border border-dark rounded-2">
                                 <input type="text" class="form-control " placeholder="Introduce el nombre del producto" id="name" name="name" value="{{product.name}}" maxlength="60" required>
+                                {{form.errors.name}}
                             </div>
 
                                 <div class="mb-4 border border-dark rounded-2">
                                     <select name="select" class="form-control" placeholder="Tipo de producto" id="type" name="type" required>
                                         {% for ty in types %}
                                             {% if ty.name == product.productType.name %}
-                                                <option value="{{ty.name}}" selected="true">{{ty.name}}</option>
+                                                <option value="{{ty.id}}" selected="true">{{ty.name}}</option>
                                             {% else %}
-                                                <option value="{{ty.name}}">{{ty.name}}</option>
+                                                <option value="{{ty.id}}">{{ty.name}}</option>
                                             {% endif %}
                                         {% endfor %}
                                     </select>
+                                    {{form.errors.select}}
                                 </div>
                                 <div class="mb-4 border border-dark rounded-2 input-group">
                                     <input type="number" class="form-control" placeholder="Precio del producto" id="price" name="price" value="{{product.price}}" required>
