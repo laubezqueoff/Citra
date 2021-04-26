@@ -721,30 +721,33 @@ def product_details(request, id_product):
 
     if request.method == 'POST':
         form = ProductForm(request.POST)
-        if form.is_valid():
-            product.name = form.cleaned_data['name']
-            product.price = form.cleaned_data['price']
-            product.description = form.cleaned_data['description']
-            product.productType = ProductType.objects.get(
-                name=request.POST['select'])
-            if request.FILES.get('picture') != None:
-                if request.FILES.get('picture').size > 5000000:
-                    msg = 'El tamaño máximo de la imagen no puede superar 5 MB'
-                    types = ProductType.objects.all()
-                    productType = []
-                    for ty in types:
-                        productType.append(ty)
-                    return render(request, 'products.html', {'form': form, 'product': product, 'types': productType, "context": context, "promotionProduct": not(promotionProduct), 'tienda': tienda, 'msg': msg})
-                else:
-                    product.picture = request.FILES.get('picture')
-            product.save()
-            return redirect('/shops/'+str(product.shop.id))
+        if  str(product.shop.owner.person.id) == person_id:
+            if form.is_valid():
+                product.name = form.cleaned_data['name']
+                product.price = form.cleaned_data['price']
+                product.description = form.cleaned_data['description']
+                product.productType = ProductType.objects.get(
+                    name=request.POST['select'])
+                if request.FILES.get('picture') != None:
+                    if request.FILES.get('picture').size > 5000000:
+                        msg = 'El tamaño máximo de la imagen no puede superar 5 MB'
+                        types = ProductType.objects.all()
+                        productType = []
+                        for ty in types:
+                            productType.append(ty)
+                        return render(request, 'products.html', {'form': form, 'product': product, 'types': productType, "context": context, "promotionProduct": not(promotionProduct), 'tienda': tienda, 'msg': msg})
+                    else:
+                        product.picture = request.FILES.get('picture')
+                product.save()
+                return redirect('/shops/'+str(product.shop.id))
+            else:
+                types = ProductType.objects.all()
+                productType = []
+                for ty in types:
+                    productType.append(ty)
+                return render(request, 'products.html', {'form': form, 'product': product, 'types': productType, "context": context, "promotionProduct": not(promotionProduct), 'tienda': tienda})
         else:
-            types = ProductType.objects.all()
-            productType = []
-            for ty in types:
-                productType.append(ty)
-            return render(request, 'products.html', {'form': form, 'product': product, 'types': productType, "context": context, "promotionProduct": not(promotionProduct), 'tienda': tienda})
+            return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
 
     form = ProductForm()
     types = ProductType.objects.all()
