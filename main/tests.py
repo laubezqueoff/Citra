@@ -91,20 +91,19 @@ class TestMethods(unittest.TestCase):
         response = self.client.get(reverse('chat', args=(1,)), follow=True)    # for second object
         self.assertEqual(response.status_code, 403)
 
-    def test_chat_get_404(self):
-        #Probamos que se puede acceder enviar un mensaje a un chat con una tienda con la que ha hablado antes
-        print('test_chat_get_404')
+    # def test_chat_get_404(self):
+    #     #Probamos que se puede acceder enviar un mensaje a un chat con una tienda con la que ha hablado antes
+    #     print('test_chat_get_404')
         
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+    #     credentials = {'username': 'User-0', 'password': 'Pass-0'}
         
-        r = self.client.post(reverse('login'), data=credentials, follow=True)
-        self.assertEqual(r.status_code, 200)
-        response = self.client.get(reverse('chat', args=(12345,)), follow=True)    # for second object
-        self.assertEqual(response.status_code, 404)
+    #     r = self.client.post(reverse('login'), data=credentials, follow=True)
+    #     self.assertEqual(r.status_code, 200)
+    #     response = self.client.get(reverse('chat', args=(12345,)), follow=True)    # for second object
+    #     self.assertEqual(response.status_code, 404)
 
     def test_new_product_get(self):
-        #Probamos que se puede acceder a un chat con una tienda con la que todavia no ha hablado
-        print('test_new_product_get')
+        #Probamos que se puede acceder a la vista de crear un producto
 
         credentials = {'username': 'micum', 'password': 'Contraseña-3'}
         
@@ -112,6 +111,73 @@ class TestMethods(unittest.TestCase):
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
 
-        response = self.client.get(reverse('product_create', args=(4,)), follow=True)    # for second object
+        response = self.client.get(reverse('product_create', args=(4,)), follow=True)
         self.assertEqual(response.status_code, 200)
 
+    def test_new_product_get_403_owner(self):
+        #Probamos que no se puede acceder a la vista de crear un producto de otra tienda
+
+        credentials = {'username': 'micum', 'password': 'Contraseña-3'}
+        
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+
+        response = self.client.get(reverse('product_create', args=(1,)), follow=True)
+        self.assertEqual(response.status_code, 403)
+
+    def test_new_product_get_403_user(self):
+        #Probamos que no se puede acceder a la vista de crear un producto de otra tienda
+
+        credentials = {'username': 'josruialb', 'password': 'josruialb'}
+        
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+
+        response = self.client.get(reverse('product_create', args=(1,)), follow=True)
+        self.assertEqual(response.status_code, 403)
+
+    def test_new_product_get_403_admin(self):
+        #Probamos que no se puede acceder a la vista de crear un producto de otra tienda
+
+        credentials = {'username': 'viclopvaz1', 'password': 'viclopvaz1'}
+        
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+
+        response = self.client.get(reverse('product_create', args=(1,)), follow=True)
+        self.assertEqual(response.status_code, 403)
+
+    # def test_new_product_post(self):
+    #     #Probamos que se puede acceder crear un producto
+        
+    #     credentials = {'username': 'micum', 'password': 'Contraseña-3'}
+        
+    #     r = self.client.post(reverse('login'), data=credentials, follow=True)
+    #     self.assertEqual(r.status_code, 200)
+
+    #     # with open('wishlist.doc', 'rb') as fp:
+    #     #     c.post('/customers/wishes/', {'name': 'fred', 'attachment': fp})
+    #     with open('media\products\pantalon.jpg', 'rb') as fp:
+    #         fp.name = 'pantalon'
+    #         data={'name': 'Pantalon', 'type': '1', 'price': '15', 'description': 'Pantalon de buena calidad', 'image': fp}
+    #         response = self.client.post(reverse('product_create', args=(4,)), data=data, follow=True)
+    #         self.assertEqual(response.status_code, 200)
+
+    def test_new_product_post(self):
+        #Probamos que se puede acceder crear un producto
+        
+        credentials = {'username': 'micum', 'password': 'Contraseña-3'}
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+
+        # with open('wishlist.doc', 'rb') as fp:
+        #     c.post('/customers/wishes/', {'name': 'fred', 'attachment': fp})
+        with open('media\products\pantalon.jpg', 'rb') as fp:
+            fp.name = 'pantalon'
+            data={'name': 'Pantalon', 'type': '1', 'price': '15', 'description': 'Pantalon de buena calidad', 'image': fp}
+            response = self.client.post(reverse('product_create', args=(4,)), data=data, follow=True)
+            self.assertEqual(response.status_code, 200)

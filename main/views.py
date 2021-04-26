@@ -690,7 +690,7 @@ def product_create(request, id_shop):
             productType.append(ty)
         return render(request, 'create_product.html', {'shop': shop, 'types': productType, "context": context, 'tienda': tienda, 'form': form})
     else:
-        return render(request, 'prohibido.html', {"context": context, 'tienda': tienda})
+        return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
 
 
 def product_delete(request, id_product):
