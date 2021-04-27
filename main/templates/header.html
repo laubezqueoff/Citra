@@ -32,21 +32,19 @@
                     <input type="hidden" id="context"  name="context" value="{{context}}">
                 </li>
                 {% if context.1 != 'Admin' %}  
-                <li class="nav-item nav-link" style="margin-left: 25px; font-size:20px; font-weight: bold; text-align:center;">|</li>
+                
                 <li class="nav-item" style="margin-left: 25px; font-size:20px;">
                 <a class="nav-link" href="{% url 'shops' %}">Listado Tiendas</a>
                 </li>
                 
                 
                 {% if context.1 == 'User' %}
-                <li class="nav-item nav-link" style="margin-left: 25px; font-size:20px; font-weight: bold; text-align:center;">|</li>
                 <li class="nav-item" style="margin-left: 25px; font-size:20px;" name="threads">
                     <a class="nav-link" href="/threads" name="threads">Foro</a>
                 </li>
                 
 
                 {% endif %}
-                <li class="nav-item nav-link" style="margin-left: 25px; font-size:20px; font-weight: bold; text-align:center;">|</li>
                 <li class="nav-item" style="margin-left: 25px; font-size:20px;">
                 <a class="nav-link" href="{% url 'about' %}" >Sobre nosotros</a>
                 </li>
