@@ -694,7 +694,7 @@ def product_create(request, id_shop):
 
 
 def product_delete(request, id_product):
-    product = get_object_or_404(Product, pk=request.POST.get('id_product'))
+    product = get_object_or_404(Product, pk=id_product)
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     if (is_active and rol == "Owner" and str(product.shop.owner.person.id) == person_id):
@@ -708,7 +708,7 @@ def product_delete(request, id_product):
         data = {
             'url': "/prohibido/"
         }
-        return JsonResponse(data)
+        return JsonResponse(data, status=403)
 
 
 def product_details(request, id_product):

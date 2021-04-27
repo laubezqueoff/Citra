@@ -106,6 +106,7 @@ class TestMethods(unittest.TestCase):
 
     def test_new_product_get(self):
         #Probamos que se puede acceder a la vista de crear un producto
+        print('test_new_product_get')
 
         credentials = {'username': 'micum', 'password': 'Contraseña-3'}
         
@@ -118,6 +119,7 @@ class TestMethods(unittest.TestCase):
 
     def test_new_product_get_403_owner(self):
         #Probamos que no se puede acceder a la vista de crear un producto de otra tienda
+        print('test_new_product_get_403_owner')
 
         credentials = {'username': 'micum', 'password': 'Contraseña-3'}
         
@@ -130,6 +132,7 @@ class TestMethods(unittest.TestCase):
 
     def test_new_product_get_403_user(self):
         #Probamos que no se puede acceder a la vista de crear un producto de otra tienda
+        print('test_new_product_get_403_user')
 
         credentials = {'username': 'josruialb', 'password': 'josruialb'}
         
@@ -142,6 +145,7 @@ class TestMethods(unittest.TestCase):
 
     def test_new_product_get_403_admin(self):
         #Probamos que no se puede acceder a la vista de crear un producto de otra tienda
+        print('test_new_product_get_403_admin')
 
         credentials = {'username': 'viclopvaz1', 'password': 'viclopvaz1'}
         
@@ -184,6 +188,7 @@ class TestMethods(unittest.TestCase):
 
     def test_product_details_get(self):
         #Probamos que se puede acceder a los detalles de un producto
+        print('test_product_details_get')
         
         credentials = {'username': 'micum', 'password': 'Contraseña-3'}
         
@@ -195,6 +200,7 @@ class TestMethods(unittest.TestCase):
 
     def test_product_details_get_user(self):
         #Probamos que se puede acceder a los detalles de un producto
+        print('test_product_details_get_user')
         
         credentials = {'username': 'josruialb', 'password': 'josruialb'}
         
@@ -206,6 +212,7 @@ class TestMethods(unittest.TestCase):
 
     def test_product_details_get_admin(self):
         #Probamos que se puede acceder a los detalles de un producto
+        print('test_product_details_get_admin')
         
         credentials = {'username': 'viclopvaz1', 'password': 'viclopvaz1'}
         
@@ -217,6 +224,7 @@ class TestMethods(unittest.TestCase):
 
     def test_product_edit_post(self):
         #Probamos que se puede editar los detalles de un producto
+        print('test_product_edit_post')
         
         credentials = {'username': 'micum', 'password': 'Contraseña-3'}
         
@@ -232,6 +240,7 @@ class TestMethods(unittest.TestCase):
 
     def test_product_edit_post_owner(self):
         #Probamos que no se puede editar los detalles de un producto de otra tienda
+        print('test_product_edit_post_owner')
         
         credentials = {'username': 'Anlope', 'password': 'Contraseña-1'}
         
@@ -243,7 +252,8 @@ class TestMethods(unittest.TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_product_edit_post_user(self):
-        #Probamos que no se puede editar los detalles de un producto
+        #Probamos que no se puede editar los detalles de un producto si eres usuario
+        print('test_product_edit_post_user')
         
         credentials = {'username': 'josruialb', 'password': 'josruialb'}
         
@@ -255,7 +265,8 @@ class TestMethods(unittest.TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_product_edit_post_admin(self):
-        #Probamos que no se puede editar los detalles de un producto
+        #Probamos que no se puede editar los detalles de un producto si eres administrador
+        print('test_product_edit_post_admin')
         
         credentials = {'username': 'viclopvaz1', 'password': 'viclopvaz1'}
         
@@ -265,4 +276,52 @@ class TestMethods(unittest.TestCase):
         data={'name': 'Camiseta', 'description': 'Buena calidad', 'price': '4', 'select': 'Ropa'}
         form = ProductForm(data=data)
         response = self.client.post(reverse('products', args=(28,)), data=data, follow=True)
+        self.assertEqual(response.status_code, 403)
+
+    def test_product_post_delete_owner_t(self):
+        #Probamos que se puede eliminar un producto
+        print('test_product_delete')
+        
+        credentials = {'username': 'micum', 'password': 'Contraseña-3'}
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+
+        response = self.client.post(reverse('product_delete', args=(28,)), follow=True)
+        self.assertEqual(response.status_code, 200)
+
+    def test_product_post_delete_owner(self):
+        #Probamos que no se puede eliminar un producto de otra tienda
+        print('test_product_post_delete_owner')
+        
+        credentials = {'username': 'Anlope', 'password': 'Contraseña-1'}
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+
+        response = self.client.post(reverse('product_delete', args=(28,)), follow=True)
+        self.assertEqual(response.status_code, 403)
+
+    def test_product_post_delete_auser(self):
+        #Probamos que no se puede eliminar un producto de una tienda si eres user
+        print('test_product_post_delete_user')
+        
+        credentials = {'username': 'josruialb', 'password': 'josruialb'}
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+
+        response = self.client.post(reverse('product_delete', args=(28,)), follow=True)
+        self.assertEqual(response.status_code, 403)
+
+    def test_product_post_delete_admin(self):
+        #Probamos que no se puede eliminar un producto de una tienda si eres admin
+        print('test_product_post_delete_admin')
+        
+        credentials = {'username': 'viclopvaz1', 'password': 'viclopvaz1'}
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+
+        response = self.client.post(reverse('product_delete', args=(28,)), follow=True)
         self.assertEqual(response.status_code, 403)
