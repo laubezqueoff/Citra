@@ -1361,3 +1361,5 @@ def updateShop(request, id_shop):
 
     return render(request, 'shop_edit.html', {'tienda': tienda, 'context': context, 'form': form, 'shop': shop})
 
+def GDPR(request):
+    return render(request, 'GDPR.html')
