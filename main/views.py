@@ -12,7 +12,7 @@ from Citra import settings
 
 
 def login(request):
-    ''' 
+    '''
     Logea una persona en la aplicación.\n
         POST    -> Lleva la inicio con el contexto actualizado \n
         GET     -> Lleva al formulario de login
@@ -150,7 +150,7 @@ def register(request):
         POST    -> Lleva la inicio con el contexto actualizado \n
         GET     -> Lleva al formulario de login
     '''
-    #msg_success = "Bienvenido a la aplicación"
+    # msg_success = "Bienvenido a la aplicación"
     error_log = ["", ""]
 
     if request.method == 'POST':  # Si es un POST redirijimos a la vista de index con el context actualizado
@@ -206,12 +206,12 @@ def updateUser(request):
     if request.method == 'POST':  # Si es un POST redirijimos a la vista de index con el context actualizado
         try:
             # Parametros tomados del post
-            #username        =   request.POST['username']
+            # username        =   request.POST['username']
             password = request.POST['password']
             name = request.POST['name']
             phoneNumber = request.POST['phoneNumber']
             zipCode = request.POST['zipCode']
-            #email           =   request.POST['email']
+            # email           =   request.POST['email']
 
             person_id, rol, rol_id, is_active = get_context(request)
 
@@ -1136,7 +1136,7 @@ def error_404(request, exception):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     tienda = miTienda(person_id)
-    return render(request, 'error.html', {'context': context, "tienda": tienda})
+    return render(request, 'error.html', {'context': context, "tienda": tienda}, status=404)
 
 
 def miTienda(person_id):
@@ -1434,4 +1434,6 @@ def updateShop(request, id_shop):
 
         form = FormShop()
 
-    return render(request, 'shop_edit.html', {'tienda': tienda, 'context': context, 'form': form, 'shop': shop})
+        return render(request, 'shop_edit.html', {'tienda': tienda, 'context': context, 'form': form, 'shop': shop})
+    else:
+        return render(request, 'prohibido.html', {'tienda': tienda, 'context': context, 'shop': shop}, status=403)
