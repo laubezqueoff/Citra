@@ -200,7 +200,7 @@ class TestMethods(unittest.TestCase):
         response = self.client.get(reverse('products', args=(28,)), follow=True)
         self.assertEqual(response.status_code, 200)
 
-    def test_product_details_get(self):
+    def test_product_details_get_404(self):
         #Probamos que se puede acceder a los detalles de un producto
         print('test_product_details_get')
         
