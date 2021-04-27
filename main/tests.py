@@ -156,6 +156,7 @@ class TestMethods(unittest.TestCase):
         response = self.client.get(reverse('product_create', args=(1,)), follow=True)
         self.assertEqual(response.status_code, 403)
 
+
     # def test_new_product_post(self):
     #     #Probamos que se puede acceder crear un producto
         
@@ -164,11 +165,12 @@ class TestMethods(unittest.TestCase):
     #     r = self.client.post(reverse('login'), data=credentials, follow=True)
     #     self.assertEqual(r.status_code, 200)
 
-    #     with open('media\products\pantalon.jpg', 'rb') as fp:
-    #         file = SimpleUploadedFile('pantalon', fp.read())
-    #         data={'name': 'Pantalon', 'type': '1', 'price': '15', 'description': 'Pantalon de buena calidad', 'image': file}
-    #         response = self.client.post(reverse('product_create', args=(4,)), data=data, follow=True)
-    #         self.assertEqual(response.status_code, 200)
+    #     # with open('media\products\pantalon.jpg', 'rb') as fp:
+    #     imagen = create_image(None, 'media\products\pantalon.jpg')
+    #     imagen_file = SimpleUploadedFile('media\products\pantalon.jpg', imagen.getValue())
+    #     data={'name': 'Pantalon', 'type': '1', 'price': '15', 'description': 'Pantalon de buena calidad', 'image': file}
+    #     response = self.client.post(reverse('product_create', args=(4,)), data=data, follow=True)
+    #     self.assertEqual(response.status_code, 200)
 
     # def test_new_product_post(self):
     #     #Probamos que se puede acceder crear un producto
@@ -197,6 +199,18 @@ class TestMethods(unittest.TestCase):
 
         response = self.client.get(reverse('products', args=(28,)), follow=True)
         self.assertEqual(response.status_code, 200)
+
+    def test_product_details_get(self):
+        #Probamos que se puede acceder a los detalles de un producto
+        print('test_product_details_get')
+        
+        credentials = {'username': 'micum', 'password': 'Contraseña-3'}
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+
+        response = self.client.get(reverse('products', args=(12345,)), follow=True)
+        self.assertEqual(response.status_code, 404)
 
     def test_product_details_get_user(self):
         #Probamos que se puede acceder a los detalles de un producto

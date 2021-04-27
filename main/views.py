@@ -1110,7 +1110,7 @@ def error_404(request, exception):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     tienda = miTienda(person_id)
-    return render(request, 'error.html', {'context': context, "tienda": tienda})
+    return render(request, 'error.html', {'context': context, "tienda": tienda}, status=404)
 
 
 def miTienda(person_id):
