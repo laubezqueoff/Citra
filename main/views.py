@@ -924,7 +924,7 @@ def home(request):
             sus = Subscription.objects.filter(endDate__gte = today, shop = promo.product.shop).exists()
             promotions_products_subscription[promo] = sus
 
-    return render(request, 'home.html', {"context": context, 'promotions_shops_subscription': promotions_shops_subscription, 'promotions_products_subscription': promotions_products_subscription, 'tienda': tienda})
+    return render(request, 'shop_prueba.html', {"context": context, 'promotions_shops_subscription': promotions_shops_subscription, 'promotions_products_subscription': promotions_products_subscription, 'tienda': tienda})
 
 def list_booking_user(request):
     person_id, rol, rol_id, is_active = get_context(request)
