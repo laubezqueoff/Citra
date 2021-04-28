@@ -12,8 +12,8 @@ script:
 deploy:
   buildpack: python
   provider: heroku
-  app: citra-sprint2
+  app: citra-develop
   strategy: git
   api_key: $HEROKU_AUTH_TOKEN
   on:
-    branch: deploy/s2
+    branch: develop
