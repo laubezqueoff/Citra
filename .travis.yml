@@ -1,13 +1,14 @@
 language: python
 python:
 - 3.7
+before_install:
+- mv settings.py settings_amazon.py
+- mv settings_local.py settings.py
 install:
 - pip install -r requirements.txt
 - pip install codacy-coverage
 script:
 - cd Citra
-- mv settings.py settings_amazon.py
-- mv settings_local.py settings.py
 - cp travis_local_settings.py settings.py
 - cd ..
 - python ./manage.py test
