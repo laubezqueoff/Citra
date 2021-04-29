@@ -35,7 +35,6 @@
             </div>
             <div class="px-lg-5 py-lg-4 p-4 w-100 align-self-center">
                   <h1 class="mb-4 fw-bold">Bienvenido a Citra</h1>
-
                 {% if msg %}
                 <div class="pb-4 w-100 fw-bold align-self-center ">
                     {{msg}}
@@ -45,11 +44,18 @@
                     <div class="mb-4">
                         <label for="exampleInputEmail1" class="form-label fw-bold">Usuario</label>
                         <input type="text" class="form-control " placeholder="Introduce el nombre de usuario" id="username" name="username">
+                        {% if form.username.errors %}
+                                {{ form.username.errors|escape }}
+                        {% endif%}
+                        
                     </div>
                     
                     <div class="mb-4">
                         <label for="exampleInputPassword1" class="form-label fw-bold">Contraseña</label>
                         <input type="password" class="form-control mb-2" placeholder="Introduce la contraseña" id="password" name="password">
+                        {% if form.password.errors %}
+                            {{ form.password.errors|escape }}
+                        {% endif%}
                         <a href="#" id="emailHelp" class="form-text text-muted text-decoration-none">¿Has olvidado la contraseña?</a>
                     </div>
 
