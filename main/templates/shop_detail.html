@@ -11,8 +11,37 @@
   
   <div class="container">
       <div class="row">
-        <img src="{% static 'images/tienda_tienda.jpg' %}">
+        <div id="myCarousel" class="carousel slide" data-bs-ride="carousel">
+          <div class="carousel-inner">
+              <div class="carousel-item active">
+                  <img src="{% static 'images/tienda_tienda.jpg' %}" class="d-block w-100" alt="Negocio local">
+              </div>
+              <div class="carousel-item">
+                  <img src="{% static 'images/sevilla.jpg' %}" class="d-block w-100" style="width:4272px; height:400px;" alt="...">
+              </div>
+              <div class="carousel-item">
+                  <img src="{% static 'images/localBusiness.jpg' %}" class="d-block w-100" style="width:4272px; height:400px;" alt="...">
+              </div>
+          </div>
+          <button class="carousel-control-prev" type="button" data-bs-target="#myCarousel"  data-bs-slide="prev">
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+          </button>
+          <button class="carousel-control-next" type="button" data-bs-target="#myCarousel"  data-bs-slide="next">
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+          </button>
+        </div>
       </div>
+      {% if shop.owner.person.isBanned %}
+      <h1 style="
+    text-align: center;
+"> La tienda que intentas ver esta baneada </h1>
+      {% elif not subscriptionShop %}
+      <h1 style="
+    text-align: center;
+"> La tienda que intentas ver no ha renovado la suscripción </h1>
+      {% else %}
       <div class="row">
         <div class="col">
         <h4 class="section-title">Categorías</h4>
@@ -28,13 +57,16 @@
             <div class="product__container bd-grid">
               <div class="row">
                 {% for prod in products %}
-                  <div class="card col-sm-4 mt-3 product" id="{{prod.productType.id}}">
-                      <img src="{{prod.picture.url}}" class="img-fluid mt-3" style=" max-height:100px;max-width:150px; align-self:center;">
-                      <a id = "nombre{{prod.id}}" class="product__name" href="{% url 'products' prod.pk %}">{{prod.name}}</a>
-                      <p id = "precio{{prod.id}}">{{prod.price}}</p>
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                  <div class="card rounded shadow-sm border-0 product" id="{{prod.productType.id}}">
+                      <div class="card-body p-4"><img src="{{prod.picture.url}}" alt="" class="img-fluid d-block mx-auto mb-3">
+                          <h5> <a id = "nombre{{prod.id}}" href="{% url 'products' prod.pk %}" class="text-dark">{{prod.name}}</a></h5>
+                          <p class="small text-muted font-italic">{{prod.price}} €</p>
                       {% if context.1 == 'User' %}
                         <button id="boton" onclick="añadir({{prod.id}})">Añadir</button>
                       {% endif %}
+                      </div>
+                    </div>
                   </div>
                 {% empty %}
                 {% endfor %}
@@ -127,6 +159,7 @@
           {% endif %}
         </div>
       </div>
+      {% endif %}
   </div>
 </main>
 
@@ -176,14 +209,13 @@ function vaciarCarrito() {
 function reserva() {
     var array = []
     var objeto = {}
-    console.log(document.getElementsByClassName('idProducto'))
-    console.log(document.getElementsByClassName('cantidadProducto'))
     for (let i = 0; i < document.getElementsByClassName('idProducto').length; i++) {
         objeto.id = parseInt(document.getElementsByClassName('idProducto')[i].innerText)
         objeto.cantidad = parseInt(document.getElementsByClassName('cantidadProducto')[i].innerText)
         array.push(objeto)
         objeto = {}
     }
+    console.log(array)
     data = {
         key_1_string: JSON.stringify(array),
         csrfmiddlewaretoken: '{{ csrf_token }}',

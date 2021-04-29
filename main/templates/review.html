@@ -13,6 +13,20 @@
             <div class="well well-sm">        
                 <div class="row" id="post-review-box" style="">
                     <div class="col-md-12">
+                        {% if form.errors %}
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in form.non_field_errors %}
+                                <div class="alert alert-danger">
+                                    <strong>{{ error|escape }}</strong>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
                         <form accept-charset="UTF-8" action="" method="post">{% csrf_token %}
                             <input id="ratings-hidden" name="rating" type="hidden">
                             <textarea style = 'font-size:15px;' class="form-control animated" cols="50" id="title" name="title" placeholder="Título" rows="1"></textarea>

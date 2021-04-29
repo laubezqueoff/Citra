@@ -6,31 +6,105 @@ from django.core.exceptions import ValidationError
 from main.models import Shop
 
 class MessageForm(forms.Form):
-    text = forms.CharField(label='Mensaje')
+    text = forms.CharField(label='Mensaje',max_length=60,required=True,
+    error_messages={'required': 'Introduce un mensaje, por favor', 'max_length':'El mensaje no debe tener más de 60 caracteres'})
 
 class NameShopForm(forms.Form):
     shop_name = forms.CharField(label='Nombre')
 
-class ReviewForm(forms.Form):
-    rating = forms.IntegerField(label='Puntuación')
-    title = forms.CharField(label='Título')
-    description = forms.CharField(label='Descripción')
 
+class ShopForm(forms.Form):
+    lista=[(r.id,r.name) for r in ShopType.objects.all()]
+    username = forms.CharField(label='Username',max_length=20,required=True,
+        error_messages={'required': 'Introduce un username, por favor', 'max_length':'El username no debe tener más de 20 caracteres'})
+    password = forms.CharField(label='Contraseña',max_length=20,required=True,
+        error_messages={'required': 'Introduce una contraseña, por favor', 'max_length':'La contraseña no debe tener más de 20 caracteres'})
+    name = forms.CharField(label='Nombre',max_length=40,required=True,
+        error_messages={'required': 'Introduce un nombre, por favor', 'max_length':'El nombre no debe tener más de 40 caracteres' })
+    phoneNumber =forms.IntegerField(label='Teléfono', min_value=100000000, max_value=999999999,required=True,
+        error_messages={'required': 'Introduce un número de teléfono, por favor','min_value':'El número de teléfono debe tener 9 cifras','max_value':'El número de teléfono debe tener 9 cifras'})
+    zipCode = forms.IntegerField(label='Código postal',min_value=41000, max_value=41093,required=True,
+        error_messages={'required': 'Introduce un código postal, por favor','min_value':'El código postal no puede ser menor que 41000','max_value':'El código postal no puede ser mayor que 41093'})
+    email = forms.EmailField(label='Email', max_length=30,required=True, 
+        error_messages={'required': 'Introduce un email, por favor', 'invalid':'El email introducido no es válido', 'max_length':'El email no debe tener más de 30 caracteres'})
+    shopName=forms.CharField(label='Nombre de la tienda',max_length=60,required=True,
+        error_messages={'required': 'Introduce el nombre de la tienda, por favor', 'max_length':'El nombre de la tienda no debe tener más de 60 caracteres'})
+    select = forms.ChoiceField(label="Tipo de tienda", choices=lista,required=True,
+        error_messages={'required': 'Introduce el tipo de la tienda, por favor', 'invalid_choice':'Debe escoger una opción válida como tipo de tienda'})
+    schedule = forms.CharField(label='Horario',max_length=50,required=True, 
+        error_messages={'required': 'Introduce un horario, por favor', 'max_length':'El horario no debe tener más de 50 caracteres'})
+    description = forms.CharField(label='Descripción',max_length=120,required=True,
+        error_messages={'required': 'Introduce una descripción, por favor', 'max_length':'La descripción no debe tener más de 120 caracteres'})
+    address = forms.CharField(label='Dirección',max_length=60,required=True,
+        error_messages={'required': 'Introduce una dirección, por favor', 'max_length':'La dirección no debe tener más de 60 caracteres'})
+    durationBooking = forms.IntegerField(label='Duración de las reservas',min_value=1,required=True, max_value=23,
+        error_messages={'required': 'Introduce una duración para las reservas, por favor','min_value':'La duración para las reservas no puede ser menor que 1','max_value':'La duración de las reservas no puede ser mayor que 23'})
+
+
+class CustomUserForm(forms.Form):
+    username = forms.CharField(label='Username',max_length=20,required=True,
+        error_messages={'required': 'Introduce un username, por favor', 'max_length':'El username no debe tener más de 20 caracteres'})
+    password = forms.CharField(label='Contraseña',max_length=20,required=True,
+        error_messages={'required': 'Introduce una contraseña, por favor', 'max_length':'La contraseña no debe tener más de 20 caracteres'})
+    name = forms.CharField(label='Nombre',max_length=40,required=True,
+        error_messages={'required': 'Introduce un nombre, por favor', 'max_length':'El nombre no debe tener más de 40 caracteres' })
+    phoneNumber =forms.IntegerField(label='Teléfono', min_value=100000000, max_value=999999999,required=True,
+        error_messages={'required': 'Introduce un número de teléfono, por favor','min_value':'El número de teléfono debe tener 9 cifras','max_value':'El número de teléfono debe tener 9 cifras'})
+    zipCode = forms.IntegerField(label='Código postal',min_value=41000, max_value=41093,required=True,
+        error_messages={'required': 'Introduce un código postal, por favor','min_value':'El código postal no puede ser menor que 41000','max_value':'El código postal no puede ser mayor que 41093'})
+    email = forms.EmailField(label='Email', max_length=30,required=True, 
+        error_messages={'required': 'Introduce un email, por favor', 'invalid':'El email introducido no es válido', 'max_length':'El email no debe tener más de 30 caracteres'})
+
+class LoginForm(forms.Form):
+    username = forms.CharField(label='Username',max_length=20,required=True,
+        error_messages={'required': 'Introduce un usuario, por favor', 'max_length':'El usuario no debe tener más de 20 caracteres'})
+    password = forms.CharField(label='Contraseña',max_length=20,required=True,
+        error_messages={'required': 'Introduce una contraseña, por favor', 'max_length':'La contraseña no debe tener más de 20 caracteres'})
+
+class ReviewForm(forms.Form):
+    rating = forms.IntegerField(label='Puntuación',min_value=1, max_value=5,required=True,
+        error_messages={'required': 'Introduce una puntuación, por favor','min_value':'La puntuación debe estar entre 1 y 5','max_value':'La puntuación debe estar entre 1 y 5'})
+    title = forms.CharField(label='Título',max_length=30,required=True,
+        error_messages={'required': 'Introduce un título, por favor', 'max_length':'El título no debe tener más de 30 caracteres' })
+    description = forms.CharField(label='Descripción',max_length=60,required=True,
+        error_messages={'required': 'Introduce una descripción, por favor', 'max_length':'La descripción no debe tener más de 60 caracteres' })
+    
+class CustomUserUpdateForm(forms.Form):
+    password = forms.CharField(label='Contraseña',max_length=20,required=True,
+        error_messages={'required': 'Introduce una contraseña, por favor', 'max_length':'La contraseña no debe tener más de 20 caracteres'})
+    name = forms.CharField(label='Nombre',max_length=40,required=True,
+        error_messages={'required': 'Introduce un nombre, por favor', 'max_length':'El nombre no debe tener más de 40 caracteres' })
+    phoneNumber =forms.IntegerField(label='Teléfono', min_value=100000000, max_value=999999999,required=True,
+        error_messages={'required': 'Introduce un número de teléfono, por favor','min_value':'El número de teléfono debe tener 9 cifras','max_value':'El número de teléfono debe tener 9 cifras'})
+    zipCode = forms.IntegerField(label='Código postal',min_value=41000, max_value=41093,required=True,
+        error_messages={'required': 'Introduce un código postal, por favor','min_value':'El código postal no puede ser menor que 41000','max_value':'El código postal no puede ser mayor que 41093'})
+   
 class ReportForm(forms.Form):
-    lista=[(r.name) for r in ReportReason.objects.all()]
-    title = forms.ChoiceField(label="Título", choices=lista)
-    description = forms.CharField(label='Descripción')
+    lista=[(r.id,r.name) for r in ReportReason.objects.all()]
+    title = forms.ChoiceField(label="Título", choices=lista,required=True,
+        error_messages={'required': 'Introduce el título, por favor', 'invalid_choice':'Debe escoger una opción válida como título'})
+    description = forms.CharField(label='Descripción',max_length=60,required=True,
+        error_messages={'required': 'Introduce una descripción, por favor', 'max_length':'La descripción no debe tener más de 60 caracteres'})
 
 class UserSearchForm(forms.Form):
-    username = forms.CharField(label='Username', required= True)
+    username = forms.CharField(label='Username', required= True,max_length=20,
+        error_messages={'required': 'Introduce un username, por favor', 'max_length':'El username no debe tener más de 20 caracteres o no encontrará ninguna coincidencia'})
+
 class UserBannedForm(forms.Form):
-    isBanned = forms.BooleanField(label='Esta Banneado', required=False)
+    isBanned = forms.BooleanField(label='Esta Baneado', required=False)
 
 
 class ProductForm(forms.Form):
-    name = forms.CharField(label="Nombre")
-    description = forms.CharField(label="Descripción")
-    price = forms.FloatField(label="Precio")
+    lista=[(r.id,r.name) for r in ProductType.objects.all()]
+    name = forms.CharField(label="Nombre",max_length=60,required=True,
+        error_messages={'required': 'Inserte un nombre al producto','max_length':'El nombre no debe tener más de 60 caracteres'})
+    description = forms.CharField(label="Descripción",max_length=120,required=True,
+        error_messages={'required': 'Introduce una descripción, por favor','max_length':'La descripción no debe tener más de 120 caracteres'})
+    price = forms.FloatField(label="Precio",required=True,
+        error_messages={'required': 'Introduce un precio, por favor'})
+    select = forms.ChoiceField(label="Tipo de producto", choices=lista, required=True,
+        error_messages={'required': 'Introduce el tipo de producto, por favor', 'invalid_choice':'Debe escoger una opción válida como tipo de producto'})
+    
     def clean_name(self):
         name = self.cleaned_data.get('name')
         if not name:
@@ -45,8 +119,13 @@ class ProductForm(forms.Form):
 
 
 class FormShop(forms.Form):
-    name = forms.CharField(label="Nombre")
-    schedule = forms.CharField(label="Horario")
-    description = forms.CharField(label="Descripción")
-    address = forms.CharField(label="Direción")
-    durationBooking = forms.IntegerField(label="Duración")
+    name = forms.CharField(label="Nombre",max_length=60,required=True,
+        error_messages={'required': 'Introduce un nombre, por favor', 'max_length':'El nombre no debe tener más de 60 caracteres'})
+    schedule = forms.CharField(label="Horario",max_length=50,required=True,
+        error_messages={'required': 'Introduce un horario, por favor', 'max_length':'El horario no debe tener más de 50 caracteres'})
+    description = forms.CharField(label="Descripción",max_length=120,required=True,
+        error_messages={'required': 'Introduce una descripción, por favor', 'max_length':'La descripción no debe tener más de 120 caracteres'})
+    address = forms.CharField(label="Direción",max_length=60,required=True,
+        error_messages={'required': 'Introduce un nombre, por favor', 'max_length':'El nombre no debe tener más de 60 caracteres'})
+    durationBooking = forms.IntegerField(label='Duración de las reservas',min_value=1,required=True, max_value=23,
+        error_messages={'required': 'Introduce una duración para las reservas, por favor','min_value':'La duración para las reservas no puede ser menor que 1','max_value':'La duración de las reservas no puede ser mayor que 23'})

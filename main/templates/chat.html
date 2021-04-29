@@ -13,8 +13,17 @@ Chat / Citra
 
 {% block contenido %}
     <div class="container">
+    {% if shop.owner.person.isBanned %}
+        <h2>La tienda con la que intentas hablar esta baneada, no te podra contestar hasta que recupere su cuenta</h2>
+    {% else %}
         <h2>Pregunta a la tienda!</h2>
+    {% endif %}
 		
+        {% if error %}
+            <div class="pb-4 w-100 fw-bold align-self-center ">
+                {{error}}
+            </div>
+        {% endif%}
 
     {% for m in messages %}
 
@@ -43,6 +52,9 @@ Chat / Citra
                 </form>
                    <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="report"> Reportar </a></button>
                 </div>
+                {% if form.text.errors %}
+                    {{ form.text.errors|escape }}
+                {% endif%}
             </div>
         </div>
     </div>

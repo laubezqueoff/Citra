@@ -9,6 +9,15 @@ Productos / Citra
 {% block contenido %}
 
 <section class = "seccion_productos">
+      {% if product.shop.owner.person.isBanned %}
+      <h1 style="
+    text-align: center;
+"> La tienda del producto que intentas ver esta baneada </h1>
+      {% elif not sus %}
+      <h1 style="
+    text-align: center;
+"> La tienda del producto que intentas ver no ha renovado la suscripción </h1>
+        {% else %}
     <div class="row g-0">
         <div class="col-lg-5 p-5 ">
             <div class="p-5 w-100 mb-auto">
@@ -18,35 +27,37 @@ Productos / Citra
                 <img src="{{product.picture.url}}" class="d-block w-100 rounded border border-dark" alt="Negocio local">
             {% endif %}
             </div>
+            <div class="d-flex justify-content-around fondo-blur mt-3">
+            {% if sus %}
+                {% if context.1 == 'Owner' and promotionProduct and product.shop.owner.person.id|stringformat:"i" == context.0 and sus %}
+
+                <form id="pagaMens" action= "{% url 'promotion_week_product' product.id %}" method="POST">
+                    {% csrf_token %} 
+                    
+                    <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" id="separated3"
+                    data-key="{{ stripe_key }}" data-description="Premium mensual" data-amount="200"
+                    data-locale="es" data-currency="eur" data-label="Promocionar una semana 2€">
+                    </script>
+                </form>
+
+                <form id="pagasem" action= "{% url 'promotion_month_product' product.id %}" method="POST">
+                    {% csrf_token %} 
+                    
+                    <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" id="separated3"
+                    data-key="{{ stripe_key }}" data-description="Premium mensual" data-amount="500"
+                    data-locale="es" data-currency="eur" data-label="Promocionar un mes 5€">
+                    </script>
+                </form>
+                
+                {% endif %}
+                {% endif %}
+        </div>
         </div>
         <div class="col-lg-6 d-flex flex-column align-items-end">
             <div class="px-lg-5 pt-lg-4 pb-lg-3 p-4 w-100 mb-auto">
                 <div class="px-lg-5 py-lg-4 p-4 w-100 align-self-center ">
                     <div class="d-flex justify-content-around mb-4">
                         <h1 class=" fw-bold me-auto">Producto</h1>
-                        {% if sus %}
-                        {% if context.1 == 'Owner' and promotionProduct and product.shop.owner.person.id|stringformat:"i" == context.0 and sus %}
-
-                          <form id="pagaMens" action= "{% url 'promotion_week_product' product.id %}" method="POST">
-                            {% csrf_token %} 
-                            
-                            <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" id="separated3"
-                            data-key="{{ stripe_key }}" data-description="Premium mensual" data-amount="200"
-                            data-locale="es" data-currency="eur" data-label="Promocionar una semana 2€">
-                            </script>
-                          </form>
-
-                          <form id="pagasem" action= "{% url 'promotion_month_product' product.id %}" method="POST">
-                            {% csrf_token %} 
-                            
-                            <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" id="separated3"
-                            data-key="{{ stripe_key }}" data-description="Premium mensual" data-amount="500"
-                            data-locale="es" data-currency="eur" data-label="Promocionar un mes 5€">
-                            </script>
-                          </form>
-                        
-                        {% endif %}
-                        {% endif %}
                     </div>
                     <form accept-charset="UTF-8" action="" method="post" enctype="multipart/form-data">{% csrf_token %}
                         {% if context.1 == 'Owner' and product.shop.owner.person.id|stringformat:"i" == context.0%}
@@ -54,21 +65,23 @@ Productos / Citra
                         <div class=" pt-lg-2 pb-5">
                             <div class="mb-4 border border-dark rounded-2">
                                 <input type="text" class="form-control " placeholder="Introduce el nombre del producto" id="name" name="name" value="{{product.name}}" maxlength="60" required>
+                                {{form.errors.name}}
                             </div>
 
                                 <div class="mb-4 border border-dark rounded-2">
                                     <select name="select" class="form-control" placeholder="Tipo de producto" id="type" name="type" required>
                                         {% for ty in types %}
                                             {% if ty.name == product.productType.name %}
-                                                <option value="{{ty.name}}" selected="true">{{ty.name}}</option>
+                                                <option value="{{ty.id}}" selected="true">{{ty.name}}</option>
                                             {% else %}
-                                                <option value="{{ty.name}}">{{ty.name}}</option>
+                                                <option value="{{ty.id}}">{{ty.name}}</option>
                                             {% endif %}
                                         {% endfor %}
                                     </select>
+                                    {{form.errors.select}}
                                 </div>
                                 <div class="mb-4 border border-dark rounded-2 input-group">
-                                    <input type="number" class="form-control" placeholder="Precio del producto" id="price" name="price" value="{{product.price}}" required>
+                                    <input type="number" step="0.01" class="form-control" placeholder="Precio del producto" id="price" name="price" value="{{product.price}}" required>
                                     <span class="input-group-text">€</span>
                                 </div>
                                 {{form.errors.price}}
@@ -77,7 +90,7 @@ Productos / Citra
                                     <input type="text" class="form-control" placeholder="Descripción del producto" id="description" name="description" value="{{product.description}}" maxlength="120">
                                 </div>
                                     <label> Cambiar Imagen </label>
-                                    <input type="file" id="picture" name="picture">
+                                    <input type="file" id="picture" accept="image/*" name="picture">
                                     {% if msg %}
                                     <div class="pb-4 w-100 fw-bold align-self-center ">
                                         {{msg}}
@@ -88,7 +101,9 @@ Productos / Citra
                                 <button type="submit" class="btn btn-outline-dark  color-botones-products flex-grow-1 me-2 fw-bold ">Guardar cambios</button>
                                 <button href="/" class="btn btn-outline-dark flex-grow-1 ms-2 me-2 fw-bold">Cancelar</button>
                                 <a type="button" onclick="eliminarProducto({{product.id}})" class="btn btn-outline-dark flex-grow-3 ms-2 fw-bold">Borrar</a>
+                                
                             </div>
+
                         {% else %}
                         <div class=" pt-lg-2 pb-5">
                             <div class="mb-4 border border-dark rounded-2">
@@ -112,6 +127,7 @@ Productos / Citra
 
 
     </div>
+    {% endif %}
 
 </section>
 

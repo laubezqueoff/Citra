@@ -18,6 +18,7 @@
                     <p class="product__name" style="text-align: center;" > Nombre Producto: <b>{{book.product.name}} </b> </p>
                     <span class="product__price">Precio: {{quantity}} € </span>
                     <span class="product__price">Cantidad Reservada: {{book.quantity}} </span>
+                    <span class="product__price">Tienes que recogerlo antes de las: {{book.endDate}} </span>
                 </div>
                 {% empty %}
                 {% endfor %}

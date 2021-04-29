@@ -1,0 +1,15 @@
+[0m2021.04.25 16:05:13 INFO  Started: Metals version 0.10.1 in workspace 'C:\Users\laura\Desktop\DP\Citra' for client vscode 1.55.2.[0m
+[0m2021.04.25 16:05:15 INFO  time: initialize in 2.95s[0m
+[0m2021.04.25 16:05:23 WARN  Build server is not auto-connectable.[0m
+[0m2021.04.25 16:05:23 WARN  no build tool detected in workspace 'C:\Users\laura\Desktop\DP\Citra'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. [0m
+abr 25, 2021 4:08:10 PM org.eclipse.lsp4j.jsonrpc.services.GenericEndpoint notify
+INFORMACIÓN: Unsupported notification method: $/setTraceNotification
+[0m2021.04.26 17:50:21 INFO  Started: Metals version 0.10.2 in workspace 'C:\Users\laura\Desktop\DP\Citra' for client vscode 1.55.2.[0m
+[0m2021.04.26 17:50:22 INFO  time: initialize in 1.17s[0m
+[0m2021.04.26 17:50:32 WARN  Build server is not auto-connectable.[0m
+[0m2021.04.26 17:50:32 WARN  no build tool detected in workspace 'C:\Users\laura\Desktop\DP\Citra'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. [0m
+[0m2021.04.26 21:02:19 INFO  shutting down Metals[0m
+[0m2021.04.27 15:53:12 INFO  Started: Metals version 0.10.2 in workspace 'C:\Users\laura\Desktop\DP\Citra' for client vscode 1.55.2.[0m
+[0m2021.04.27 15:53:13 INFO  time: initialize in 1.78s[0m
+[0m2021.04.27 15:53:21 WARN  Build server is not auto-connectable.[0m
+[0m2021.04.27 15:53:21 WARN  no build tool detected in workspace 'C:\Users\laura\Desktop\DP\Citra'. The most common cause for this problem is that the editor was opened in the wrong working directory, for example if you use sbt then the workspace directory should contain build.sbt. [0m

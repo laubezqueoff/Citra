@@ -41,6 +41,9 @@ Foro / Citra
             </form>
                 <a role="button" class="btn btn-outline-warning" style="" href="/threads" class="btn"> Volver </a>  
         </div>
+        {% if form.text.errors %}
+            {{ form.text.errors|escape }}
+        {% endif%}
     </div>
 </div>
 
