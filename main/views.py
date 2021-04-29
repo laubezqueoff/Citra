@@ -1,4 +1,4 @@
-from main.models import Person, CustomUser, CustomAdmin, Owner, ShopType, ProductType, Shop, Product, SubscriptionType, PromotionType, Subscription, Promotion, Booking, Review, Chat, ChatMessage, Thread, ForumMessage, ReportReason, Report
+from main.models import Person, CustomUser, CustomAdmin, Owner, ShopType, ProductType, Shop, Product, SubscriptionType, PromotionType, Subscription, Promotion, Booking, Review, Chat, ChatMessage, Thread, ForumMessage, ReportReason, Report, Notification
 import requests
 from datetime import date, datetime
 from django.shortcuts import render, redirect, get_object_or_404
@@ -9,6 +9,7 @@ from django.http import JsonResponse
 from datetime import timedelta
 import stripe
 from Citra import settings
+from django.db import transaction
 
 
 def login(request):
@@ -45,12 +46,16 @@ def login(request):
             promotions_shops_subscription = {}
             promotions_products_subscription = {}
             for promo in promotions_shops:
-                sus = Subscription.objects.filter(endDate__gte = today, shop = promo.shop).exists()
-                promotions_shops_subscription[promo] = sus
+                person = Person.objects.get(id=promo.shop.owner.person.id)
+                if not person.isBanned:
+                    sus = Subscription.objects.filter(endDate__gte = today, shop = promo.shop).exists()
+                    promotions_shops_subscription[promo] = sus
 
             for promo in promotions_products:
-                sus = Subscription.objects.filter(endDate__gte = today, shop = promo.product.shop).exists()
-                promotions_products_subscription[promo] = sus
+                person = Person.objects.get(id=promo.product.shop.owner.person.id)
+                if not person.isBanned:
+                    sus = Subscription.objects.filter(endDate__gte = today, shop = promo.product.shop).exists()
+                    promotions_products_subscription[promo] = sus
 
             tienda = miTienda(person_id)
             person = get_object_or_404(Person, pk=person_id)
@@ -137,6 +142,11 @@ def registerShop(request):
             return render(request, 'register_shop.html',{"error":error})
          
     else:
+        person_id, rol, rol_id, is_active = get_context(request)
+        context = [person_id, rol, rol_id, is_active]
+        tienda = miTienda(person_id)
+        if is_active:
+            return redirect('/home')
         shopType = ShopType.objects.all()
         return render(request, 'register_shop.html',{"types":shopType})
 
@@ -190,6 +200,11 @@ def register(request):
             return render(request, 'register_user.html')
          
     else: #Si es un GET redirijimos a la vista de login
+        person_id, rol, rol_id, is_active = get_context(request)
+        context = [person_id, rol, rol_id, is_active]
+        tienda = miTienda(person_id)
+        if is_active:
+            return redirect('/home')
         return render(request, 'register_user.html')
 
 def updateUser(request):
@@ -296,12 +311,16 @@ def logout(request):
         promotions_shops_subscription = {}
         promotions_products_subscription = {}
         for promo in promotions_shops:
-            sus = Subscription.objects.filter(endDate__gte = today, shop = promo.shop).exists()
-            promotions_shops_subscription[promo] = sus
+            person = Person.objects.get(id=promo.shop.owner.person.id)
+            if not person.isBanned:
+                sus = Subscription.objects.filter(endDate__gte = today, shop = promo.shop).exists()
+                promotions_shops_subscription[promo] = sus
 
         for promo in promotions_products:
-            sus = Subscription.objects.filter(endDate__gte = today, shop = promo.product.shop).exists()
-            promotions_products_subscription[promo] = sus
+            person = Person.objects.get(id=promo.product.shop.owner.person.id)
+            if not person.isBanned:
+                sus = Subscription.objects.filter(endDate__gte = today, shop = promo.product.shop).exists()
+                promotions_products_subscription[promo] = sus
 
         return render(request, 'home.html', {'promotions_shops_subscription': promotions_shops_subscription, 'promotions_products_subscription': promotions_products_subscription})
 
@@ -445,6 +464,9 @@ def promotion_week_product(request, id_product):
             charge(amount=300, source=request.POST.get('stripeToken'))
             promocion = Promotion.objects.create(
                 owner=owner, shop=None, startDate=time, endDate=endtime, promotionType=promotionType, product=product)
+            
+            Notification.objects.create(title="Producto promocionado con éxito", description="El producto " + product.name + " estará promocionado hasta el dia " + endtime.strftime("%d/%m/%Y"),
+                person=person)
             return redirect("home")
         elif (promotion and str(product.shop.owner.person.id) == person_id and sus and not promotionweek and request.method == 'POST'):
             time = date.today()
@@ -453,6 +475,8 @@ def promotion_week_product(request, id_product):
             get_or_create_customer(email=person.email, source=None)
             charge(amount=300, source=request.POST.get('stripeToken'))
             promocion = Promotion.objects.filter(product = product).update(startDate=time, endDate=endtime)
+            Notification.objects.create(title="Producto promocionado con éxito", description="El producto " + product.name + " estará promocionado hasta el dia " + endtime.strftime("%d/%m/%Y"),
+                person=person)
             return redirect("home")
         else:
             return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
@@ -480,6 +504,8 @@ def promotion_month_product(request, id_product):
             charge(amount=500, source=request.POST.get('stripeToken'))
             promocion = Promotion.objects.create(
                 owner=owner, shop=None, startDate=time, endDate=endtime, promotionType=promotionType, product=product)
+            Notification.objects.create(title="Producto promocionado con éxito", description="El producto " + product.name + " estará promocionado hasta el dia " + endtime.strftime("%d/%m/%Y"),
+                person=person)
             return redirect("home")
         elif (promotion and str(product.shop.owner.person.id) == person_id and sus and not promotionmonth and request.method == 'POST'):
             time = date.today()
@@ -488,6 +514,8 @@ def promotion_month_product(request, id_product):
             get_or_create_customer(email=person.email, source=None)
             charge(amount=500, source=request.POST.get('stripeToken'))
             promocion = Promotion.objects.filter(product = product).update(startDate=time, endDate=endtime)
+            Notification.objects.create(title="Producto promocionado con éxito", description="El producto " + product.name + " estará promocionado hasta el dia " + endtime.strftime("%d/%m/%Y"),
+                person=person)
             return redirect("home")
         else:
             return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
@@ -547,6 +575,8 @@ def promotion_week_shop(request, id_shop):
             charge(amount=500, source=request.POST.get('stripeToken'))
             promocion = Promotion.objects.create(
                 owner=owner, shop=shop, startDate=time, endDate=endtime, promotionType=promotionType, product=None)
+            Notification.objects.create(title="Tienda promocionada con éxito", description="La tienda " + shop.name + " estará promocionado hasta el dia " + endtime.strftime("%d/%m/%Y"),
+                person=person)
             return redirect("home")
         elif (promotion and str(product.shop.owner.person.id) == person_id and sus and not promotionweek and request.method == 'POST'):
             time = date.today()
@@ -555,6 +585,8 @@ def promotion_week_shop(request, id_shop):
             get_or_create_customer(email=person.email, source=None)
             charge(amount=500, source=request.POST.get('stripeToken'))
             promocion = Promotion.objects.filter(shop = shop).update(startDate=time, endDate=endtime)
+            Notification.objects.create(title="Tienda promocionada con éxito", description="La tienda " + shop.name + " estará promocionado hasta el dia " + endtime.strftime("%d/%m/%Y"),
+                person=person)
             return redirect("home")
         else:
             return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
@@ -583,6 +615,8 @@ def promotion_month_shop(request, id_shop):
             charge(amount=1000, source=request.POST.get('stripeToken'))
             promocion = Promotion.objects.create(
                 owner=owner, shop=shop, startDate=time, endDate=endtime, promotionType=promotionType, product=None)
+            Notification.objects.create(title="Tienda promocionada con éxito", description="La tienda " + shop.name + " estará promocionado hasta el dia " + endtime.strftime("%d/%m/%Y"),
+                person=person)
             return redirect("home")
         elif (promotion and str(shop.owner.person.id) == person_id and not promotionmonth and sus and request.method == 'POST'):
             time = date.today()
@@ -591,6 +625,8 @@ def promotion_month_shop(request, id_shop):
             get_or_create_customer(email=person.email, source=None)
             charge(amount=1000, source=request.POST.get('stripeToken'))
             promocion = Promotion.objects.filter(shop = shop).update(startDate=time, endDate=endtime)
+            Notification.objects.create(title="Tienda promocionada con éxito", description="La tienda " + shop.name + " estará promocionado hasta el dia " + endtime.strftime("%d/%m/%Y"),
+                person=person)
             return redirect("home")
         else:
             return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
@@ -617,6 +653,8 @@ def activate_shop(request, id_shop):
             charge(amount=1000, source=request.POST.get('stripeToken'))
             suscripcion = Subscription.objects.create(
                 subscriptionType=subscriptionType, startDate=time, endDate=endtime, owner=owner, shop=shop)
+            Notification.objects.create(title="Tienda dada de alta", description="La tienda " + shop.name + " estará activa hasta el dia " + endtime.strftime("%d/%m/%Y"),
+                person=person)
             return redirect("home")
         elif (subscription and str(shop.owner.person.id) == person_id and not activate and request.method == 'POST'):
             time = date.today()
@@ -625,6 +663,8 @@ def activate_shop(request, id_shop):
             get_or_create_customer(email=person.email, source=None)
             charge(amount=1000, source=request.POST.get('stripeToken'))
             promocion = Subscription.objects.filter(shop = shop).update(startDate=time, endDate=endtime)
+            Notification.objects.create(title="Tienda dada de alta", description="La tienda " + shop.name + " estará activa hasta el dia " + endtime.strftime("%d/%m/%Y"),
+                person=person)
             return redirect("home")
         else:
             return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
@@ -668,11 +708,11 @@ def product_create(request, id_shop):
             productType.append(ty)
         return render(request, 'create_product.html', {'shop': shop, 'types': productType, "context": context, 'tienda': tienda, 'form': form})
     else:
-        return render(request, 'prohibido.html', {"context": context, 'tienda': tienda})
+        return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
 
 
 def product_delete(request, id_product):
-    product = get_object_or_404(Product, pk=request.POST.get('id_product'))
+    product = get_object_or_404(Product, pk=id_product)
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     if (is_active and rol == "Owner" and str(product.shop.owner.person.id) == person_id):
@@ -686,7 +726,7 @@ def product_delete(request, id_product):
         data = {
             'url': "/prohibido/"
         }
-        return JsonResponse(data)
+        return JsonResponse(data, status=403)
 
 
 def product_details(request, id_product):
@@ -699,30 +739,33 @@ def product_details(request, id_product):
 
     if request.method == 'POST':
         form = ProductForm(request.POST)
-        if form.is_valid():
-            product.name = form.cleaned_data['name']
-            product.price = form.cleaned_data['price']
-            product.description = form.cleaned_data['description']
-            product.productType = ProductType.objects.get(
-                name=request.POST['select'])
-            if request.FILES.get('picture') != None:
-                if request.FILES.get('picture').size > 5000000:
-                    msg = 'El tamaño máximo de la imagen no puede superar 5 MB'
-                    types = ProductType.objects.all()
-                    productType = []
-                    for ty in types:
-                        productType.append(ty)
-                    return render(request, 'products.html', {'form': form, 'product': product, 'types': productType, "context": context, "promotionProduct": not(promotionProduct), 'tienda': tienda, 'msg': msg})
-                else:
-                    product.picture = request.FILES.get('picture')
-            product.save()
-            return redirect('/shops/'+str(product.shop.id))
+        if  str(product.shop.owner.person.id) == person_id:
+            if form.is_valid():
+                product.name = form.cleaned_data['name']
+                product.price = form.cleaned_data['price']
+                product.description = form.cleaned_data['description']
+                product.productType = ProductType.objects.get(
+                    name=request.POST['select'])
+                if request.FILES.get('picture') != None:
+                    if request.FILES.get('picture').size > 5000000:
+                        msg = 'El tamaño máximo de la imagen no puede superar 5 MB'
+                        types = ProductType.objects.all()
+                        productType = []
+                        for ty in types:
+                            productType.append(ty)
+                        return render(request, 'products.html', {'form': form, 'product': product, 'types': productType, "context": context, "promotionProduct": not(promotionProduct), 'tienda': tienda, 'msg': msg})
+                    else:
+                        product.picture = request.FILES.get('picture')
+                product.save()
+                return redirect('/shops/'+str(product.shop.id))
+            else:
+                types = ProductType.objects.all()
+                productType = []
+                for ty in types:
+                    productType.append(ty)
+                return render(request, 'products.html', {'form': form, 'product': product, 'types': productType, "context": context, "promotionProduct": not(promotionProduct), 'tienda': tienda})
         else:
-            types = ProductType.objects.all()
-            productType = []
-            for ty in types:
-                productType.append(ty)
-            return render(request, 'products.html', {'form': form, 'product': product, 'types': productType, "context": context, "promotionProduct": not(promotionProduct), 'tienda': tienda})
+            return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
 
     form = ProductForm()
     types = ProductType.objects.all()
@@ -740,8 +783,10 @@ def list_shop(request):
     shops = Shop.objects.all()
     shop_subscription = {}
     for promo in shops:
-        a = Subscription.objects.filter(endDate__gte = today, shop = promo).exists()
-        shop_subscription[promo] = a
+        person = Person.objects.get(id=promo.owner.person.id)
+        if not person.isBanned:
+            a = Subscription.objects.filter(endDate__gte = today, shop = promo).exists()
+            shop_subscription[promo] = a
     tienda = miTienda(person_id)
     return render(request, 'shops.html', {'shop_subscription': shop_subscription, 'context': context, 'tienda': tienda})
 
@@ -808,25 +853,15 @@ def get_chat(request, id_chat):
     context = [person_id, rol, rol_id, is_active]
     tienda = miTienda(person_id)
     if (is_active):
-        try:
-            chat = get_object_or_404(Chat, pk=id_chat)
-        except:
-            print('no Existe el chat')
-            return render(request, 'error.html', {"context": context, 'tienda': tienda}, status=404)
+        chat = get_object_or_404(Chat, pk=id_chat)
         # TODO: if para comprobar que el usuario forma parte de ese chat
         if str(rol) == 'User':
             if not (int(chat.user.id) == int(rol_id)):
-                print('Es user que no pertenece al chat')
-
                 return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
         elif str(rol) == 'Owner':
             if not(int(chat.shop.owner.id) == int(rol_id)):
-                print('Es owner que no pertenece al chat')
-
                 return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
         else:
-            print('Es admin que no pertenece al chat')
-
             return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
 
         if request.method == 'POST':
@@ -837,6 +872,12 @@ def get_chat(request, id_chat):
                 isSentByUser = False
                 if rol == 'User':
                     isSentByUser = True
+                if isSentByUser:
+                    Notification.objects.create(title="Un usuario te ha mandado un mensaje", description="El usuario " + chat.user.person.name + " quiere hablar contigo",
+                        person=shop.owner.person)
+                else:
+                    Notification.objects.create(title="Una tienda te ha respondido", description="La tienda " + shop.owner.person.name + " te ha respondido",
+                        person=chat.user.person)
                 ChatMessage.objects.create(
                     text=text, chat=chat, date=date.today(), isSentByUser=isSentByUser).save()
                 return redirect('/shop/chat/'+str(chat.id))
@@ -844,7 +885,6 @@ def get_chat(request, id_chat):
         form = MessageForm()
         return render(request, 'chat.html', {"context": context, "messages": chat_message, 'form': form, 'tienda': tienda, 'shop': chat.shop, 'user': chat.user})
     else:
-        print('No está logeado')
         return render(request, 'prohibido.html', status=403)
 
 
@@ -858,7 +898,6 @@ def get_chat_new(request, id_shop):
     context = [person_id, rol, rol_id, is_active]
     tienda = miTienda(person_id)
     if rol == 'Admin' or rol == 'Owner':
-        print('Es admin o Owner')
         return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
     shop = get_object_or_404(Shop, pk=id_shop)
     user = get_object_or_404(CustomUser, pk=rol_id)
@@ -879,6 +918,10 @@ def get_chat_new(request, id_shop):
                 isSentByUser = True
             ChatMessage.objects.create(
                 text=text, chat=newChat, date=date.today(), isSentByUser=isSentByUser).save()
+
+            Notification.objects.create(title="Un usuario te ha mandado un mensaje", description="El usuario " + user.person.name + " quiere hablar contigo",
+                person=shop.owner.person)
+                
             return redirect('/shop/chat/'+str(newChat.pk))
 
     chat_message = []
@@ -989,21 +1032,32 @@ def chat_list(request):
 def forbidden(request):
     return render(request, 'prohibido.html')
 
+@transaction.atomic
 def booking(request):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
 
-    if (is_active):
+    if is_active:
         user = CustomUser.objects.get(id=rol_id)
         for reserva in json.loads(request.POST.get('key_1_string')):
             product = Product.objects.get(id=reserva['id'])
+            person = Person.objects.get(id=product.shop.owner.person.id)
+            if not person.isBanned:
+                data = {
+                    'url': "/error/"
+                }
+                return JsonResponse(data)
             shop = product.shop.durationBooking
             now = datetime.now()
             finishBooking = now + timedelta(hours=shop)
             b = Booking.objects.create(startDate=now, endDate=finishBooking, product=product,
                                        title='Prueba', quantity=reserva['cantidad'], isAccepted=False, user=user)
             b.save()
-
+            Notification.objects.create(title="Te han hecho una reserva", description="El producto " + product.name + " ha sido reservado por " + user.person.name
+            + ". La reserva estará activa hasta " + finishBooking.strftime("%d/%m/%Y, %H:%M:%S"),
+                person=product.shop.owner.person)
+            Notification.objects.create(title="Has reservado un producto", description="El producto " + product.name + " de la tienda " + product.shop.name + 
+            " estará reservado hasta " + finishBooking.strftime("%d/%m/%Y, %H:%M:%S"), person=user.person)
         data = {
             'url': "/user/bookings/"
         }
@@ -1020,7 +1074,8 @@ def review_list(request, id_shop):
     context = [person_id, rol, rol_id, is_active]
     shop = get_object_or_404(Shop, pk=id_shop)
     tienda = miTienda(person_id)
-    if rol == "User":
+    sus = Subscription.objects.get(shop=shop).exists()
+    if rol == "User" and sus:
 
         reviews = []
         for m in shop.review_set.all():
@@ -1046,6 +1101,10 @@ def review_form(request, id_shop):
     context = [person_id, rol, rol_id, is_active]
     shop = get_object_or_404(Shop, pk=id_shop)
     tienda = miTienda(person_id)
+    person = Person.objects.get(id=shop.owner.person.id)
+    sus = Subscription.objects.get(shop=shop).exists()
+    if person.isBanned or not(sus):
+        return render(request, 'error.html', {'context': context, 'tienda': tienda})
     if rol == "User":
         if request.method == 'GET':
             form = ReviewForm()
@@ -1082,7 +1141,7 @@ def error_404(request, exception):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     tienda = miTienda(person_id)
-    return render(request, 'error.html', {'context': context, "tienda": tienda})
+    return render(request, 'error.html', {'context': context, "tienda": tienda}, status=404)
 
 
 def miTienda(person_id):
@@ -1101,12 +1160,15 @@ def report_shop_form(request, id_shop):
     shop = get_object_or_404(Shop, pk= id_shop)
     reportReason = ReportReason.objects.all()
 
+    person = Person.objects.get(id=shop.owner.person.id)
+    if person.isBanned:
+        return render(request, 'error.html', {'context': context})
+
     if rol == "User":
         if request.method == 'GET':
             form = ReportForm()
             return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
         if request.method == 'POST':  
-
             owner = Owner.objects.get(id = shop.owner.id)
             id_reported_person = owner.person.id
 
@@ -1157,6 +1219,9 @@ def report_from_chat_form(request, id_chat):
     chat = get_object_or_404(Chat, pk= id_chat)
     reportReason = ReportReason.objects.all()
     tienda = miTienda(person_id)
+    person = Person.objects.get(id=chat.shop.owner.person.id)
+    if person.isBanned:
+        return render(request, 'error.html', {'context': context, 'tienda': tienda})
     if request.method == 'GET':
         form = ReportForm()
         return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason, 'tienda':tienda})
@@ -1360,4 +1425,15 @@ def updateShop(request, id_shop):
         form = FormShop()
 
     return render(request, 'shop_edit.html', {'tienda': tienda, 'context': context, 'form': form, 'shop': shop})
+
+def notificationList(request):
+    person_id, rol, rol_id, is_active = get_context(request)
+    context = [person_id, rol, rol_id, is_active]
+    tienda = miTienda(person_id)
+    if is_active:
+        person = Person.objects.get(id=person_id)
+        notifications = Notification.objects.filter(person=person).order_by('-id')
+        return render(request, "notification_list.html", {'tienda': tienda, 'context': context, 'notifications': notifications})
+    else:
+        return render(request, "prohibido.html", status=403)
 

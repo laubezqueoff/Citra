@@ -9,6 +9,15 @@ Productos / Citra
 {% block contenido %}
 
 <section class = "seccion_productos">
+      {% if product.shop.owner.person.isBanned %}
+      <h1 style="
+    text-align: center;
+"> La tienda del producto que intentas ver esta baneada </h1>
+      {% elif not sus %}
+      <h1 style="
+    text-align: center;
+"> La tienda del producto que intentas ver no ha renovado la suscripción </h1>
+        {% else %}
     <div class="row g-0">
         <div class="col-lg-5 p-5 ">
             <div class="p-5 w-100 mb-auto">
@@ -68,7 +77,7 @@ Productos / Citra
                                     </select>
                                 </div>
                                 <div class="mb-4 border border-dark rounded-2 input-group">
-                                    <input type="number" class="form-control" placeholder="Precio del producto" id="price" name="price" value="{{product.price}}" required>
+                                    <input type="number" step="0.01" class="form-control" placeholder="Precio del producto" id="price" name="price" value="{{product.price}}" required>
                                     <span class="input-group-text">€</span>
                                 </div>
                                 {{form.errors.price}}
@@ -77,7 +86,7 @@ Productos / Citra
                                     <input type="text" class="form-control" placeholder="Descripción del producto" id="description" name="description" value="{{product.description}}" maxlength="120">
                                 </div>
                                     <label> Cambiar Imagen </label>
-                                    <input type="file" id="picture" name="picture">
+                                    <input type="file" id="picture" accept="image/*" name="picture">
                                     {% if msg %}
                                     <div class="pb-4 w-100 fw-bold align-self-center ">
                                         {{msg}}
@@ -112,6 +121,7 @@ Productos / Citra
 
 
     </div>
+    {% endif %}
 
 </section>
 

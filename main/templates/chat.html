@@ -13,7 +13,11 @@ Chat / Citra
 
 {% block contenido %}
     <div class="container">
+    {% if shop.owner.person.isBanned %}
+        <h2>La tienda con la que intentas hablar esta baneada, no te podra contestar hasta que recupere su cuenta</h2>
+    {% else %}
         <h2>Pregunta a la tienda!</h2>
+    {% endif %}
 		
 
     {% for m in messages %}
