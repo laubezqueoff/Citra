@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+ {% block cabecera %}
+    <link rel="stylesheet" href="{% static 'css/style_shop_prueba.css' %}"/>
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Spartan:wght@300;600&display=swap" rel="stylesheet"> 
+    <title> Citra / Inicio </title>
+{% endblock %}
+
+
+{% block contenido %}
+    <main class="l-main">
+    
+    {% if context.1 != 'Admin' %}
+    <div class="container">
+        <div class="row">
+             <h4 class="section-title bold" style="margin-top:2rem;  margin-bottom: 2rem; text-align:center;">Tiendas en promoción</h4>
+        </div>
+        <div class="row ms-3">                            
+            <div class="product__container bd-grid product">
+                <div class="row">        
+                {% for promotion, sus in promotions_shops_subscription.items %}
+                    {% if sus %}
+                    <div class="col-md-4 mt-4">
+                        <div class="card profile-card-5 product" >
+                            <div class="card-img-block">
+                                <img class="card-img-top" src="{{promotion.shop.picture.url}}" alt="Card image cap">
+                            </div>
+                            <div class="card-body pt-0">
+                                <a href="{% url 'shop' promotion.shop.pk %}" class="card-title">{{promotion.shop.name}}</a>
+                                <p class="card-text">{{promotion.shop.description}}</p>
+                            </div>
+                        </div>
+    		        </div>
+                    {% endif %}
+                {% empty %}                    
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <h4 class="section-title bold" style="margin-top:2rem; margin-bottom: 2rem; text-align:center;">Productos en promoción</h4>
+        </div>
+        <div class="row ms-3">                            
+            <div class="product__container bd-grid">
+                <div class="row">        
+                {% for promotion_product, sus  in promotions_products_subscription.items %}
+                    {% if sus %}
+                    <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                        <!-- Card-->
+                        <div class="card rounded shadow-sm border-0 product">
+                            <div class="card-body p-4"><img src="{{promotion_product.product.picture.url}}" alt="" class="img-fluid d-block mx-auto mb-3">
+                                <h5> <a href="{% url 'shop' promotion_product.product.shop.pk %}" class="text-dark">{{promotion_product.product.name}}</a></h5>
+                                <p class="small text-muted font-italic">{{promotion_product.product.description}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+                {% empty %}
+                {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+        <div style="display: flex; justify-content: center; margin-top:10%;">
+            <button style="font-color:#000!important;bakcground-color:#ffd3b6!important;border-radius: 15px;" ><a href="/users" style="text-decoration:none;color:#000000;">Gestionar usuarios</a></button>
+            <button style="font-color:#000!important;margin-left:90px;border-radius: 15px;" href="/owners"><a href="/owners" style="text-decoration:none;color:#000000">Gestionar los dueños de las tiendas</a></button>
+        </div>
+    {% endif %}
+</main>
+{% endblock %}

@@ -28,13 +28,16 @@
             <div class="product__container bd-grid">
               <div class="row">
                 {% for prod in products %}
-                  <div class="card col-sm-4 mt-3 product" id="{{prod.productType.id}}">
-                      <img src="{{prod.picture.url}}" class="img-fluid mt-3" style=" max-height:100px;max-width:150px; align-self:center;">
-                      <a id = "nombre{{prod.id}}" class="product__name" href="{% url 'products' prod.pk %}">{{prod.name}}</a>
-                      <p id = "precio{{prod.id}}">{{prod.price}}</p>
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                  <div class="card rounded shadow-sm border-0 product" id="{{prod.productType.id}}">
+                      <div class="card-body p-4"><img src="{{prod.picture.url}}" alt="" class="img-fluid d-block mx-auto mb-3">
+                          <h5> <a id = "nombre{{prod.id}}" href="{% url 'products' prod.pk %}" class="text-dark">{{prod.name}}</a></h5>
+                          <p class="small text-muted font-italic">{{prod.price}} €</p>
                       {% if context.1 == 'User' %}
                         <button id="boton" onclick="añadir({{prod.id}})">Añadir</button>
                       {% endif %}
+                      </div>
+                    </div>
                   </div>
                 {% empty %}
                 {% endfor %}
