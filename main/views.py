@@ -1529,6 +1529,14 @@ def updateShop(request, id_shop):
 
         form = FormShop()
 
+
+    
+
+
+
         return render(request, 'shop_edit.html', {'tienda': tienda, 'context': context, 'form': form, 'shop': shop})
     else:
         return render(request, 'prohibido.html', {'tienda': tienda, 'context': context, 'shop': shop}, status=403)
+
+def GDPR(request):
+    return render(request, 'GDPR.html')

@@ -54,7 +54,9 @@ urlpatterns = [
     path('register/', views.register, name="register"),
     path('registerShop/', views.registerShop, name="registerShop"),
     path('shops/<id_shop>/edit', views.updateShop, name='update_shop'),
-    path('updateUser/', views.updateUser, name="updateUser"),
+    path('updateUser/',views.updateUser,name="updateUser"),
+    path('GDPR/',views.GDPR,name="GDPR"),
+
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 
