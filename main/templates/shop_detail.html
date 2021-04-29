@@ -130,11 +130,26 @@
                 <br>
             {% endif %}  
           {% else %}
+
             <form id="activateShop" action= "{% url 'activate_shop' shop.id %}" method="POST">
               {% csrf_token %} 
               <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" id="separated3"
               data-key="{{ stripe_key }}" data-description="Darse de alta" data-amount="1000"
               data-locale="es" data-currency="eur" data-label="Darse de alta:10€">
+              </script>
+            </form>
+            <form id="activateShop" action= "{% url 'activate_shop_three_months' shop.id %}" method="POST">
+              {% csrf_token %} 
+              <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" id="separated3"
+              data-key="{{ stripe_key }}" data-description="Darse de alta" data-amount="2500"
+              data-locale="es" data-currency="eur" data-label="Darse de alta trimestral:25€">
+              </script>
+            </form>
+            <form id="activateShop" action= "{% url 'activate_shop_one_year' shop.id %}" method="POST">
+              {% csrf_token %} 
+              <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" id="separated3"
+              data-key="{{ stripe_key }}" data-description="Darse de alta" data-amount="10000"
+              data-locale="es" data-currency="eur" data-label="Darse de alta anual: 100€">
               </script>
             </form>
             <br>

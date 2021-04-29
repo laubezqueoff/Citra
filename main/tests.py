@@ -496,6 +496,155 @@ class TestMethods(unittest.TestCase):
             reverse('shop', args=(12345,)), follow=True)    # for second object
         self.assertEqual(response.status_code, 404)
 
+
+    print("=========activar-tienda")
+    def test_sus_post_existe(self):
+        print('test_sus_post_existe')
+        
+        credentials = {'username': 'Magarcia', 'password': 'Magarcia'}
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+        response = self.client.post(reverse('activate_shop', args=(0,)), follow=True)    # for second object
+        self.assertEqual(response.status_code, 403)
+
+    def test_sus_post_404(self):
+        print('test_sus_post_existe')
+        
+        credentials = {'username': 'Magarcia', 'password': 'Magarcia'}
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+        response = self.client.post(reverse('activate_shop', args=(4239823457,)), follow=True)    # for second object
+        self.assertEqual(response.status_code, 404)
+    print("=========promocion-mensual")
+
+    def test_sus_post_mon_existe(self):
+        print('test_sus_post_mon_existe')
+        
+        credentials = {'username': 'Magarcia', 'password': 'Magarcia'}
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+        response = self.client.post(reverse('promotion_month_shop', args=(0,)), follow=True)    # for second object
+        self.assertEqual(response.status_code, 403)
+
+    def test_sus_post_mon_404(self):
+        print('test_sus_post_mon_404')
+        
+        credentials = {'username': 'Magarcia', 'password': 'Magarcia'}
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+        response = self.client.post(reverse('promotion_month_shop', args=(4239823457,)), follow=True)    # for second object
+        self.assertEqual(response.status_code, 404)
+
+    print("=========suscripcion-trimestral")
+    def test_sus_post_3mon_existe(self):
+        print('test_sus_post_3mon_existe')
+        
+        credentials = {'username': 'Magarcia', 'password': 'Magarcia'}
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+        response = self.client.post(reverse('activate_shop_three_months', args=(0,)), follow=True)    # for second object
+        self.assertEqual(response.status_code, 403)
+
+    def test_sus_post_3mon_404(self):
+        print('test_sus_post_3mon_404')
+        
+        credentials = {'username': 'Magarcia', 'password': 'Magarcia'}
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+        response = self.client.post(reverse('activate_shop_three_months', args=(4239823457,)), follow=True)    # for second object
+        self.assertEqual(response.status_code, 404)
+    
+    print("=========promocion-shop-semanal")
+
+    def test_promotion_week_shop_existe(self):
+        print('test_promotion_week_shop_existe')
+        
+        credentials = {'username': 'Magarcia', 'password': 'Magarcia'}
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+        response = self.client.post(reverse('promotion_week_shop', args=(0,)), follow=True)    # for second object
+        self.assertEqual(response.status_code, 403)
+
+    def test_promotion_week_shop_404(self):
+        print('test_promotion_week_shop_404')
+        
+        credentials = {'username': 'Magarcia', 'password': 'Magarcia'}
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+        response = self.client.post(reverse('promotion_week_shop', args=(4239823457,)), follow=True)    # for second object
+        self.assertEqual(response.status_code, 404)
+
+    def test_activate_shop_one_year_existe(self):
+        print('test_activate_shop_one_year_existe')
+        
+        credentials = {'username': 'Magarcia', 'password': 'Magarcia'}
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+        response = self.client.post(reverse('activate_shop_one_year', args=(0,)), follow=True)    # for second object
+        self.assertEqual(response.status_code, 403)
+
+    def test_activate_shop_one_year_404(self):
+        print('test_activate_shop_one_year_404')
+        
+        credentials = {'username': 'Magarcia', 'password': 'Magarcia'}
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+        response = self.client.post(reverse('activate_shop_one_year', args=(4239823457,)), follow=True)    # for second object
+        self.assertEqual(response.status_code, 404)
+
+    def test_promotion_month_product_existe(self):
+        print('test_promotion_month_product_existe')
+        
+        credentials = {'username': 'Magarcia', 'password': 'Magarcia'}
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+        response = self.client.post(reverse('promotion_month_product', args=(0,)), follow=True)    # for second object
+        self.assertEqual(response.status_code, 403)
+
+    def test_promotion_month_product_404(self):
+        print('test_promotion_month_product_404')
+        
+        credentials = {'username': 'Magarcia', 'password': 'Magarcia'}
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+        response = self.client.post(reverse('promotion_month_product', args=(4239823457,)), follow=True)    # for second object
+        self.assertEqual(response.status_code, 404)
+
+    def test_promotion_week_product_existe(self):
+        print('test_promotion_week_product_existe')
+        
+        credentials = {'username': 'Magarcia', 'password': 'Magarcia'}
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+        response = self.client.post(reverse('promotion_week_product', args=(0,)), follow=True)    # for second object
+        self.assertEqual(response.status_code, 403)
+
+    def test_promotion_week_product_404(self):
+        print('test_promotion_week_product_404')
+        
+        credentials = {'username': 'Magarcia', 'password': 'Magarcia'}
+        
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+        response = self.client.post(reverse('promotion_week_product', args=(4239823457,)), follow=True)    # for second object
+        self.assertEqual(response.status_code, 404)
+
+
+
+
     def test_list_shop_get_200(self):
         # Probamos que se puede acceder enviar un mensaje a un chat con una tienda con la que ha hablado antes
         print('test_list_shop_get_200')
@@ -742,3 +891,4 @@ class TestMethods(unittest.TestCase):
 
         response = self.client.post(reverse('product_delete', args=(28,)), follow=True)
         self.assertEqual(response.status_code, 403)
+
