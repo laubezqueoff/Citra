@@ -6,7 +6,7 @@ install:
 - pip install codacy-coverage
 script:
 - cd Citra
-- cp travis_local_settings.py local_settings.py
+- cp travis_local_settings.py settings_local.py
 - cd ..
 - python ./manage.py test
 deploy:
