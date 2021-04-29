@@ -9,6 +9,15 @@ Productos / Citra
 {% block contenido %}
 
 <section class = "seccion_productos">
+      {% if product.shop.owner.person.isBanned %}
+      <h1 style="
+    text-align: center;
+"> La tienda del producto que intentas ver esta baneada </h1>
+      {% elif not sus %}
+      <h1 style="
+    text-align: center;
+"> La tienda del producto que intentas ver no ha renovado la suscripción </h1>
+        {% else %}
     <div class="row g-0">
         <div class="col-lg-5 p-5 ">
             <div class="p-5 w-100 mb-auto">
@@ -112,6 +121,7 @@ Productos / Citra
 
 
     </div>
+    {% endif %}
 
 </section>
 

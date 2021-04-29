@@ -13,6 +13,15 @@
       <div class="row">
         <img src="{% static 'images/tienda_tienda.jpg' %}">
       </div>
+      {% if shop.owner.person.isBanned %}
+      <h1 style="
+    text-align: center;
+"> La tienda que intentas ver esta baneada </h1>
+      {% elif not subscriptionShop %}
+      <h1 style="
+    text-align: center;
+"> La tienda que intentas ver no ha renovado la suscripción </h1>
+      {% else %}
       <div class="row">
         <div class="col">
         <h4 class="section-title">Categorías</h4>
@@ -112,6 +121,7 @@
           {% endif %}
         </div>
       </div>
+      {% endif %}
   </div>
 </main>
 

@@ -46,12 +46,16 @@ def login(request):
             promotions_shops_subscription = {}
             promotions_products_subscription = {}
             for promo in promotions_shops:
-                sus = Subscription.objects.filter(endDate__gte = today, shop = promo.shop).exists()
-                promotions_shops_subscription[promo] = sus
+                person = Person.objects.get(id=promo.shop.owner.person.id)
+                if not person.isBanned:
+                    sus = Subscription.objects.filter(endDate__gte = today, shop = promo.shop).exists()
+                    promotions_shops_subscription[promo] = sus
 
             for promo in promotions_products:
-                sus = Subscription.objects.filter(endDate__gte = today, shop = promo.product.shop).exists()
-                promotions_products_subscription[promo] = sus
+                person = Person.objects.get(id=promo.product.shop.owner.person.id)
+                if not person.isBanned:
+                    sus = Subscription.objects.filter(endDate__gte = today, shop = promo.product.shop).exists()
+                    promotions_products_subscription[promo] = sus
 
             tienda = miTienda(person_id)
             person = get_object_or_404(Person, pk=person_id)
@@ -138,6 +142,11 @@ def registerShop(request):
             return render(request, 'register_shop.html',{"error":error})
          
     else:
+        person_id, rol, rol_id, is_active = get_context(request)
+        context = [person_id, rol, rol_id, is_active]
+        tienda = miTienda(person_id)
+        if is_active:
+            return redirect('/home')
         shopType = ShopType.objects.all()
         return render(request, 'register_shop.html',{"types":shopType})
 
@@ -191,6 +200,11 @@ def register(request):
             return render(request, 'register_user.html')
          
     else: #Si es un GET redirijimos a la vista de login
+        person_id, rol, rol_id, is_active = get_context(request)
+        context = [person_id, rol, rol_id, is_active]
+        tienda = miTienda(person_id)
+        if is_active:
+            return redirect('/home')
         return render(request, 'register_user.html')
 
 def updateUser(request):
@@ -297,12 +311,16 @@ def logout(request):
         promotions_shops_subscription = {}
         promotions_products_subscription = {}
         for promo in promotions_shops:
-            sus = Subscription.objects.filter(endDate__gte = today, shop = promo.shop).exists()
-            promotions_shops_subscription[promo] = sus
+            person = Person.objects.get(id=promo.shop.owner.person.id)
+            if not person.isBanned:
+                sus = Subscription.objects.filter(endDate__gte = today, shop = promo.shop).exists()
+                promotions_shops_subscription[promo] = sus
 
         for promo in promotions_products:
-            sus = Subscription.objects.filter(endDate__gte = today, shop = promo.product.shop).exists()
-            promotions_products_subscription[promo] = sus
+            person = Person.objects.get(id=promo.product.shop.owner.person.id)
+            if not person.isBanned:
+                sus = Subscription.objects.filter(endDate__gte = today, shop = promo.product.shop).exists()
+                promotions_products_subscription[promo] = sus
 
         return render(request, 'home.html', {'promotions_shops_subscription': promotions_shops_subscription, 'promotions_products_subscription': promotions_products_subscription})
 
@@ -765,8 +783,10 @@ def list_shop(request):
     shops = Shop.objects.all()
     shop_subscription = {}
     for promo in shops:
-        a = Subscription.objects.filter(endDate__gte = today, shop = promo).exists()
-        shop_subscription[promo] = a
+        person = Person.objects.get(id=promo.owner.person.id)
+        if not person.isBanned:
+            a = Subscription.objects.filter(endDate__gte = today, shop = promo).exists()
+            shop_subscription[promo] = a
     tienda = miTienda(person_id)
     return render(request, 'shops.html', {'shop_subscription': shop_subscription, 'context': context, 'tienda': tienda})
 
@@ -1021,6 +1041,12 @@ def booking(request):
         user = CustomUser.objects.get(id=rol_id)
         for reserva in json.loads(request.POST.get('key_1_string')):
             product = Product.objects.get(id=reserva['id'])
+            person = Person.objects.get(id=product.shop.owner.person.id)
+            if not person.isBanned:
+                data = {
+                    'url': "/error/"
+                }
+                return JsonResponse(data)
             shop = product.shop.durationBooking
             now = datetime.now()
             finishBooking = now + timedelta(hours=shop)
@@ -1048,7 +1074,8 @@ def review_list(request, id_shop):
     context = [person_id, rol, rol_id, is_active]
     shop = get_object_or_404(Shop, pk=id_shop)
     tienda = miTienda(person_id)
-    if rol == "User":
+    sus = Subscription.objects.get(shop=shop).exists()
+    if rol == "User" and sus:
 
         reviews = []
         for m in shop.review_set.all():
@@ -1074,6 +1101,10 @@ def review_form(request, id_shop):
     context = [person_id, rol, rol_id, is_active]
     shop = get_object_or_404(Shop, pk=id_shop)
     tienda = miTienda(person_id)
+    person = Person.objects.get(id=shop.owner.person.id)
+    sus = Subscription.objects.get(shop=shop).exists()
+    if person.isBanned or not(sus):
+        return render(request, 'error.html', {'context': context, 'tienda': tienda})
     if rol == "User":
         if request.method == 'GET':
             form = ReviewForm()
@@ -1129,12 +1160,15 @@ def report_shop_form(request, id_shop):
     shop = get_object_or_404(Shop, pk= id_shop)
     reportReason = ReportReason.objects.all()
 
+    person = Person.objects.get(id=shop.owner.person.id)
+    if person.isBanned:
+        return render(request, 'error.html', {'context': context})
+
     if rol == "User":
         if request.method == 'GET':
             form = ReportForm()
             return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason})
         if request.method == 'POST':  
-
             owner = Owner.objects.get(id = shop.owner.id)
             id_reported_person = owner.person.id
 
@@ -1185,6 +1219,9 @@ def report_from_chat_form(request, id_chat):
     chat = get_object_or_404(Chat, pk= id_chat)
     reportReason = ReportReason.objects.all()
     tienda = miTienda(person_id)
+    person = Person.objects.get(id=chat.shop.owner.person.id)
+    if person.isBanned:
+        return render(request, 'error.html', {'context': context, 'tienda': tienda})
     if request.method == 'GET':
         form = ReportForm()
         return render(request, 'report.html', {'form':form, 'context':context, 'reportReason' : reportReason, 'tienda':tienda})
