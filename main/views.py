@@ -734,7 +734,7 @@ def activate_shop(request, id_shop):
                         subscriptionType=subscriptionType, startDate=time, endDate=endtime, owner=owner, shop=shop)
                     return redirect("home")
                 elif (subscription and not activate):
-                    print(update)
+                    print('update')
                     time = date.today()
                     endtime = (time + timedelta(days=30))
                     person = Person.objects.get(id=person_id)
@@ -913,7 +913,7 @@ def product_details(request, id_product):
                 product.price = form.cleaned_data['price']
                 product.description = form.cleaned_data['description']
                 product.productType = ProductType.objects.get(
-                    name=request.POST['select'])
+                    id=form.cleaned_data['select'])
                 if request.FILES.get('picture') != None:
                     if request.FILES.get('picture').size > 5000000:
                         msg = 'El tamaño máximo de la imagen no puede superar 5 MB'

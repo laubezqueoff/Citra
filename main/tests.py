@@ -365,7 +365,7 @@ class TestMethods(unittest.TestCase):
         response = self.client.post(reverse('list_users', args=(1,)), data=data, follow=True)    
         self.assertEqual(response.status_code, 200)
     
-    def test_post_user_true(self):
+    def test_post_user_atrue(self):
         #Probamos que se puede acceder habilitar el perfil de un user
         print('test_post_user_true')
         
@@ -428,7 +428,7 @@ class TestMethods(unittest.TestCase):
         response = self.client.post(reverse('list_owners', args=(6,)), data=data, follow=True)    
         self.assertEqual(response.status_code, 200)
     
-    def test_post_owner_true(self):
+    def test_post_owner_atrue(self):
         #Probamos que se puede acceder habilitar el perfil de un owner
         print('test_post_owner_true')
         
@@ -442,6 +442,9 @@ class TestMethods(unittest.TestCase):
     def test_get_owner_403_user(self):
         #Probamos que se puede acceder al perfil de un owner estando logueado como user
         print('test_get_owner_403_user')
+
+        credentials = {'username': 'josruialb', 'password': 'josruialb'}
+
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
         
@@ -797,7 +800,7 @@ class TestMethods(unittest.TestCase):
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
 
-        data={'name': 'Camiseta', 'description': 'Buena calidad', 'price': '1', 'select': 'Ropa'}
+        data={'name': 'Camiseta', 'description': 'Buena calidad', 'price': '1', 'select': '1'}
         form = ProductForm(data=data)
         # print(form)
         response = self.client.post(reverse('products', args=(28,)), data=data, follow=True)
@@ -813,7 +816,7 @@ class TestMethods(unittest.TestCase):
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
 
-        data={'name': 'Camiseta', 'description': 'Buena calidad', 'price': '2', 'select': 'Ropa'}
+        data={'name': 'Camiseta', 'description': 'Buena calidad', 'price': '2', 'select': '1'}
         response = self.client.post(reverse('products', args=(28,)), data=data, follow=True)
         self.assertEqual(response.status_code, 403)
 
@@ -826,7 +829,7 @@ class TestMethods(unittest.TestCase):
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
 
-        data={'name': 'Camiseta', 'description': 'Buena calidad', 'price': '3', 'select': 'Ropa'}
+        data={'name': 'Camiseta', 'description': 'Buena calidad', 'price': '3', 'select': '1'}
         response = self.client.post(reverse('products', args=(28,)), data=data, follow=True)
         self.assertEqual(response.status_code, 403)
 
@@ -839,7 +842,7 @@ class TestMethods(unittest.TestCase):
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
 
-        data={'name': 'Camiseta', 'description': 'Buena calidad', 'price': '4', 'select': 'Ropa'}
+        data={'name': 'Camiseta', 'description': 'Buena calidad', 'price': '4', 'select': '1'}
         form = ProductForm(data=data)
         response = self.client.post(reverse('products', args=(28,)), data=data, follow=True)
         self.assertEqual(response.status_code, 403)
