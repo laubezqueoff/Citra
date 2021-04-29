@@ -13,11 +13,25 @@
             <div class="well well-sm">        
                 <div class="row" id="post-review-box" style="">
                     <div class="col-md-12">
+                        {% if form.errors %}
+                            {% for field in form %}
+                                {% for error in field.errors %}
+                                    <div class="alert alert-danger">
+                                        <strong>{{ error|escape }}</strong>
+                                    </div>
+                                {% endfor %}
+                            {% endfor %}
+                            {% for error in form.non_field_errors %}
+                                <div class="alert alert-danger">
+                                    <strong>{{ error|escape }}</strong>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
                         <form accept-charset="UTF-8" action="" method="post">{% csrf_token %}
                             <label style = 'font-size:15px;'>Seleccione el motivo:</label>
                                 <select name="title" id="title" style = 'font-size:15px;'>
                                 {% for report in reportReason %}
-                                    <option value="{{report.name}}">{{report.name}}</option>
+                                    <option value="{{report.id}}">{{report.name}}</option>
                                 {% endfor %}
                                 </select>
                             <textarea style = 'font-size:15px;' class="form-control animated" cols="50" id="description" name="description" placeholder="Deja tu comentario aquí..." rows="5"></textarea>
