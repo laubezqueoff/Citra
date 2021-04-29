@@ -29,8 +29,15 @@
                         {% endif %}">
                     </img>
                 </span>
+                {% if book.isAccepted == 0 %}
                 <button onclick="aceptar({{book.id}})">Aceptar</button>
+                <button onclick="rechazar({{book.id}})">Rechazar</button>
                 <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="{{book.id}}/report"> Reportar </a></button>
+                {% endif %}
+                {% if book.isAccepted == 1 %}
+                <button onclick="rechazar({{book.id}})">Recogido</button>
+                <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="{{book.id}}/report"> Reportar </a></button>
+                {% endif %}
             </div>
             {% empty %}
             {% endfor %}
@@ -46,6 +53,22 @@
         }
         $.ajax({
             url: 'acceptbookings/',
+            data: data,
+            type: 'POST',
+            success: function (data) {
+                console.log(window.location.origin)
+                console.log(window.location.origin + data.url)
+                window.location.replace(window.location.origin + data.url);
+            }
+        });
+    }
+    function rechazar(id) {
+        data = {
+            id: id,
+            csrfmiddlewaretoken: '{{ csrf_token }}',
+        }
+        $.ajax({
+            url: 'deletebooking/',
             data: data,
             type: 'POST',
             success: function (data) {
