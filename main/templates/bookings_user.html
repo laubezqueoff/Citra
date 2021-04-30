@@ -9,8 +9,10 @@
         <div class="row">
             <h4 class="section-title mt-lg-2 ">Mis reservas</h4>
         </div>
-        <div class="row ms-3">                            
+        <div class="row ms-3">   
+        {% for shop, bookingsQuantity in shop_bookings.items %}                         
             <div class="row">
+            <h1>{{shop.name}} Total a pagar: {{shop.schedule}} € </h1>
                 {% for book, quantity in bookingsQuantity.items %}
                 <div class="card col-sm-3 mt-3 mb-3 product">
                     <img src="{{book.product.picture.url}}"  class="img-fluid mt-3" style="max-height:150px;max-width:150px; align-self:center;">
@@ -22,6 +24,7 @@
                 </div>
                 {% empty %}
                 {% endfor %}
+            {% endfor %}
             </div>
         </div>
     </div>

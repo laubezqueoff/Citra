@@ -21,6 +21,13 @@ def login(request):
     # msg_success = "Bienvenido a la aplicación"
     msg_error = "El nombre y la contraseña no coinciden"
     msg_error_is_banned = "El usuario esta suspendido"
+    # SELECT DISTINCT main_shop.name from main_shop
+    # LEFT JOIN main_product on main_shop.id = main_product.shop_id
+    # LEFT JOIN main_booking on main_product.id = main_booking.product_id
+    # where main_booking.user_id = 1
+    # prueba = Booking.objects.raw('SELECT DISTINCT Shop.name from Shop LEFT JOIN Product on Shop.id = Product.shop.id LEFT JOIN Booking on Product.id = Booking.Product.id where Booking.user.id = 1')
+    # for s in Shop.objects.raw('SELECT DISTINCT main_shop.id, main_shop.name from main_shop LEFT JOIN main_product on main_shop.id = main_product.shop_id LEFT JOIN main_booking on main_product.id = main_booking.product_id where main_booking.user_id = 1'):
+    #     print(s)
     if request.method == 'POST':  # Si es un POST redirijimos a la vista de index con el context actualizado
 
         form = LoginForm(data=request.POST)
@@ -1187,10 +1194,18 @@ def list_booking_user(request):
     if (is_active):
         user = CustomUser.objects.get(id=rol_id)
         bookings = Booking.objects.filter(user=user).filter(isAccepted=True)
-        bookingsQuantity = {}
-        for book in bookings:
-            bookingsQuantity[book] = book.product.price * book.quantity
-        return render(request, 'bookings_user.html', {'bookingsQuantity': bookingsQuantity, 'context': context, 'tienda': tienda})
+        shop_bookings = {}
+        for s in Shop.objects.raw('SELECT DISTINCT main_shop.id, main_shop.name from main_shop LEFT JOIN main_product on main_shop.id = main_product.shop_id LEFT JOIN main_booking on main_product.id = main_booking.product_id where main_booking.user_id = ' + rol_id):
+            bookingsQuantity = {}
+            total_price = 0
+            for book in bookings:
+                if s.name == book.product.shop.name:
+                    bookingsQuantity[book] = book.product.price * book.quantity
+                    total_price += book.product.price * book.quantity
+                    shop_bookings[s] = bookingsQuantity
+                
+            s.schedule = total_price
+        return render(request, 'bookings_user.html', {'shop_bookings': shop_bookings, 'context': context, 'tienda': tienda})
     else:
         return render(request, 'prohibido.html')
 

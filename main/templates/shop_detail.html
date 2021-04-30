@@ -61,7 +61,7 @@
                   <div class="card rounded shadow-sm border-0 product" id="{{prod.productType.id}}">
                       <div class="card-body p-4"><img src="{{prod.picture.url}}" alt="" class="img-fluid d-block mx-auto mb-3">
                           <h5> <a id = "nombre{{prod.id}}" href="{% url 'products' prod.pk %}" class="text-dark">{{prod.name}}</a></h5>
-                          <p class="small text-muted font-italic">{{prod.price}} €</p>
+                          <p id = "precio{{prod.id}}" class="small text-muted font-italic">{{prod.price}} €</p>
                       {% if context.1 == 'User' %}
                         <button id="boton" onclick="añadir({{prod.id}})">Añadir</button>
                       {% endif %}
@@ -166,7 +166,7 @@
  <script>
   function añadir (id) {
     var nombre = document.getElementById('nombre'+id).innerHTML
-    var precio = document.getElementById('precio'+id).innerHTML
+    var precio = document.getElementById('precio'+id).innerHTML.replace(" €","")
     var table = document.getElementById('tbody');
     var nombres = []
     for (let i = 0; i < document.getElementsByClassName('nombreProducto').length; i++) {
