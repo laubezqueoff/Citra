@@ -14,18 +14,23 @@
             <div class="row">
             <h1>{{shop.name}} Total a pagar: {{shop.schedule}} € </h1>
                 {% for book, quantity in bookingsQuantity.items %}
-                <div class="card col-sm-3 mt-3 mb-3 product">
-                    <img src="{{book.product.picture.url}}"  class="img-fluid mt-3" style="max-height:150px;max-width:150px; align-self:center;">
-                    <h4 class="card-title" style="text-align:center;">Tienda: {{book.product.shop.name}}</h4>
-                    <p class="product__name" style="text-align: center;" > Nombre Producto: <b>{{book.product.name}} </b> </p>
-                    <span class="product__price">Precio: {{quantity}} € </span>
-                    <span class="product__price">Cantidad Reservada: {{book.quantity}} </span>
-                    <span class="product__price">Tienes que recogerlo antes de las: {{book.endDate}} </span>
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                        <!-- Card-->
+                        <div class="card rounded shadow-sm border-0 product">
+                            <div class="card-body p-4"><img src="{{book.product.picture.url}}"  alt="" class="img-fluid d-block mx-auto mb-3">
+                                <h4 class="card-title" style="text-align:center;">Tienda: {{book.product.shop.name}}</h4>
+                                <p class="product__name" style="text-align: center;" > Nombre Producto: <b>{{book.product.name}} </b> </p>
+                                <span class="product__price">Precio: {{quantity}} € </span>
+                                <span class="product__price">Cantidad Reservada: {{book.quantity}} </span>
+                                <span class="product__price">Tienes que recogerlo antes de las: {{book.endDate}} </span>
+                            </div>
+                        </div>                    
                 </div>
                 {% empty %}
                 {% endfor %}
-            {% endfor %}
             </div>
+                
+        {% endfor %}            
         </div>
     </div>
 </main>
