@@ -60,7 +60,8 @@ urlpatterns = [
     path('shops/<id_shop>/edit', views.updateShop, name='update_shop'),
     path('updateUser/',views.updateUser,name="updateUser"),
     path('notificationList/',views.notificationList,name="notificationList"),
-    path('GDPR/',views.GDPR,name="GDPR"),
+    path('privacyPolicy/',views.politicaPrivacidad,name="politicaPrivacidad"),
+    path('termsAndConditions/',views.terminosYCondiciones,name="terminosYCondiciones"),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 

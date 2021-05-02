@@ -1710,8 +1710,11 @@ def updateShop(request, id_shop):
     else:
         return render(request, 'prohibido.html', {'tienda': tienda, 'context': context, 'shop': shop}, status=403)
 
-def GDPR(request):
-    return render(request, 'GDPR.html')
+def politicaPrivacidad(request):
+    return render(request, 'privacyPolicy.html')
+
+def terminosYCondiciones(request):
+    return render(request, 'termsAndConditions.html')
     
 def notificationList(request):
     person_id, rol, rol_id, is_active = get_context(request)
