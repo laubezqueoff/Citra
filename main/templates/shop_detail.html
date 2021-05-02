@@ -61,7 +61,7 @@
                   <div class="card rounded shadow-sm border-0 product" id="{{prod.productType.id}}">
                       <div class="card-body p-4"><img src="{{prod.picture.url}}" alt="" class="img-fluid d-block mx-auto mb-3">
                           <p> <b><a id = "nombre{{prod.id}}" href="{% url 'products' prod.pk %}" class="text-dark">{{prod.name}}</a></b></p>
-                          <p class="small text-muted font-italic">{{prod.price}} €</p>
+                          <p id = "precio{{prod.id}}" class="small text-muted font-italic">{{prod.price}} €</p>
                       {% if context.1 == 'User' %}
                         <button id="boton" class="btn btn-outline-dark" onclick="añadir({{prod.id}})">Añadir</button>
                       {% endif %}
@@ -98,6 +98,7 @@
             <button id="boton2" type="button" class="btn btn-light" onclick="vaciarCarrito()">Vaciar Carrito</button>
             {% csrf_token %}
             <input id="submit" type="button" class="btn btn-light" value="Reservar" onclick="reserva()"/>
+            <p>*Si te sales o recargas la página de la tienda perderas el contenido de tu carrito</p>
             
             <h4 class="section-title">Otras acciones</h4>
             <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="reviews"> Valoraciones </a></button>
@@ -166,7 +167,7 @@
  <script>
   function añadir (id) {
     var nombre = document.getElementById('nombre'+id).innerHTML
-    var precio = document.getElementById('precio'+id).innerHTML
+    var precio = document.getElementById('precio'+id).innerHTML.replace(" €","")
     var table = document.getElementById('tbody');
     var nombres = []
     for (let i = 0; i < document.getElementsByClassName('nombreProducto').length; i++) {
