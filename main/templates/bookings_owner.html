@@ -9,7 +9,9 @@
         <div class="row">
             <h4 class="section-title mt-lg-2 ">Mis reservas</h4>
         </div>
-        <div class="row">                            
+        {% for user,factoresConfianza in booking_owner.items %}
+        <div class="row">  
+            <h1> {{user.name}}, total a pagar {{user.phoneNumber}}</h1>                          
             {% for book,factor in factoresConfianza.items %}
             <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
                 <!-- Card-->
@@ -44,8 +46,10 @@
                 </div>
             </div>
             {% empty %}
-            {% endfor %}  
-        
+            {% endfor %}
+
+        </div>
+        {% endfor %}
     </div>
 </main>
 

@@ -1220,7 +1220,7 @@ def list_booking_user(request):
                     bookingsQuantity[book] = book.product.price * book.quantity
                     total_price += book.product.price * book.quantity
                     shop_bookings[s] = bookingsQuantity
-                
+
             s.schedule = total_price
         return render(request, 'bookings_user.html', {'shop_bookings': shop_bookings, 'context': context, 'tienda': tienda})
     else:
@@ -1233,14 +1233,26 @@ def list_booking_owner(request):
     tienda = miTienda(person_id)
     if (is_active):
         owner = Owner.objects.get(id=rol_id)
-      #  bookings = Booking.objects.filter(isAccepted=False)
-        bookings = Booking.objects.all()
 
-        factoresConfianza = {}
-        for book in bookings:
-            if book.product.shop.owner.id == owner.id:
-                factoresConfianza[book] = factor_confianza(book.user.id)
-        return render(request, 'bookings_owner.html', {'context': context, 'tienda': tienda, 'factoresConfianza': factoresConfianza})
+        bookings = Booking.objects.all()
+        user_booking = Booking.objects.values('user').distinct()
+        print(user_booking)
+        booking_owner = {}
+
+        for user in user_booking:
+            total_price = 0
+            factoresConfianza = {}
+            client = CustomUser.objects.get(id=user['user'])
+            for book in bookings:
+
+                if book.product.shop.owner.id == owner.id and client.id == book.user.id:
+                    total_price += book.product.price * book.quantity
+
+                    factoresConfianza[book] = factor_confianza(
+                        book.user.id)
+                    booking_owner[client.person] = factoresConfianza
+            client.person.phoneNumber = total_price
+        return render(request, 'bookings_owner.html', {'context': context, 'tienda': tienda, 'booking_owner': booking_owner})
     else:
         return render(request, 'prohibido.html')
 
