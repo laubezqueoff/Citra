@@ -36,11 +36,11 @@
                     </div>
                     <div class="mb-4">
                         <label for="phoneNumber" class="form-label fw-bold">Número de teléfono</label>
-                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca un Número de 9 dígitos" id="phoneNumber" name="phoneNumber" value="{{person.phoneNumber}}" pattern="[0-9]{9}" required>
+                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca un Número de 9 dígitos" id="phoneNumber" name="phoneNumber" value="{{person.phoneNumber}}" pattern="^[9|8|7|6]\d{8}$" required>
                     </div>
                     <div class="mb-4">
                         <label for="zipCode" class="form-label fw-bold">Código postal</label>
-                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca un código postal de 5 dígitos" id="zipCode" name="zipCode" value="{{person.zipCode}}" pattern="[0-9]{5}" required>
+                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca un código postal de 5 dígitos de Sevilla" id="zipCode" name="zipCode" value="{{person.zipCode}}" pattern="41{1}[0-9]{3}" required>
                     </div>
               
                     <div class="mb-4">
@@ -90,11 +90,11 @@
                     </div>
                     <div class="mb-4">
                         <label for="phoneNumber" class="form-label fw-bold">Número de teléfono</label>
-                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca un Número de 9 dígitos" id="phoneNumber" name="phoneNumber" pattern="[0-9]{9}" required>
+                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca un Número de 9 dígitos" id="phoneNumber" name="phoneNumber" pattern="^[9|8|7|6]\d{8}$" required>
                     </div>
                     <div class="mb-4">
                         <label for="zipCode" class="form-label fw-bold">Código postal</label>
-                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca un código postal de 5 dígitos" id="zipCode" name="zipCode" pattern="[0-9]{5}" required>
+                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca un código postal de 5 dígitos" id="zipCode" name="zipCode" pattern="41{1}[0-9]{3}" required>
                     </div>
                     <div class="mb-4">
                         {% if error_log.0 %}

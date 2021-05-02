@@ -60,10 +60,10 @@
                 <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
                   <div class="card rounded shadow-sm border-0 product" id="{{prod.productType.id}}">
                       <div class="card-body p-4"><img src="{{prod.picture.url}}" alt="" class="img-fluid d-block mx-auto mb-3">
-                          <h5> <a id = "nombre{{prod.id}}" href="{% url 'products' prod.pk %}" class="text-dark">{{prod.name}}</a></h5>
+                          <p> <b><a id = "nombre{{prod.id}}" href="{% url 'products' prod.pk %}" class="text-dark">{{prod.name}}</a></b></p>
                           <p id = "precio{{prod.id}}" class="small text-muted font-italic">{{prod.price}} €</p>
                       {% if context.1 == 'User' %}
-                        <button id="boton" onclick="añadir({{prod.id}})">Añadir</button>
+                        <button id="boton" class="btn btn-outline-dark" onclick="añadir({{prod.id}})">Añadir</button>
                       {% endif %}
                       </div>
                     </div>
@@ -103,7 +103,7 @@
             <h4 class="section-title">Otras acciones</h4>
             <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="reviews"> Valoraciones </a></button>
             <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="{% url 'newChat' shop.pk %}"> Iniciar Chat </a></button>
-            <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="report"> Reportar </a></button>
+            <button type="button" class="btn btn-outline-warning mt-2"><a style="text-decoration: none;" class="button-light" href="report"> Reportar </a></button>
 
           {% endif %}
           {% if context.1 == 'Owner' and shop.owner.person.id|stringformat:"i" == context.0 %}
