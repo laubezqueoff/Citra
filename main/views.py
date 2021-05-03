@@ -935,14 +935,16 @@ def product_details(request, id_product):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     today = date.today()
-    promotionProduct = Promotion.objects.filter(
-        product=product, endDate__gte=today).exists()
+
     tienda = miTienda(person_id)
 
     try:
         product = get_object_or_404(Product, pk=id_product)
     except:
         return render(request, 'error.html', {'context': context, 'tienda': tienda}, status=404)
+
+    promotionProduct = Promotion.objects.filter(
+        product=product, endDate__gte=today).exists()
 
     if request.method == 'POST':
         form = ProductForm(request.POST)
