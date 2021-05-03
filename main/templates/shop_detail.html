@@ -37,7 +37,7 @@
       <h1 style="
     text-align: center;
 "> La tienda que intentas ver esta baneada </h1>
-      {% elif not subscriptionShop %}
+      {% elif not subscriptionShop and shop.owner.person.id|stringformat:"i" == context.0 %}
       <h1 style="
     text-align: center;
 "> La tienda que intentas ver no ha renovado la suscripción </h1>
@@ -165,7 +165,7 @@
 </main>
 
  <script>
-  function añadir (id) {
+  function añadir(id) {
     var nombre = document.getElementById('nombre'+id).innerHTML
     var precio = document.getElementById('precio'+id).innerHTML.replace(" €","")
     var table = document.getElementById('tbody');
@@ -217,7 +217,7 @@ function reserva() {
         objeto = {}
     }
     console.log(array)
-    if array.length == 0  {
+    if (array.length == 0)  {
       confirm("No has añadido ningún producto al carrito")
       return
     }
