@@ -2,7 +2,7 @@ from main.models import Person, CustomUser, CustomAdmin, Owner, ShopType, Produc
 import requests
 from datetime import date, datetime
 from django.shortcuts import render, redirect, get_object_or_404
-from main.forms import MessageForm, ReviewForm, UserSearchForm, CustomUserUpdateForm, LoginForm, ShopForm, CustomUserForm, UserBannedForm, ProductForm, FormShop, NameShopForm, ReportForm
+from main.forms import MessageForm, ReviewForm, UserSearchForm, CustomUserUpdateForm, LoginForm, ShopForm, CustomUserForm, UserBannedForm, ProductForm, FormShop, NameShopForm, ReportForm, OwnerSearchForm
 from django.http import Http404
 import json
 from django.http import JsonResponse
@@ -1219,8 +1219,8 @@ def list_booking_user(request):
             total_price = 0
             for book in bookings:
                 if s.name == book.product.shop.name:
-                    bookingsQuantity[book] = book.product.price * book.quantity
-                    total_price += book.product.price * book.quantity
+                    bookingsQuantity[book] = book.title * book.quantity
+                    total_price += book.title * book.quantity
                     shop_bookings[s] = bookingsQuantity
 
             s.schedule = total_price
@@ -1248,7 +1248,7 @@ def list_booking_owner(request):
             for book in bookings:
 
                 if book.product.shop.owner.id == owner.id and client.id == book.user.id:
-                    total_price += book.product.price * book.quantity
+                    total_price += book.title * book.quantity
 
                     factoresConfianza[book] = factor_confianza(
                         book.user.id)
@@ -1327,7 +1327,7 @@ def booking(request):
             now = datetime.now()
             finishBooking = now + timedelta(hours=shop)
             b = Booking.objects.create(startDate=now, endDate=finishBooking, product=product,
-                                       title='Prueba', quantity=reserva['cantidad'], isAccepted=False, user=user)
+                                       title=product.price, quantity=reserva['cantidad'], isAccepted=False, user=user)
             b.save()
             Notification.objects.create(title="Te han hecho una reserva", description="El producto " + product.name + " ha sido reservado por " + user.person.name
                                         + ". La reserva está pendiente de ser aceptada.",
@@ -1561,7 +1561,7 @@ def get_owners(request):
     if (is_active):
         if str(rol) == 'Admin':
             if request.method == 'POST':
-                form = UserSearchForm(data=request.POST)
+                form = OwnerSearchForm(data=request.POST)
                 if form.is_valid():
                     username = form.cleaned_data['username']
                     person_list = Person.objects.filter(
@@ -1582,12 +1582,11 @@ def get_owners(request):
 
                 else:
                     print('Error en el formulario')
-                    form = UserSearchForm()
                     owners = Owner.objects.all()
                     return render(request, 'ownerListAdmin.html', {"context": context, "owners": owners, 'form': form, 'tienda': tienda})
             else:
                 print('Método get exitoso, get_owners')
-                form = UserSearchForm()
+                form = OwnerSearchForm()
                 owners = Owner.objects.all()
                 return render(request, 'ownerListAdmin.html', {"context": context, "owners": owners, 'form': form, 'tienda': tienda})
         else:

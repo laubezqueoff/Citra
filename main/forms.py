@@ -90,6 +90,10 @@ class UserSearchForm(forms.Form):
     username = forms.CharField(label='Username', required= True,max_length=20,
         error_messages={'required': 'Introduce un username, por favor', 'max_length':'El username no debe tener más de 20 caracteres o no encontrará ninguna coincidencia'})
 
+class OwnerSearchForm(forms.Form):
+    username = forms.CharField(label='Username', required= True,max_length=20,
+        error_messages={'required': 'Introduce un username, por favor', 'max_length':'El username no debe tener más de 20 caracteres o no encontrará ninguna coincidencia'})
+
 class UserBannedForm(forms.Form):
     isBanned = forms.BooleanField(label='Esta Baneado', required=False)
 
