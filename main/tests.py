@@ -895,3 +895,141 @@ class TestMethods(unittest.TestCase):
         response = self.client.post(reverse('product_delete', args=(28,)), follow=True)
         self.assertEqual(response.status_code, 403)
 
+    # TEST DE FORO ######################################################################
+
+    def test_get_threads(self):
+
+        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+
+        response = self.client.get(reverse('threads'), follow=True)
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_get_forumMessagesList(self):
+
+        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+
+        response = self.client.get(reverse('forumMessages', args=(1,)), follow=True)
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_post_forumMessagesList(self):
+
+        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+
+        data={'text': 'Soy un mensaje de prueba'}
+
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+    
+        response = self.client.post(reverse('forumMessages', args=(1,)), data=data, follow=True)
+        self.assertEqual(response.status_code, 200)
+
+
+    # TEST DE VALORACIONES #####################################################################
+
+    def test_get_reviewList(self):
+        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+
+        response = self.client.get(reverse('reviews', args=(0,)), follow=True)
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_get_reviewForm(self):
+        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+
+        response = self.client.get(reverse('review', args=(0,)), follow=True)
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_post_reviewForm(self):
+        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+
+        data={'rating': '5', 'title': 'Soy una review de prueba', 'description': 'Soy una descripción de prueba'}
+
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+
+        response = self.client.post(reverse('review', args=(0,)), data=data, follow=True)
+        self.assertEqual(response.status_code, 200)
+
+
+    # TEST DE REPORTES ######################################################################
+
+    def test_get_reportShop(self):
+        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+
+        response = self.client.post(reverse('report_shop', args=(0,)), follow=True)
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_post_reportShop(self):
+        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+
+        data={'title': 'Soy un reporte de prueba', 'description': 'Soy una descripción de prueba'}
+
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+
+        response = self.client.post(reverse('report_shop', args=(0,)), data=data, follow=True)
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_get_reportUser(self):
+        credentials = {'username': 'Magarcia', 'password': 'Magarcia'}
+
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+
+        response = self.client.get(reverse('report_user', args=(1,)), follow=True)
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_post_reportUser(self):
+        credentials = {'username': 'Magarcia', 'password': 'Magarcia'}
+
+        data={'title': 1, 'description': 'Soy una descripción de prueba'}
+
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+
+        response = self.client.post(reverse('report_user', args=(1,)), data=data, follow=True)
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_get_reportFromChat(self):
+        credentials = {'username': 'micum', 'password': 'Contraseña-3'}
+
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+        
+        response = self.client.get(reverse('report_chat', args=(0,)),  follow=True)
+        self.assertEqual(response.status_code, 200)
+
+
+    def test_post_reportFromChat(self):
+        credentials = {'username': 'micum', 'password': 'Contraseña-3'}
+
+        data={'title': 1, 'description': 'Soy una descripción de prueba'}
+
+        r = self.client.post(reverse('login'), data=credentials, follow=True)
+        self.assertEqual(r.status_code, 200)
+
+        response = self.client.post(reverse('report_chat', args=(0,)), data=data, follow=True)
+        self.assertEqual(response.status_code, 200)
+

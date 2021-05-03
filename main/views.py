@@ -1471,7 +1471,7 @@ def report_user_form(request, id_booking):
     tienda = miTienda(person_id)
     reportReason = ReportReason.objects.all()
 
-    if rol == "Owner":
+    if rol == "Owner" and str(booking.product.shop.owner.person.id) == person_id:
         if request.method == 'GET':
             form = ReportForm()
             return render(request, 'report.html', {'form': form, 'context': context, 'reportReason': reportReason, 'tienda': tienda})
@@ -1488,6 +1488,7 @@ def report_user_form(request, id_booking):
                 description = form['description'].data
                 Report.objects.create(
                     title=title, description=description, person=Person.objects.get(id=id_reported_person))
+                booking.delete()
                 return redirect('/shop/bookings/')
             else:
                 return render(request, 'report.html', {'form': form, 'context': context, 'reportReason': reportReason})
@@ -1509,7 +1510,7 @@ def report_from_chat_form(request, id_chat):
         form = ReportForm()
         return render(request, 'report.html', {'form': form, 'context': context, 'reportReason': reportReason, 'tienda': tienda})
 
-    if request.method == 'POST':
+    if request.method == 'POST' and str(chat.shop.owner.person.id) == person_id:
 
         if rol == "User":
             shop = Shop.objects.get(id=chat.shop.id)
@@ -1531,6 +1532,9 @@ def report_from_chat_form(request, id_chat):
             return redirect('/shop/chat/' + str(chat.id))
         else:
             return render(request, 'report.html', {'form': form, 'context': context, 'reportReason': reportReason})
+
+    else:
+        return render(request, 'prohibido.html', {'context': context, 'tienda': tienda})
 
 
 # 0: Datos insuficientes, 1: Poco fiable, 2: Medianamente fiable, 3: Cliente fiable

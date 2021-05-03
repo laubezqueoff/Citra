@@ -37,7 +37,7 @@
       <h1 style="
     text-align: center;
 "> La tienda que intentas ver esta baneada </h1>
-      {% elif not subscriptionShop and shop.owner.person.id|stringformat:"i" == context.0 %}
+      {% elif not subscriptionShop and shop.owner.person.id|stringformat:"i" != context.0 %}
       <h1 style="
     text-align: center;
 "> La tienda que intentas ver no ha renovado la suscripción </h1>
