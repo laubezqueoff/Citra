@@ -788,7 +788,7 @@ def activate_shop_three_months(request, id_shop):
         time = date.today()
         activate = Subscription.objects.filter(endDate__gte=time).exists()
         if (not(subscription) and str(shop.owner.person.id) == person_id and request.method == 'POST'):
-            subscriptionType = SubscriptionType.objects.get(id=0)
+            subscriptionType = SubscriptionType.objects.get(id=2)
             owner = Owner.objects.get(person=person_id)
             time = date.today()
             endtime = (time + timedelta(days=90))
@@ -832,7 +832,7 @@ def activate_shop_one_year(request, id_shop):
         if (str(shop.owner.person.id) == person_id):
             if(request.method == 'POST'):
                 if (not(subscription)):
-                    subscriptionType = SubscriptionType.objects.get(id=0)
+                    subscriptionType = SubscriptionType.objects.get(id=3)
                     owner = Owner.objects.get(person=person_id)
                     time = date.today()
                     endtime = (time + timedelta(days=365))
