@@ -1,0 +1,27 @@
+.seccion_productos{
+
+    font-family: 'Spartan', sans-serif;
+    font-weight: 300;
+    color: black;
+}
+
+
+.color-botones-products{
+
+    background-color: #ffd3b6 !important;
+
+}
+
+
+.input-symbol-euro {
+    position: relative;
+  }
+  .input-symbol-euro input {
+    padding-right: 18px;
+  }
+  .input-symbol-euro:after {
+    position: absolute;
+    top: 0;
+    content: "€";
+    right: 5px;
+  }
