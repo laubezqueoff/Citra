@@ -806,7 +806,7 @@ def activate_shop_three_months(request, id_shop):
             return redirect("home")
         elif (subscription and str(shop.owner.person.id) == person_id and not activate and request.method == 'POST'):
             time = date.today()
-            endtime = (time + timedelta(days=30))
+            endtime = (time + timedelta(days=90))
             person = Person.objects.get(id=person_id)
             get_or_create_customer(email=person.email, source=None)
             charge(amount=1000, source=request.POST.get('stripeToken'))
@@ -848,7 +848,7 @@ def activate_shop_one_year(request, id_shop):
                     return redirect("home")
                 elif (subscription and not activate):
                     time = date.today()
-                    endtime = (time + timedelta(days=30))
+                    endtime = (time + timedelta(days=365))
                     person = Person.objects.get(id=person_id)
                     get_or_create_customer(email=person.email, source=None)
                     charge(amount=1000, source=request.POST.get('stripeToken'))
