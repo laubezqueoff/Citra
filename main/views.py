@@ -297,8 +297,6 @@ def updateUser(request):
 
         return render(request, 'register_user.html', {'form': form, "context": context, "person": p, "editMode": True, 'tienda': tienda})
 
-        return render(request, 'register_user.html', {"context": context, "person": p, "editMode": True, 'tienda': tienda})
-
 
 def assert_email_unique(email, error_log):
 
@@ -496,6 +494,9 @@ def promotion_week_product(request, id_product):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     tienda = miTienda(person_id)
+
+    
+
     if (is_active):
         try:
             product = get_object_or_404(Product, pk=id_product)
@@ -601,8 +602,11 @@ def threads_list(request):
 def forumMessages_list(request, id_thread):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
-    thread = get_object_or_404(Thread, pk=id_thread)
     tienda = miTienda(person_id)
+    try:
+        thread = get_object_or_404(Thread, pk=id_thread)
+    except:
+        return render(request, 'error.html', {'context': context, 'tienda': tienda}, status=404)
     if rol == "User":
         threadName = thread.name
         forumMessages = []
@@ -863,10 +867,14 @@ def activate_shop_one_year(request, id_shop):
 
 
 def product_create(request, id_shop):
-    shop = get_object_or_404(Shop, pk=id_shop)
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     tienda = miTienda(person_id)
+    try:
+        shop = get_object_or_404(Shop, pk=id_shop)
+    except:
+        return render(request, 'error.html', {'context': context, 'tienda': tienda}, status=404)
+
     if (is_active and rol == "Owner" and str(shop.owner.person.id) == person_id):
         if request.method == 'POST':
             form = ProductForm(request.POST)
@@ -902,9 +910,13 @@ def product_create(request, id_shop):
 
 
 def product_delete(request, id_product):
-    product = get_object_or_404(Product, pk=id_product)
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
+    try:
+        product = get_object_or_404(Product, pk=id_product)
+    except:
+        return render(request, 'error.html', {'context': context}, status=404)
+
     if (is_active and rol == "Owner" and str(product.shop.owner.person.id) == person_id):
         product.delete()
         data = {
@@ -920,13 +932,17 @@ def product_delete(request, id_product):
 
 
 def product_details(request, id_product):
-    product = get_object_or_404(Product, pk=id_product)
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
     today = date.today()
     promotionProduct = Promotion.objects.filter(
         product=product, endDate__gte=today).exists()
     tienda = miTienda(person_id)
+
+    try:
+        product = get_object_or_404(Product, pk=id_product)
+    except:
+        return render(request, 'error.html', {'context': context, 'tienda': tienda}, status=404)
 
     if request.method == 'POST':
         form = ProductForm(request.POST)
@@ -987,8 +1003,19 @@ def list_shop(request):
 
 
 def shop_details(request, id_shop):
-    shop = get_object_or_404(Shop, pk=id_shop)
-    products = Product.objects.filter(shop=shop)
+    try:
+        person_id, rol, rol_id, is_active = get_context(request)
+        context = [person_id, rol, rol_id, is_active]
+        tienda = miTienda(person_id)
+    except:
+        person_id = 0
+        rol = 'User no registrado'
+        context = [person_id, rol]
+    try:
+        shop = get_object_or_404(Shop, pk=id_shop)
+        products = Product.objects.filter(shop=shop)
+    except:
+        return render(request, 'error.html', {'context': context, 'tienda': tienda}, status=404)
     today = date.today()
     promotionShop = Promotion.objects.filter(
         shop=shop, endDate__gte=today).exists()
@@ -997,14 +1024,6 @@ def shop_details(request, id_shop):
     productType = []
     for prod in products:
         productType.append(prod.productType)
-    try:
-        person_id, rol, rol_id, is_active = get_context(request)
-        context = [person_id, rol, rol_id, is_active]
-    except:
-        person_id = 0
-        rol = 'User no registrado'
-        context = [person_id, rol]
-    tienda = miTienda(person_id)
     return render(request, 'shop_detail.html', {'shop': shop, 'productType': set(productType), 'subscriptionShop': subscriptionShop, 'products': products, 'context': context, 'promotionShop': not(promotionShop), 'tienda': tienda, 'stripe_key': settings.STRIPE_PUBLISHABLE_KEY})
 
 
@@ -1283,11 +1302,22 @@ def accept_booking(request):
 def delete_booking(request):
     booking = Booking.objects.get(id=request.POST.get('id'))
 
-    Notification.objects.create(title="La reserva ha sido rechazada", description="La reserva del producto " +
-                                booking.product.name + " de la tienda " + booking.product.shop.name + " ha sido rechazada", person=booking.product.shop.owner.person)
+    if not booking.isAccepted:
 
-    Notification.objects.create(title="Te han rechazado una reserva ", description="La reserva del producto " +
-                                booking.product.name + " de la tienda " + booking.product.shop.name + " ha sido rechazada", person=booking.user.person)
+        Notification.objects.create(title="La reserva ha sido rechazada", description="La reserva del producto " +
+                                    booking.product.name + " ha sido rechazada", person=booking.product.shop.owner.person)
+
+        Notification.objects.create(title="Te han rechazado una reserva ", description="La reserva del producto " +
+                                    booking.product.name + " de la tienda " + booking.product.shop.name + " ha sido rechazada", person=booking.user.person)
+
+    else:
+
+        Notification.objects.create(title="La reserva ha sido recogida", description="La reserva del producto " +
+                                    booking.product.name + " ha sido recogido", person=booking.product.shop.owner.person)
+
+        Notification.objects.create(title="Has recogido una reserva ", description="La reserva del producto " +
+                                    booking.product.name + " de la tienda " + booking.product.shop.name + " ha sido recogida. ¡Dejale una valoracion!", person=booking.user.person)
+
     Booking.objects.filter(
         id=request.POST.get('id')).delete()
     data = {
@@ -1348,8 +1378,11 @@ def booking(request):
 def review_list(request, id_shop):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
-    shop = get_object_or_404(Shop, pk=id_shop)
     tienda = miTienda(person_id)
+    try:
+        shop = get_object_or_404(Shop, pk=id_shop)
+    except:
+        return render(request, 'error.html', {'context': context, 'tienda': tienda}, status=404)
     sus = Subscription.objects.filter(shop=shop).exists()
     if rol == "User" and sus:
 
@@ -1375,8 +1408,11 @@ def review_list(request, id_shop):
 def review_form(request, id_shop):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
-    shop = get_object_or_404(Shop, pk=id_shop)
     tienda = miTienda(person_id)
+    try:
+        shop = get_object_or_404(Shop, pk=id_shop)
+    except:
+        return render(request, 'error.html', {'context': context, 'tienda': tienda}, status=404)
     person = Person.objects.get(id=shop.owner.person.id)
     sus = Subscription.objects.filter(shop=shop).exists()
     if person.isBanned or not(sus):
@@ -1434,7 +1470,11 @@ def miTienda(person_id):
 def report_shop_form(request, id_shop):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
-    shop = get_object_or_404(Shop, pk=id_shop)
+    tienda = miTienda(person_id)
+    try:
+        shop = get_object_or_404(Shop, pk=id_shop)
+    except:
+        return render(request, 'error.html', {'context': context, 'tienda': tienda}, status=404)
     reportReason = ReportReason.objects.all()
 
     person = Person.objects.get(id=shop.owner.person.id)
@@ -1467,8 +1507,11 @@ def report_shop_form(request, id_shop):
 def report_user_form(request, id_booking):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
-    booking = get_object_or_404(Booking, pk=id_booking)
     tienda = miTienda(person_id)
+    try:
+        booking = get_object_or_404(Booking, pk=id_booking)
+    except:
+        return render(request, 'error.html', {'context': context, 'tienda': tienda}, status=404)
     reportReason = ReportReason.objects.all()
 
     if rol == "Owner" and str(booking.product.shop.owner.person.id) == person_id:
@@ -1500,9 +1543,12 @@ def report_user_form(request, id_booking):
 def report_from_chat_form(request, id_chat):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
-    chat = get_object_or_404(Chat, pk=id_chat)
-    reportReason = ReportReason.objects.all()
     tienda = miTienda(person_id)
+    try:
+        chat = get_object_or_404(Chat, pk=id_chat)
+    except:
+        return render(request, 'error.html', {'context': context, 'tienda': tienda}, status=404)
+    reportReason = ReportReason.objects.all()
     person = Person.objects.get(id=chat.shop.owner.person.id)
     if person.isBanned:
         return render(request, 'error.html', {'context': context, 'tienda': tienda})
@@ -1741,8 +1787,11 @@ def get_owner(request, id_user):
 def updateShop(request, id_shop):
     person_id, rol, rol_id, is_active = get_context(request)
     context = [person_id, rol, rol_id, is_active]
-    shop = get_object_or_404(Shop, pk=id_shop)
     tienda = miTienda(person_id)
+    try:
+        shop = get_object_or_404(Shop, pk=id_shop)
+    except:
+        return render(request, 'error.html', {'context': context, 'tienda': tienda}, status=404)
 
     if (is_active and rol == "Owner" and str(shop.owner.person.id) == person_id):
         if request.method == 'POST':
