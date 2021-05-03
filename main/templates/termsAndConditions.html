@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block cabecera %}<link rel="stylesheet" href="{% static 'css/style_login.css' %}"/>{% endblock %}
+{% block title %}Registro / Citra{% endblock %}
+{% block contenido %}
+
+<container class="container-fluid">
+    <div class="row justify-content-center m-0">
+        <div class="col-10">
+            <div class="m-5">
+
+                <h2 class="section-title mt-lg-2 d-flex justify-content-center"><strong>TÉRMINOS Y CONDICIONES</strong></h2>
+                    <br>
+                    <p>Al hacer uso de este servicio web, el usuario da su consentimiento para el tratamiento y recolección de su información personal para uno o varios fines específicos, 
+                    que se detallan a continuación.</p>
+                <br>
+                <p><strong>Información que es recogida</strong></p>
+
+                    <p>Nuestro servicio web recoge información acerca de su persona, tal como: Nombre y apellidos, información de contacto como su dirección de correo electrónico y número 
+                    de teléfono, y un usuario y contraseña. En caso de tratarse de un negocio, solicitamos, aparte de información acerca de su persona, información acerca de su negocio, tal como: 
+                    nombre del negocio, tipo de tienda, horario, descripción, dirección, imágenes, y la duración que desea que tengan las reservas antes de que se consideren no recogidas. También, de forma opcional,
+                    puede proporcionar información acerca de los productos que se encuentran en su tienda, como por ejemplo: nombre del producto, su categoría y precio, descripción e imágenes.
+                    Así mismo, cuando sea necesario podrá ser requerida información adicional para procesar algún pedido o realizar una entrega o facturación.</p>
+                <br>
+                <p><strong>Uso de la información recogida</strong></p>
+
+                    <p>Nuestro servicio web emplea la información con el fin de proporcionar el mejor servicio posible. Utilizamos su nombre y apellidos para mantener un registro de usuarios, de pedidos, 
+                    y mejorar nuestros productos y servicios. Su nombre y apellidos, dirección de correo y teléfono no serán accesibles para el resto de usuarios de la aplicación, y serán utilizados 
+                    únicamente para mantener un registro de los usuarios del servicio y como medio de contacto con su persona. La única información visible para el resto de usuarios será el nombre de 
+                    usuario que usted proporcione.</p>
+                    <p>En caso de disponer de un negocio registrado en nuestro sistema, la información que proporcione acerca de su negocio será pública para el resto de usuarios, para que puedan navegar
+                    por su negocio y explorar sus productos. Esta información aparecerá en una página dedicada a su negocio, donde aparecerán datos como el
+                    nombre de su negocio, el horario, dirección e imágenes que usted proporcione. En esta página tamién aparecerá la imagen que proporcione de sus productos, si así lo desea.</p>
+                <br>
+
+                <p><strong>Control de su información personal</strong></p>
+
+                    <p>En cualquier momento usted puede restringir la recopilación o el uso de la información personal que proporciona en nuestro sitio web.</p>
+                    <p>En caso de que desee que eliminemos o anonimicemos de nuestros registros información acerca de su persona, por favor háganoslo saber enviando un correo a la dirección: citrateamhelp@gmail.com. 
+                    Tenga en cuenta que en caso de haber hecho alguna compra dentro de la aplicación, se generaron facturas que no pueden ser eliminadas por motivos legales.</p>
+                    <p>En caso de que desee un documento con la información completa de la que disponemos acerca de su persona en nuestros registros, por favor háganoslo saber enviando un correo a 
+                    la dirección: citrateamhelp@gmail.com
+                    <p>Esta compañía no venderá, cederá ni distribuirá sin su consentimiento la información personal que es recopilada, salvo que sea requerido por un juez con una orden judicial.</p>
+                    <p>Citra se reserva el derecho de cambiar los términos del presente documento de Términos y Condiciones en cualquier momento.</p>
+            </div>
+        </div>
+
+    </div>
+</container>
+
+{% endblock %}
