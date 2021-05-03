@@ -37,7 +37,7 @@
       <h1 style="
     text-align: center;
 "> La tienda que intentas ver esta baneada </h1>
-      {% elif not subscriptionShop %}
+      {% elif not subscriptionShop and shop.owner.person.id|stringformat:"i" != context.0 %}
       <h1 style="
     text-align: center;
 "> La tienda que intentas ver no ha renovado la suscripción </h1>
@@ -60,10 +60,10 @@
                 <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
                   <div class="card rounded shadow-sm border-0 product" id="{{prod.productType.id}}">
                       <div class="card-body p-4"><img src="{{prod.picture.url}}" alt="" class="img-fluid d-block mx-auto mb-3">
-                          <h5> <a id = "nombre{{prod.id}}" href="{% url 'products' prod.pk %}" class="text-dark">{{prod.name}}</a></h5>
-                          <p class="small text-muted font-italic">{{prod.price}} €</p>
+                          <p> <b><a id = "nombre{{prod.id}}" href="{% url 'products' prod.pk %}" class="text-dark">{{prod.name}}</a></b></p>
+                          <p id = "precio{{prod.id}}" class="small text-muted font-italic">{{prod.price}} €</p>
                       {% if context.1 == 'User' %}
-                        <button id="boton" onclick="añadir({{prod.id}})">Añadir</button>
+                        <button id="boton" class="btn btn-outline-dark" onclick="añadir({{prod.id}})">Añadir</button>
                       {% endif %}
                       </div>
                     </div>
@@ -98,11 +98,12 @@
             <button id="boton2" type="button" class="btn btn-light" onclick="vaciarCarrito()">Vaciar Carrito</button>
             {% csrf_token %}
             <input id="submit" type="button" class="btn btn-light" value="Reservar" onclick="reserva()"/>
+            <p>*Si te sales o recargas la página de la tienda perderas el contenido de tu carrito</p>
             
             <h4 class="section-title">Otras acciones</h4>
-            <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="reviews"> Valoraciones </a></button>
-            <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="{% url 'newChat' shop.pk %}"> Iniciar Chat </a></button>
-            <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="report"> Reportar </a></button>
+            <a style="text-decoration: none;" class="btn btn-outline-warning button-light" type="button" href="reviews"> Valoraciones </a>
+            <a style="text-decoration: none;" class="btn btn-outline-warning button-light" type="button" href="{% url 'newChat' shop.pk %}"> Iniciar Chat </a>
+            <a style="text-decoration: none;" type="button" class="button-light btn btn-outline-warning mt-2" href="report"> Reportar </a>
 
           {% endif %}
           {% if context.1 == 'Owner' and shop.owner.person.id|stringformat:"i" == context.0 %}
@@ -114,7 +115,7 @@
                 {% csrf_token %} 
                 
                 <script src="https://checkout.stripe.com/checkout.js" class="stripe-button" id="separated3"
-                data-key="{{ stripe_key }}" data-description="Premium mensual" data-amount="500"
+                data-key="{{ stripe_key }}" data-description="Premium semanal" data-amount="500"
                 data-locale="es" data-currency="eur" data-label="Promocionar una semana 5€">
                 </script>
               </form>
@@ -164,9 +165,9 @@
 </main>
 
  <script>
-  function añadir (id) {
+  function añadir(id) {
     var nombre = document.getElementById('nombre'+id).innerHTML
-    var precio = document.getElementById('precio'+id).innerHTML
+    var precio = document.getElementById('precio'+id).innerHTML.replace(" €","")
     var table = document.getElementById('tbody');
     var nombres = []
     for (let i = 0; i < document.getElementsByClassName('nombreProducto').length; i++) {
@@ -216,6 +217,10 @@ function reserva() {
         objeto = {}
     }
     console.log(array)
+    if (array.length == 0)  {
+      confirm("No has añadido ningún producto al carrito")
+      return
+    }
     data = {
         key_1_string: JSON.stringify(array),
         csrfmiddlewaretoken: '{{ csrf_token }}',

@@ -102,7 +102,7 @@ class Promotion(models.Model):
 class Booking(models.Model):
     startDate = models.DateTimeField()
     endDate = models.DateTimeField()
-    title = models.CharField(max_length=20)
+    title = models.FloatField()
     quantity = models.IntegerField()
     isAccepted = models.BooleanField()
     product = models.ForeignKey(Product, on_delete=models.CASCADE)

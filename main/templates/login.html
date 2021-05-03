@@ -43,7 +43,7 @@
                 <form method="POST">{% csrf_token %}
                     <div class="mb-4">
                         <label for="exampleInputEmail1" class="form-label fw-bold">Usuario</label>
-                        <input type="text" class="form-control " placeholder="Introduce el nombre de usuario" id="username" name="username">
+                        <input type="text" class="form-control " placeholder="Introduce el nombre de usuario" id="username" name="username" maxlength="20" required>
                         {% if form.username.errors %}
                                 {{ form.username.errors|escape }}
                         {% endif%}
@@ -52,11 +52,10 @@
                     
                     <div class="mb-4">
                         <label for="exampleInputPassword1" class="form-label fw-bold">Contraseña</label>
-                        <input type="password" class="form-control mb-2" placeholder="Introduce la contraseña" id="password" name="password">
+                        <input type="password" class="form-control mb-2" placeholder="Introduce la contraseña" id="password" name="password" maxlength="20" required>
                         {% if form.password.errors %}
                             {{ form.password.errors|escape }}
                         {% endif%}
-                        <a href="#" id="emailHelp" class="form-text text-muted text-decoration-none">¿Has olvidado la contraseña?</a>
                     </div>
 
                     <button type="submit" class="btn btn-dark w-100 fw-bold">Iniciar sesión</button>

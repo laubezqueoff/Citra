@@ -14,7 +14,7 @@ Chat / Citra
 {% block contenido %}
     <div class="container">
     {% if shop.owner.person.isBanned %}
-        <h2>La tienda con la que intentas hablar esta baneada, no te podra contestar hasta que recupere su cuenta</h2>
+        <h2>La tienda con la que intentas hablar esta baneada, no te podrá contestar hasta que recupere su cuenta</h2>
     {% else %}
         <h2>Pregunta a la tienda!</h2>
     {% endif %}
@@ -47,10 +47,12 @@ Chat / Citra
             <div class="card-footer">
                 <div class="input-group">
                 <form method='POST' class="input-group">{% csrf_token %}
-                    <input type="text" class="form-control form-control-lg"  placeholder="Escribe..." name="text" id="text" />
+                    <input type="text" class="form-control form-control-lg"  placeholder="Escribe..." name="text" id="text"  maxlength="60" required />
                     <input type='submit' class="btn btn-outline-dark" style="float:left;background-color: #ffd3b6;">
                 </form>
+                {% if messages %}
                    <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="report"> Reportar </a></button>
+                {% endif %}
                 </div>
                 {% if form.text.errors %}
                     {{ form.text.errors|escape }}
@@ -58,7 +60,6 @@ Chat / Citra
             </div>
         </div>
     </div>
-
  
 {% endblock %}
 </html>

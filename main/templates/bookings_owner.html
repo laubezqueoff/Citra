@@ -9,39 +9,47 @@
         <div class="row">
             <h4 class="section-title mt-lg-2 ">Mis reservas</h4>
         </div>
-        <div class="row">                            
+        {% for user,factoresConfianza in booking_owner.items %}
+        <div class="row">  
+            <h1> {{user.name}}, total a pagar {{user.phoneNumber}}</h1>                          
             {% for book,factor in factoresConfianza.items %}
-            <div class="card col-sm-3 mt-3 mb-3 product">
-                <img src="{{book.product.picture.url}}"  class="img-fluid mt-3" style="max-height:150px;max-width:150px; align-self:center;">
-                <h4 class="card-title" style="text-align:center;">Tienda: {{book.product.shop.name}}</h4>
-                <p class="product__name" style="text-align: center;" > Nombre Producto: <b>{{book.product.name}} </b> </p>
-                <span class="product__price"> Cantidad Reservada: {{book.quantity}} </span>
-                    <span class="product__price"> Nombre del usuario: {{book.user.person.name}} 
-                    <img style = "width:40px;heigth:40px;" src="
-                        {% if factor == 0 %}
-                            {% static 'images/pregunta.png' %}
-                        {% elif factor == 1 %}
-                            {% static 'images/max.png' %}
-                        {% elif factor == 2 %}
-                            {% static 'images/intermedio.png' %}
-                        {% elif factor == 3 %}
-                            {% static 'images/min.png' %}
-                        {% endif %}">
-                    </img>
-                </span>
-                {% if book.isAccepted == 0 %}
-                <button onclick="aceptar({{book.id}})">Aceptar</button>
-                <button onclick="rechazar({{book.id}})">Rechazar</button>
-                <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="{{book.id}}/report"> Reportar </a></button>
-                {% endif %}
-                {% if book.isAccepted == 1 %}
-                <button onclick="rechazar({{book.id}})">Recogido</button>
-                <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="{{book.id}}/report"> Reportar </a></button>
-                {% endif %}
+            <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                <!-- Card-->
+                <div class="card rounded shadow-sm border-0 product">
+                    <div class="card-body p-4"><img src="{{book.product.picture.url}}" alt="" class="img-fluid d-block mx-auto mb-3">
+                        <h4 class="card-title" style="text-align:center;">Tienda: {{book.product.shop.name}}</h4>
+                        <p class="product__name" style="text-align: center;" > Nombre Producto: <b>{{book.product.name}} </b> </p>
+                        <span class="product__price"> Cantidad Reservada: {{book.quantity}} </span>
+                        <span class="product__price"> Nombre del usuario: {{book.user.person.name}} 
+                            <img style = "width:40px;heigth:40px;" src="
+                                {% if factor == 0 %}
+                                    {% static 'images/pregunta.png' %}
+                                {% elif factor == 1 %}
+                                    {% static 'images/max.png' %}
+                                {% elif factor == 2 %}
+                                    {% static 'images/intermedio.png' %}
+                                {% elif factor == 3 %}
+                                    {% static 'images/min.png' %}
+                                {% endif %}">
+                            </img>
+                        </span>
+                        {% if book.isAccepted == 0 %}
+                        <button type="button" class="button-light" onclick="aceptar({{book.id}})">Aceptar</button>
+                        <button type="button" class="button-light" onclick="rechazar({{book.id}})">Rechazar</button>
+                        <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="{{book.id}}/report"> Reportar </a></button>
+                        {% endif %}
+                        {% if book.isAccepted == 1 %}
+                        <button type="button" class="btn btn-outline-warning" onclick="rechazar({{book.id}})"><a style="text-decoration: none;" class="button-light">Recogido</a></button>
+                        <button type="button" class="btn btn-outline-warning"><a style="text-decoration: none;" class="button-light" href="{{book.id}}/report"> Reportar </a></button>
+                        {% endif %}
+                    </div>
+                </div>
             </div>
             {% empty %}
             {% endfor %}
+
         </div>
+        {% endfor %}
     </div>
 </main>
 

@@ -34,7 +34,7 @@
                     </div>
                     <div class="mb-4">
                         <label for="schedule" class="form-label fw-bold">Horario de apertura</label>
-                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca el horario de la tienda" id="schedule" name="schedule" value='{{shop.schedule}}' required>
+                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca el horario de la tienda. Ejemplo: De Lunes a Viernes 09:30 a 14:30 / Sabados y Domingos cerrado" id="schedule" name="schedule" maxlength="50" value='{{shop.schedule}}' required>
                     </div>
                     <div class="mb-4">
                         <label for="description" class="form-label fw-bold">Descripción de la tienda</label>
@@ -61,7 +61,7 @@
                     <div class="row m-0">
                         <div class="d-flex justify-content-center mt-3">
                             <button type="submit" class="btn btn-outline-dark  color-botones-products flex-grow-1 me-2 fw-bold ">Guardar cambios</button>
-                            <button type="submit" class="btn btn-outline-dark flex-grow-1 ms-2 me-2 fw-bold">Cancelar</button>
+                            <a href="{% url 'shop' shop.pk %}" type="button" class="btn btn-outline-dark flex-grow-1 ms-2 me-2 fw-bold">Cancelar</a>
                             
                         </div>
                     </div>

@@ -3,8 +3,9 @@
 
 
  {% block cabecera %}
-    <link rel="stylesheet" href="{% static 'css/style_shop_promotion.css' %}"/>
-    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'> 
+    <link rel="stylesheet" href="{% static 'css/style_shop_prueba.css' %}"/>
+    <link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://fonts.googleapis.com/css2?family=Spartan:wght@300;600&display=swap" rel="stylesheet"> 
     <title> Citra / Inicio </title>
 {% endblock %}
 
@@ -15,19 +16,24 @@
     {% if context.1 != 'Admin' %}
     <div class="container">
         <div class="row">
-            <h4 class="section-title mt-lg-2 ">Tiendas en promoción</h4>
+             <h4 class="section-title bold" style="margin-top:2rem;  margin-bottom: 2rem; text-align:center;">Tiendas en promoción</h4>
         </div>
         <div class="row ms-3">                            
-            <div class="product__container bd-grid">
+            <div class="product__container bd-grid product">
                 <div class="row">        
                 {% for promotion, sus in promotions_shops_subscription.items %}
                     {% if sus %}
-                    <div class="card col-sm-3 mt-3 mb-3 product">
-                            <img src="{{promotion.shop.picture.url}}" class="img-fluid mt-3" style="max-height:150px;max-width:150px; align-self:center;">
-                            <h4 class="card-title" style="text-align:center;">{{promotion.shop.name}}</h4>   
-                            <p style="text-align: center;"><b>{{promotion.shop.description}}</b></p>
-                            <a href="{% url 'shop' promotion.shop.pk %}" class="btn btn-outline-dark">Entrar</a>
-                    </div>
+                    <div class="col-md-4 mt-4">
+                        <div class="card profile-card-5 product" >
+                            <div class="card-img-block">
+                                <img class="card-img-top" src="{{promotion.shop.picture.url}}" alt="Card image cap">
+                            </div>
+                            <div class="card-body pt-0">
+                                <a href="{% url 'shop' promotion.shop.pk %}" class="card-title">{{promotion.shop.name}}</a>
+                                <p class="card-text">{{promotion.shop.description}}</p>
+                            </div>
+                        </div>
+    		        </div>
                     {% endif %}
                 {% empty %}                    
                 {% endfor %}
@@ -35,18 +41,21 @@
             </div>
         </div>
         <div class="row">
-            <h4 class="section-title mt-lg-4">Productos en promoción</h4>
+            <h4 class="section-title bold" style="margin-top:2rem; margin-bottom: 2rem; text-align:center;">Productos en promoción</h4>
         </div>
         <div class="row ms-3">                            
             <div class="product__container bd-grid">
                 <div class="row">        
                 {% for promotion_product, sus  in promotions_products_subscription.items %}
                     {% if sus %}
-                    <div class="card col-sm-2 mt-3 product">
-                        <img src="{{promotion_product.product.picture.url}}" class="img-fluid mt-3" style=" max-height:100px;max-width:150px; align-self:center;">
-                        <p class="product__name" style="text-align: center;" > <b>{{promotion_product.product.name}} </b> </p>
-                        <p style="text-align: center;"> {{promotion_product.product.description}} </p>
-                        <a class="btn btn-outline-dark" style="text-align: center;" href="{% url 'shop' promotion_product.product.shop.pk %}"> {{promotion_product.product.shop.name}} </a>
+                    <div class="col-lg-3 col-md-6 mb-4 mb-lg-0">
+                        <!-- Card-->
+                        <div class="card rounded shadow-sm border-0 product">
+                            <div class="card-body p-4"><img src="{{promotion_product.product.picture.url}}" alt="" class="img-fluid d-block mx-auto mb-3">
+                                <h5> <a href="{% url 'shop' promotion_product.product.shop.pk %}" class="text-dark">{{promotion_product.product.name}}</a></h5>
+                                <p class="small text-muted font-italic">{{promotion_product.product.description}}</p>
+                            </div>
+                        </div>
                     </div>
                     {% endif %}
                 {% empty %}
