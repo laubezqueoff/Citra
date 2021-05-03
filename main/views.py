@@ -1333,7 +1333,7 @@ def booking(request):
                                         + ". La reserva está pendiente de ser aceptada.",
                                         person=product.shop.owner.person)
             Notification.objects.create(title="Has realizado una reserva", description="La reserva del producto " + product.name + " de la tienda " + product.shop.name +
-                                        "esta pendiente de ser aceptada", person=user.person)
+                                        " esta pendiente de ser aceptada", person=user.person)
         data = {
             'url': "/user/bookings/"
         }
