@@ -31,14 +31,14 @@ Chat / Citra
                 <div class="container user">
                     <img src="/static/images/user.png"  class="right" style="float:left"> 
                     <p>{{m.text}}</p>
-                    <span class="time-right">{{m.date}}</span>                 
+                    <span class="time-right">{{m.date|date:'d/m/Y'}}</span>                 
                                        
                 </div>        
         {% else %}
                 <div class="container shop">                    
                     <img src="{{shop.picture.url}}" alt="Avatar" style="float:right">                                           
                     <p style="float:right">{{m.text}}</p>
-                    <span class="time-left" style="float:down">{{m.date}}</span>                
+                    <span class="time-left" style="float:down">{{m.date|date:'d/m/Y'}}</span>                
                 </div>
         {% endif %}
     {% empty %}

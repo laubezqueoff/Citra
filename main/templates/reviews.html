@@ -14,7 +14,7 @@
             <div class="bg-white comment-section">
                 <div class="d-flex flex-row user p-2"><img class="rounded-circle" src="{% static 'images/CitraBolsa.png' %}" width="50">
                     <div class="d-flex flex-column ml-2"><span class="name font-weight-bold" style="margin-left:5px!important;">{{row.user.person.name}}</span>
-                    <span>{{row.date}}</span>
+                    <span>{{row.date|date:'d/m/Y'}}</span>
                     </div>
                 </div>
                 <div class="mt-2 p-2">
