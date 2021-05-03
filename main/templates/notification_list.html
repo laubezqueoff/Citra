@@ -26,6 +26,9 @@
         </div>
     </div>
     {% endfor %}
+    {% if not notifications %}
+      <h4 class="section-title mt-lg-2 d-flex justify-content-center">No tienes notificaciones</h4>
+    {% endif %}
   </div>
 
   <div class="row m-0">

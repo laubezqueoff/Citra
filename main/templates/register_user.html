@@ -36,11 +36,11 @@
                     </div>
                     <div class="mb-4">
                         <label for="phoneNumber" class="form-label fw-bold">Número de teléfono</label>
-                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca un Número de 9 dígitos" id="phoneNumber" name="phoneNumber" value="{{person.phoneNumber}}" pattern="^[9|8|7|6]\d{8}$" required>
+                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca un Número de 9 dígitos" id="phoneNumber" name="phoneNumber" value="{{person.phoneNumber}}" pattern="^[9|8|7|6]\d{8}$" maxlength="9" required>
                     </div>
                     <div class="mb-4">
                         <label for="zipCode" class="form-label fw-bold">Código postal</label>
-                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca un código postal de 5 dígitos de Sevilla" id="zipCode" name="zipCode" value="{{person.zipCode}}" pattern="41{1}[0-9]{3}" required>
+                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca un código postal de 5 dígitos de Sevilla" id="zipCode" name="zipCode" value="{{person.zipCode}}" pattern="41{1}[0-9]{3}" maxlength="5" max="41999" min="41000" required>
                     </div>
               
                     <div class="mb-4">
@@ -50,7 +50,8 @@
 
                     <div class="row m-0">
                         <div class="d-flex justify-content-center mt-3">
-                            <button type="submit" class="btn btn-dark fw-bold w-50">Guardar cambios</button>
+                            <button type="submit" class="btn btn-dark fw-bold w-50" style="margin-right: 10px;">Guardar cambios</button>
+                            <a type="submit" href="{% url 'home'%}" class="btn btn-dark fw-bold w-50" type="button">Volver</a>
                         </div>
                     </div>
                     
@@ -90,11 +91,11 @@
                     </div>
                     <div class="mb-4">
                         <label for="phoneNumber" class="form-label fw-bold">Número de teléfono</label>
-                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca un Número de 9 dígitos" id="phoneNumber" name="phoneNumber" pattern="^[9|8|7|6]\d{8}$" required>
+                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca un Número de 9 dígitos" id="phoneNumber" name="phoneNumber" pattern="^[9|8|7|6]\d{8}$" maxlength="9" required>
                     </div>
                     <div class="mb-4">
                         <label for="zipCode" class="form-label fw-bold">Código postal</label>
-                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca un código postal de 5 dígitos" id="zipCode" name="zipCode" pattern="41{1}[0-9]{3}" required>
+                        <input type="text" class="form-control form-control-sm" placeholder="Introduzca un código postal de 5 dígitos" id="zipCode" name="zipCode" pattern="41{1}[0-9]{3}" maxlength="5" max="41999" min="41000" required>
                     </div>
                     <div class="mb-4">
                         {% if error_log.0 %}

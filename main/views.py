@@ -954,7 +954,9 @@ def product_details(request, id_product):
                 productType = []
                 for ty in types:
                     productType.append(ty)
-                return render(request, 'products.html', {'form': form, 'product': product, 'types': productType, "context": context, "promotionProduct": not(promotionProduct), 'tienda': tienda})
+                sus = Subscription.objects.filter(
+                    endDate__gte=today, shop=product.shop).exists()
+                return render(request, 'products.html', {'form': form, 'product': product, 'types': productType, "context": context, "promotionProduct": not(promotionProduct), 'tienda': tienda, 'sus': sus})
         else:
             return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
 
@@ -1348,7 +1350,7 @@ def review_list(request, id_shop):
     context = [person_id, rol, rol_id, is_active]
     shop = get_object_or_404(Shop, pk=id_shop)
     tienda = miTienda(person_id)
-    sus = Subscription.objects.get(shop=shop).exists()
+    sus = Subscription.objects.filter(shop=shop).exists()
     if rol == "User" and sus:
 
         reviews = []
@@ -1376,7 +1378,7 @@ def review_form(request, id_shop):
     shop = get_object_or_404(Shop, pk=id_shop)
     tienda = miTienda(person_id)
     person = Person.objects.get(id=shop.owner.person.id)
-    sus = Subscription.objects.get(shop=shop).exists()
+    sus = Subscription.objects.filter(shop=shop).exists()
     if person.isBanned or not(sus):
         return render(request, 'error.html', {'context': context, 'tienda': tienda})
     if rol == "User":

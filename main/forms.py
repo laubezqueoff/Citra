@@ -21,9 +21,9 @@ class ShopForm(forms.Form):
         error_messages={'required': 'Introduce una contraseña, por favor', 'max_length':'La contraseña no debe tener más de 20 caracteres'})
     name = forms.CharField(label='Nombre',max_length=40,required=True,
         error_messages={'required': 'Introduce un nombre, por favor', 'max_length':'El nombre no debe tener más de 40 caracteres' })
-    phoneNumber =forms.IntegerField(label='Teléfono', min_value=100000000, max_value=999999999,required=True,
+    phoneNumber =forms.IntegerField(label='Teléfono', min_value=600000000, max_value=999999999,required=True,
         error_messages={'required': 'Introduce un número de teléfono, por favor','min_value':'El número de teléfono debe tener 9 cifras','max_value':'El número de teléfono debe tener 9 cifras'})
-    zipCode = forms.IntegerField(label='Código postal',min_value=41000, max_value=41093,required=True,
+    zipCode = forms.IntegerField(label='Código postal',min_value=41000, max_value=42000,required=True,
         error_messages={'required': 'Introduce un código postal, por favor','min_value':'El código postal no puede ser menor que 41000','max_value':'El código postal no puede ser mayor que 41093'})
     email = forms.EmailField(label='Email', max_length=30,required=True, 
         error_messages={'required': 'Introduce un email, por favor', 'invalid':'El email introducido no es válido', 'max_length':'El email no debe tener más de 30 caracteres'})
@@ -48,9 +48,9 @@ class CustomUserForm(forms.Form):
         error_messages={'required': 'Introduce una contraseña, por favor', 'max_length':'La contraseña no debe tener más de 20 caracteres'})
     name = forms.CharField(label='Nombre',max_length=40,required=True,
         error_messages={'required': 'Introduce un nombre, por favor', 'max_length':'El nombre no debe tener más de 40 caracteres' })
-    phoneNumber =forms.IntegerField(label='Teléfono', min_value=100000000, max_value=999999999,required=True,
+    phoneNumber =forms.IntegerField(label='Teléfono', min_value=600000000, max_value=999999999,required=True,
         error_messages={'required': 'Introduce un número de teléfono, por favor','min_value':'El número de teléfono debe tener 9 cifras','max_value':'El número de teléfono debe tener 9 cifras'})
-    zipCode = forms.IntegerField(label='Código postal',min_value=41000, max_value=41093,required=True,
+    zipCode = forms.IntegerField(label='Código postal',min_value=41000, max_value=42000,required=True,
         error_messages={'required': 'Introduce un código postal, por favor','min_value':'El código postal no puede ser menor que 41000','max_value':'El código postal no puede ser mayor que 41093'})
     email = forms.EmailField(label='Email', max_length=30,required=True, 
         error_messages={'required': 'Introduce un email, por favor', 'invalid':'El email introducido no es válido', 'max_length':'El email no debe tener más de 30 caracteres'})
