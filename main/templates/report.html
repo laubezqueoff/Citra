@@ -34,7 +34,7 @@
                                     <option value="{{report.id}}">{{report.name}}</option>
                                 {% endfor %}
                                 </select>
-                            <textarea style = 'font-size:15px;' class="form-control animated" cols="50" id="description" name="description" placeholder="Deja tu comentario aquí..." rows="5"></textarea>
+                            <textarea style = 'font-size:15px;' class="form-control animated" cols="50" id="description" name="description" placeholder="Deja tu comentario aquí..." rows="5" required maxlength="60"></textarea>
                             <div class="text-right">
                                 <div class="stars starrr" data-rating="0"></div>
                                 <a style="text-decoration: none; color:#FFFF"href="../"><button class="btn btn-success btn-lg" type="submit">Reportar</button></a>

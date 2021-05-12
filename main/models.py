@@ -139,7 +139,7 @@ class Thread(models.Model):
 
 
 class ForumMessage(models.Model):
-    text = models.TextField(max_length=60)
+    text = models.TextField(max_length=120)
     date = models.DateField()
     thread = models.ForeignKey(Thread, on_delete=models.CASCADE)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)

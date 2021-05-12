@@ -519,7 +519,10 @@ def promotion_week_product(request, id_product):
             endtime = (time + timedelta(days=7))
             person = Person.objects.get(id=person_id)
             get_or_create_customer(email=person.email, source=None)
-            charge(amount=300, source=request.POST.get('stripeToken'))
+            try:
+                charge(amount=300, source=request.POST.get('stripeToken'))
+            except:
+                return render(request, 'tarjeta.html', {'context': context, 'tienda': tienda}, status=404)
             promocion = Promotion.objects.create(
                 owner=owner, shop=None, startDate=time, endDate=endtime, promotionType=promotionType, product=product)
 
@@ -531,7 +534,10 @@ def promotion_week_product(request, id_product):
             endtime = (time + timedelta(days=7))
             person = Person.objects.get(id=person_id)
             get_or_create_customer(email=person.email, source=None)
-            charge(amount=300, source=request.POST.get('stripeToken'))
+            try:
+                charge(amount=300, source=request.POST.get('stripeToken'))
+            except:
+                return render(request, 'tarjeta.html', {'context': context, 'tienda': tienda})
             promocion = Promotion.objects.filter(
                 product=product).update(startDate=time, endDate=endtime)
             Notification.objects.create(title="Producto promocionado con éxito", description="El producto " + product.name + " estará promocionado hasta el dia " + endtime.strftime("%d/%m/%Y"),
@@ -565,7 +571,10 @@ def promotion_month_product(request, id_product):
             endtime = (time + timedelta(days=30))
             person = Person.objects.get(id=person_id)
             get_or_create_customer(email=person.email, source=None)
-            charge(amount=500, source=request.POST.get('stripeToken'))
+            try:
+                charge(amount=500, source=request.POST.get('stripeToken'))
+            except:
+                return render(request, 'tarjeta.html', {'context': context, 'tienda': tienda})
             promocion = Promotion.objects.create(
                 owner=owner, shop=None, startDate=time, endDate=endtime, promotionType=promotionType, product=product)
             Notification.objects.create(title="Producto promocionado con éxito", description="El producto " + product.name + " estará promocionado hasta el dia " + endtime.strftime("%d/%m/%Y"),
@@ -576,7 +585,10 @@ def promotion_month_product(request, id_product):
             endtime = (time + timedelta(days=30))
             person = Person.objects.get(id=person_id)
             get_or_create_customer(email=person.email, source=None)
-            charge(amount=500, source=request.POST.get('stripeToken'))
+            try:
+                charge(amount=500, source=request.POST.get('stripeToken'))
+            except:
+                return render(request, 'tarjeta.html', {'context': context, 'tienda': tienda})
             promocion = Promotion.objects.filter(
                 product=product).update(startDate=time, endDate=endtime)
             Notification.objects.create(title="Producto promocionado con éxito", description="El producto " + product.name + " estará promocionado hasta el dia " + endtime.strftime("%d/%m/%Y"),
@@ -654,7 +666,10 @@ def promotion_week_shop(request, id_shop):
                     endtime = (time + timedelta(days=7))
                     person = Person.objects.get(id=person_id)
                     get_or_create_customer(email=person.email, source=None)
-                    charge(amount=500, source=request.POST.get('stripeToken'))
+                    try:
+                        charge(amount=500, source=request.POST.get('stripeToken'))
+                    except:
+                        return render(request, 'tarjeta.html', {'context': context, 'tienda': tienda})
                     promocion = Promotion.objects.create(
                         owner=owner, shop=shop, startDate=time, endDate=endtime, promotionType=promotionType, product=None)
                     return redirect("home")
@@ -663,7 +678,10 @@ def promotion_week_shop(request, id_shop):
                     endtime = (time + timedelta(days=7))
                     person = Person.objects.get(id=person_id)
                     get_or_create_customer(email=person.email, source=None)
-                    charge(amount=500, source=request.POST.get('stripeToken'))
+                    try:
+                        charge(amount=500, source=request.POST.get('stripeToken'))
+                    except:
+                        return render(request, 'tarjeta.html', {'context': context, 'tienda': tienda})
                     promocion = Promotion.objects.filter(
                         shop=shop).update(startDate=time, endDate=endtime)
                     return redirect("home")
@@ -706,7 +724,10 @@ def promotion_month_shop(request, id_shop):
                     endtime = (time + timedelta(days=30))
                     person = Person.objects.get(id=person_id)
                     get_or_create_customer(email=person.email, source=None)
-                    charge(amount=1000, source=request.POST.get('stripeToken'))
+                    try:
+                        charge(amount=1000, source=request.POST.get('stripeToken'))
+                    except:
+                        return render(request, 'tarjeta.html', {'context': context, 'tienda': tienda})
                     promocion = Promotion.objects.create(
                         owner=owner, shop=shop, startDate=time, endDate=endtime, promotionType=promotionType, product=None)
                     return redirect("home")
@@ -716,7 +737,10 @@ def promotion_month_shop(request, id_shop):
                     endtime = (time + timedelta(days=30))
                     person = Person.objects.get(id=person_id)
                     get_or_create_customer(email=person.email, source=None)
-                    charge(amount=1000, source=request.POST.get('stripeToken'))
+                    try:
+                        charge(amount=1000, source=request.POST.get('stripeToken'))
+                    except:
+                        return render(request, 'tarjeta.html', {'context': context, 'tienda': tienda})
                     promocion = Promotion.objects.filter(
                         shop=shop).update(startDate=time, endDate=endtime)
                     return redirect("home")
@@ -754,7 +778,10 @@ def activate_shop(request, id_shop):
                     endtime = (time + timedelta(days=30))
                     person = Person.objects.get(id=person_id)
                     get_or_create_customer(email=person.email, source=None)
-                    charge(amount=1000, source=request.POST.get('stripeToken'))
+                    try:
+                        charge(amount=1000, source=request.POST.get('stripeToken'))
+                    except:
+                        return render(request, 'tarjeta.html', {'context': context, 'tienda': tienda})
                     suscripcion = Subscription.objects.create(
                         subscriptionType=subscriptionType, startDate=time, endDate=endtime, owner=owner, shop=shop)
                     return redirect("home")
@@ -764,7 +791,10 @@ def activate_shop(request, id_shop):
                     endtime = (time + timedelta(days=30))
                     person = Person.objects.get(id=person_id)
                     get_or_create_customer(email=person.email, source=None)
-                    charge(amount=1000, source=request.POST.get('stripeToken'))
+                    try:
+                        charge(amount=1000, source=request.POST.get('stripeToken'))
+                    except:
+                        return render(request, 'tarjeta.html', {'context': context, 'tienda': tienda})
                     promocion = Subscription.objects.filter(
                         shop=shop).update(startDate=time, endDate=endtime)
                     return redirect("home")
@@ -798,7 +828,10 @@ def activate_shop_three_months(request, id_shop):
             endtime = (time + timedelta(days=90))
             person = Person.objects.get(id=person_id)
             get_or_create_customer(email=person.email, source=None)
-            charge(amount=1000, source=request.POST.get('stripeToken'))
+            try:
+                charge(amount=1000, source=request.POST.get('stripeToken'))
+            except:
+                return render(request, 'tarjeta.html', {'context': context, 'tienda': tienda})
             suscripcion = Subscription.objects.create(
                 subscriptionType=subscriptionType, startDate=time, endDate=endtime, owner=owner, shop=shop)
             Notification.objects.create(title="Tienda dada de alta", description="La tienda " + shop.name + " estará activa hasta el dia " + endtime.strftime("%d/%m/%Y"),
@@ -806,10 +839,13 @@ def activate_shop_three_months(request, id_shop):
             return redirect("home")
         elif (subscription and str(shop.owner.person.id) == person_id and not activate and request.method == 'POST'):
             time = date.today()
-            endtime = (time + timedelta(days=30))
+            endtime = (time + timedelta(days=90))
             person = Person.objects.get(id=person_id)
             get_or_create_customer(email=person.email, source=None)
-            charge(amount=1000, source=request.POST.get('stripeToken'))
+            try:
+                charge(amount=1000, source=request.POST.get('stripeToken'))
+            except:
+                return render(request, 'tarjeta.html', {'context': context, 'tienda': tienda})
             promocion = Subscription.objects.filter(
                 shop=shop).update(startDate=time, endDate=endtime)
             Notification.objects.create(title="Tienda dada de alta", description="La tienda " + shop.name + " estará activa hasta el dia " + endtime.strftime("%d/%m/%Y"),
@@ -842,16 +878,22 @@ def activate_shop_one_year(request, id_shop):
                     endtime = (time + timedelta(days=365))
                     person = Person.objects.get(id=person_id)
                     get_or_create_customer(email=person.email, source=None)
-                    charge(amount=1000, source=request.POST.get('stripeToken'))
+                    try:
+                        charge(amount=1000, source=request.POST.get('stripeToken'))
+                    except:
+                        return render(request, 'tarjeta.html', {'context': context, 'tienda': tienda})
                     suscripcion = Subscription.objects.create(
                         subscriptionType=subscriptionType, startDate=time, endDate=endtime, owner=owner, shop=shop)
                     return redirect("home")
                 elif (subscription and not activate):
                     time = date.today()
-                    endtime = (time + timedelta(days=30))
+                    endtime = (time + timedelta(days=365))
                     person = Person.objects.get(id=person_id)
                     get_or_create_customer(email=person.email, source=None)
-                    charge(amount=1000, source=request.POST.get('stripeToken'))
+                    try:
+                        charge(amount=1000, source=request.POST.get('stripeToken'))
+                    except:
+                        return render(request, 'tarjeta.html', {'context': context, 'tienda': tienda})
                     promocion = Subscription.objects.filter(
                         shop=shop).update(startDate=time, endDate=endtime)
                     return redirect("home")
@@ -1244,7 +1286,7 @@ def list_booking_user(request):
                     total_price += book.title * book.quantity
                     shop_bookings[s] = bookingsQuantity
 
-            s.schedule = total_price
+            s.schedule = "{0:.2f}".format(total_price)
         return render(request, 'bookings_user.html', {'shop_bookings': shop_bookings, 'context': context, 'tienda': tienda})
     else:
         return render(request, 'prohibido.html')
@@ -1274,7 +1316,7 @@ def list_booking_owner(request):
                     factoresConfianza[book] = factor_confianza(
                         book.user.id)
                     booking_owner[client.person] = factoresConfianza
-            client.person.phoneNumber = total_price
+            client.person.phoneNumber = "{0:.2f}".format(total_price)
         return render(request, 'bookings_owner.html', {'context': context, 'tienda': tienda, 'booking_owner': booking_owner})
     else:
         return render(request, 'prohibido.html')

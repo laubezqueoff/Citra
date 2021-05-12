@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% load static %}
+
+ {% block cabecera %}
+<link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'> 
+{% endblock %}
+{% block contenido %}
+<container class="container-fluid">
+    <div class="row justify-content-center m-0">
+        <div class="col-10">
+            <div class="m-5">
+                <h2 class="section-title mt-lg-2 d-flex justify-content-center"><strong>Tarjeta de Credito valida usada</strong></h2>
+                    <br>
+                    <div class="container" style="background-color:#ffe8d9; border-color:orange; border-radius: 20px;">
+                    <br>
+                    <br>
+                    <p>
+                        No has utilizado una tarjeta de credito de prueba.
+                        No te preocupes, en tu tarjeta de credito no se ha realizado ningun cargo.</p>
+                    <p>    
+                        Para poder usar el pago en Citra, deberas usar una de las que se encuentra en esta direccion
+                        <a href="https://stripe.com/docs/testing">Tarjetas de Credito de Prueba</a></p>
+
+                    <p>    Aqui te dejamos una tarjeta de prueba por si no quieres entrar en el enlace:
+                        4242 4242 4242 4242 </p>
+                    <p>    Puedes poner la fecha en el futuro y el cvv que quieras
+
+                    </p>
+                    <img src="{% static 'images/CitraBolsa.png' %}" class="mx-auto d-block" style=" height:50px;"></img>
+                    <p class="section-title mt-lg-2 d-flex justify-content-center">Citra, tu barrio a un click</p>
+            </div>
+        </div>
+    </div>
+</container>
+{% endblock %}

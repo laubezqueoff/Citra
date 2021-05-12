@@ -20,7 +20,7 @@ class TestMethods(unittest.TestCase):
     def test_login(self):
         # Probamos que el usuario se puede registrar de forma correcta.
 
-        credentials = {"username": 'USER-0', "password": 'PASS-0'}
+        credentials = {"username": 'albcorare', "password": 'albcorare'}
 
         url = "http://127.0.0.1:9000/login/"
         # url = "https://citra-ispp.herokuapp.com/login/"
@@ -33,7 +33,7 @@ class TestMethods(unittest.TestCase):
     def test_logout(self):
         # Probamos que el usuario puede hacer logout de forma correcta.
 
-        credentials = {"username": 'USER-0', "password": 'PASS-0'}
+        credentials = {"username": 'albcorare', "password": 'albcorare'}
 
         url = "http://127.0.0.1:9000/login/"
 
@@ -48,7 +48,7 @@ class TestMethods(unittest.TestCase):
         # Probamos que se puede acceder a un chat con una tienda con la que todavia no ha hablado
         print('test_new_chat_get')
 
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
 
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
@@ -61,7 +61,7 @@ class TestMethods(unittest.TestCase):
         #Probamos que se puede enviar un mensaje a un chat con una tienda con la que NO se ha hablado antes
         print('test_chat_post')
         
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
         
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
@@ -73,7 +73,7 @@ class TestMethods(unittest.TestCase):
         #Probamos que NO se puede acceder a un chat con una tienda que no existe
         print('test_new_chat_get_404')
 
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
         
         
         r = self.client.post(reverse('login'), data=credentials, follow=True)
@@ -116,7 +116,7 @@ class TestMethods(unittest.TestCase):
         #Probamos que se puede enviar un mensaje a un chat con una tienda con la que ha hablado antes
         print('test_chat_post')
 
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
 
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
@@ -132,7 +132,7 @@ class TestMethods(unittest.TestCase):
 
         print('test_chat_get')
 
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
 
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
@@ -145,7 +145,7 @@ class TestMethods(unittest.TestCase):
         print('test_chat_get_403_user')
         
 
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
 
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
@@ -160,7 +160,7 @@ class TestMethods(unittest.TestCase):
 
         print('test_chat_get_404')
 
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
 
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
@@ -198,7 +198,7 @@ class TestMethods(unittest.TestCase):
         #Probamos que se puede acceder a la lista de chats del user logueado en cuestión
         print('test_chat_list_user')
         
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
         
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
@@ -264,7 +264,7 @@ class TestMethods(unittest.TestCase):
         #Probamos que NO se puede acceder a la lista de users estando logueado como user
         print('test_users_list_403_user')
         
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
         
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
@@ -317,7 +317,7 @@ class TestMethods(unittest.TestCase):
         #Probamos que NO se puede acceder a la lista de owners estando logueado como user
         print('test_owners_list_403_user')
         
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
         
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
@@ -380,7 +380,7 @@ class TestMethods(unittest.TestCase):
         #Probamos que se puede acceder al perfil de un user estando logueado como user
         print('test_get_user_403_user')
         
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
         
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
@@ -473,7 +473,7 @@ class TestMethods(unittest.TestCase):
         # Probamos que se puede acceder enviar un mensaje a un chat con una tienda con la que ha hablado antes
         print('test_shop_get_200')
 
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
 
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
@@ -492,7 +492,7 @@ class TestMethods(unittest.TestCase):
     def test_shop_get_404(self):
         # Probamos que se puede acceder enviar un mensaje a un chat con una tienda con la que ha hablado antes
         print('test_shop_get_404')
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
         response = self.client.get(
@@ -652,7 +652,7 @@ class TestMethods(unittest.TestCase):
         # Probamos que se puede acceder enviar un mensaje a un chat con una tienda con la que ha hablado antes
         print('test_list_shop_get_200')
 
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
 
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
@@ -899,7 +899,7 @@ class TestMethods(unittest.TestCase):
 
     def test_get_threads(self):
 
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
 
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
@@ -910,7 +910,7 @@ class TestMethods(unittest.TestCase):
 
     def test_get_forumMessagesList(self):
 
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
 
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
@@ -921,7 +921,7 @@ class TestMethods(unittest.TestCase):
 
     def test_post_forumMessagesList(self):
 
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
 
         data={'text': 'Soy un mensaje de prueba'}
 
@@ -935,7 +935,7 @@ class TestMethods(unittest.TestCase):
     # TEST DE VALORACIONES #####################################################################
 
     def test_get_reviewList(self):
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
 
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
@@ -945,7 +945,7 @@ class TestMethods(unittest.TestCase):
 
 
     def test_get_reviewForm(self):
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
 
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
@@ -955,7 +955,7 @@ class TestMethods(unittest.TestCase):
 
 
     def test_post_reviewForm(self):
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
 
         data={'rating': '5', 'title': 'Soy una review de prueba', 'description': 'Soy una descripción de prueba'}
 
@@ -969,7 +969,7 @@ class TestMethods(unittest.TestCase):
     # TEST DE REPORTES ######################################################################
 
     def test_get_reportShop(self):
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
 
         r = self.client.post(reverse('login'), data=credentials, follow=True)
         self.assertEqual(r.status_code, 200)
@@ -979,7 +979,7 @@ class TestMethods(unittest.TestCase):
 
 
     def test_post_reportShop(self):
-        credentials = {'username': 'User-0', 'password': 'Pass-0'}
+        credentials = {'username': 'albcorare', 'password': 'albcorare'}
 
         data={'title': 'Soy un reporte de prueba', 'description': 'Soy una descripción de prueba'}
 

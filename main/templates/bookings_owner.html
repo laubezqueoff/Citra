@@ -20,8 +20,11 @@
                         <h4 class="card-title" style="text-align:center;">Tienda: {{book.product.shop.name}}</h4>
                         <p class="product__name" style="text-align: center;" > Nombre Producto: <b>{{book.product.name}} </b> </p>
                         <span class="product__price"> Cantidad Reservada: {{book.quantity}} </span>
-                        <span class="product__price"> Nombre del usuario: {{book.user.person.name}} 
-                        <span class="product__price">El usuario iene que recogerlo antes de las: {{book.endDate|date:'d/m/Y H:M'}} </span>
+                        <span class="product__price"> Precio del Producto Reservado: {{book.title}} </span>
+                        <br>
+                        <span class="product__price"> Nombre del usuario: {{book.user.person.name}} </span>
+                        <br>
+                        <span class="product__price">El usuario tiene que recogerlo antes de las: {{book.endDate|date:'d/m/Y H:i'}} </span>
                             <img style = "width:40px;heigth:40px;" src="
                                 {% if factor == 0 %}
                                     {% static 'images/pregunta.png' %}
