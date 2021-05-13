@@ -6,7 +6,7 @@ from django.core.exceptions import ValidationError
 from main.models import Shop
 
 class MessageForm(forms.Form):
-    text = forms.CharField(label='Mensaje',max_length=60,required=True,
+    text = forms.CharField(label='Mensaje',max_length=120,required=True,
     error_messages={'required': 'Introduce un mensaje, por favor', 'max_length':'El mensaje no debe tener más de 60 caracteres'})
 
 class NameShopForm(forms.Form):
