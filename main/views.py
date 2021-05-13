@@ -10,6 +10,8 @@ from datetime import timedelta
 import stripe
 from Citra import settings
 from django.db import transaction
+from django.core.paginator import Paginator
+
 
 
 def login(request):
@@ -1877,6 +1879,9 @@ def notificationList(request):
         person = Person.objects.get(id=person_id)
         notifications = Notification.objects.filter(
             person=person).order_by('-id')
-        return render(request, "notification_list.html", {'tienda': tienda, 'context': context, 'notifications': notifications})
+        paginator = Paginator(notifications, 5)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+        return render(request, "notification_list.html", {'tienda': tienda, 'context': context, 'page_obj': page_obj})
     else:
         return render(request, "prohibido.html", status=403)
