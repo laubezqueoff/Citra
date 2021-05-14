@@ -1105,7 +1105,11 @@ def get_chats_list(request):
         print('Es admin o no está logeado, por lo tanto no tiene acceso a chats')
         return render(request, 'prohibido.html', {"context": context, 'tienda': tienda}, status=403)
 
-    return render(request, "chatList.html", {"context": context, "chats": chats, 'tienda': tienda}, status=200)
+    paginator = Paginator(chats, 5)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, "chatList.html", {"context": context, "page_obj": page_obj, 'tienda': tienda}, status=200)
 
 
 def get_chat(request, id_chat):
@@ -1432,11 +1436,15 @@ def review_list(request, id_shop):
     sus = Subscription.objects.filter(shop=shop).exists()
     if rol == "User" and sus:
 
-        reviews = []
-        for m in shop.review_set.all():
-            reviews.append(m)
+        paginator = Paginator(shop.review_set.all(), 3)
+        page_number = request.GET.get('page')
+        page_obj = paginator.get_page(page_number)
+
+        # reviews = []
+        # for m in page_obj:
+        #     reviews.append(m)
         # a la vista de todas las reviews
-        return render(request, 'reviews.html', {'reviews': reviews, 'context': context, 'tienda': tienda})
+        return render(request, 'reviews.html', {'page_obj': page_obj, 'context': context, 'tienda': tienda})
 
     if rol == "Owner":
         if(shop.id == tienda.id):

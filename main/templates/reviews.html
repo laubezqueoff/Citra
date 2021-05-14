@@ -7,7 +7,7 @@
 {% if context.1 == 'User' %}
 <div class="" style="margin-left: 45%!important; margin-top: 20px!important"><button class="justify-content-center button-light"><a style="text-decoration: none;" class="button-light" href="new"> Añade un comentario </a></button></div>
 {% endif %}
-{% for row in reviews %}
+{% for row in page_obj %}
 <div class="container mt-5" style="margin-top:2px!important;">
     <div class="d-flex justify-content-center row">
         <div class="col-md-6">
@@ -28,10 +28,26 @@
 </div>
     {% endfor %}
     <div class="row m-0">
+    <span class="step-links" style="text-align: center;">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; Primero</a>
+            <a href="?page={{ page_obj.previous_page_number }}">Anterior</a>
+            <span class="current">
+              Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+        {% endif %}
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">Siguiente</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">Último &raquo;</a>
+            <span class="current">
+              Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+            </span>
+        {% endif %}
+    </span>
         <div class="d-flex justify-content-center mt-3">
           <div class="col-1 d-flex justify-content-center">
             <a role="button" href="../" class="btn btn-dark fw-bold flex-grow-1"> Volver </a>
-
           </div>
         </div>
       </div>
