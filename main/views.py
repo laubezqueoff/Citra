@@ -769,7 +769,7 @@ def activate_shop(request, id_shop):
             return render(request, 'error.html', {'context': context, 'tienda': tienda}, status=404)
         subscription = Subscription.objects.filter(shop=shop).exists()
         time = date.today()
-        activate = Subscription.objects.filter(endDate__gte=time).exists()
+        activate = Subscription.objects.filter(endDate__gte=time).filter(shop=shop).exists()
         if (str(shop.owner.person.id) == person_id):
             if(request.method == 'POST'):
                 if (not(subscription)):
@@ -822,7 +822,7 @@ def activate_shop_three_months(request, id_shop):
             return render(request, 'error.html', {'context': context, 'tienda': tienda}, status=404)
         subscription = Subscription.objects.filter(shop=shop).exists()
         time = date.today()
-        activate = Subscription.objects.filter(endDate__gte=time).exists()
+        activate = Subscription.objects.filter(endDate__gte=time).filter(shop=shop).exists()
         if (not(subscription) and str(shop.owner.person.id) == person_id and request.method == 'POST'):
             subscriptionType = SubscriptionType.objects.get(id=2)
             owner = Owner.objects.get(person=person_id)
@@ -870,7 +870,7 @@ def activate_shop_one_year(request, id_shop):
             return render(request, 'error.html', {'context': context, 'tienda': tienda}, status=404)
         subscription = Subscription.objects.filter(shop=shop).exists()
         time = date.today()
-        activate = Subscription.objects.filter(endDate__gte=time).exists()
+        activate = Subscription.objects.filter(endDate__gte=time).filter(shop=shop).exists()
         if (str(shop.owner.person.id) == person_id):
             if(request.method == 'POST'):
                 if (not(subscription)):
