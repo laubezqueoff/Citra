@@ -12,7 +12,7 @@ script:
 deploy:
   buildpack: python
   provider: heroku
-  app: sprint-ppl
+  app: citra-ppl
   strategy: git
   api_key: $HEROKU_AUTH_TOKEN
   on:
