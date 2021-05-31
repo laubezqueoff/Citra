@@ -13,7 +13,7 @@ Productos / Citra
       <h1 style="
     text-align: center;
 "> La tienda del producto que intentas ver esta baneada </h1>
-      {% elif not sus %}
+      {% elif not sus and product.shop.owner.person.id|stringformat:"i" != context.0 %}
       <h1 style="
     text-align: center;
 "> La tienda del producto que intentas ver no ha renovado la suscripción </h1>
