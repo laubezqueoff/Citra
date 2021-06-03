@@ -122,7 +122,7 @@ Productos / Citra
                                     <span class="input-group-text" id="price" name="price" value="">{{product.price}} €</span>
                                 </div>
                                 <div class="mb-4 border border-dark rounded-2">
-                                    <span class="input-group-text" id="description" name="description" value="">{{product.description}}</span>
+                                    <textarea  class="form-control" id="description" name="description" value="" readonly>{{product.description}}</textarea>
                                 </div>
                             </div>
                             <a href="{% url 'shop' product.shop.id %}" class="btn btn-outline-dark flex-grow-1 ms-2 me-2 fw-bold" type="button">Volver</a>
